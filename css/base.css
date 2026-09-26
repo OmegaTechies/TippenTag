@@ -1,0 +1,167 @@
+/* ==========================================================================
+   css/base.css - Tippen Tag (DenkKraft)
+   Variables globales, temas visuales de alto contraste y tipografía refinada
+   ========================================================================== */
+
+:root {
+    /* Paleta Principal DenkKraft */
+    --azul: #2563eb;
+    --azul-brillo: #3b82f6;
+    --azul-suave: rgba(37, 99, 235, 0.1);
+    --morado: #7c3aed;
+    --morado-brillo: #8b5cf6;
+    --morado-suave: rgba(124, 58, 237, 0.1);
+    --amarillo-btn: #f59e0b;
+    --amarillo-hover: #d97706;
+    --rojo-error: #ef4444;
+    --rojo-hover: #dc2626;
+    --verde-exito: #10b981;
+    
+    /* Superficies y Textos (Tema Claro) */
+    --fondo: #f8fafc;
+    --panel: #ffffff;
+    --panel-transparente: rgba(255, 255, 255, 0.9);
+    --panel-borde: #e2e8f0;
+    --panel-hover: #f1f5f9;
+    --texto: #0f172a;
+    --titulo-color: #1e293b;
+    --texto-secundario: #475569;
+    --texto-mutado: #94a3b8;
+    --texto-correcto: #2563eb;
+    
+    /* Efectos & Gradientes */
+    --degradado: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
+    --degradado-tarjeta: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    --sombra-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --sombra-md: 0 4px 14px rgba(0, 0, 0, 0.06);
+    --sombra-lg: 0 10px 25px rgba(15, 23, 42, 0.08);
+    --sombra-neon: 0 0 15px rgba(124, 58, 237, 0.2);
+    
+    /* Tipografía Refinada (Menos pesada, alta legibilidad) */
+    --fuente-ui: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    --fuente-mecanografia: 'Cascadia Code', 'Fira Code', 'Consolas', 'Courier New', monospace;
+    --radio-sm: 6px;
+    --radio-md: 10px;
+    --radio-lg: 16px;
+    --radio-pill: 9999px;
+}
+
+/* --- TEMA CLARO (Clásico Diurno) --- */
+body.tema-claro {
+    --fondo: #f8fafc;
+    --panel: #ffffff;
+    --panel-transparente: rgba(255, 255, 255, 0.9);
+    --panel-borde: #e2e8f0;
+    --panel-hover: #f1f5f9;
+    --texto: #0f172a;
+    --titulo-color: #1e293b;
+    --texto-secundario: #475569;
+    --texto-mutado: #94a3b8;
+    --texto-correcto: #2563eb;
+    --azul: #2563eb;
+    --azul-brillo: #3b82f6;
+    --azul-suave: rgba(37, 99, 235, 0.1);
+    --morado: #7c3aed;
+    --morado-brillo: #8b5cf6;
+    --morado-suave: rgba(124, 58, 237, 0.1);
+    --degradado: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
+    --degradado-tarjeta: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    --sombra-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --sombra-md: 0 4px 14px rgba(0, 0, 0, 0.06);
+    --sombra-lg: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+/* --- TEMA OSCURO (Noche Arcade - Alta Legibilidad) --- */
+body.tema-oscuro {
+    --fondo: #0b1120;
+    --panel: #162032;
+    --panel-transparente: rgba(22, 32, 50, 0.9);
+    --panel-borde: #26354a;
+    --panel-hover: #1e2c44;
+    --texto: #f8fafc;
+    --titulo-color: #f1f5f9;
+    --texto-secundario: #cbd5e1;
+    --texto-mutado: #64748b;
+    --texto-correcto: #38bdf8;
+    --azul: #38bdf8;
+    --azul-brillo: #60a5fa;
+    --azul-suave: rgba(56, 189, 248, 0.15);
+    --morado: #a78bfa;
+    --morado-brillo: #c084fc;
+    --morado-suave: rgba(167, 139, 250, 0.15);
+    --amarillo-btn: #f59e0b;
+    --amarillo-hover: #fbbf24;
+    --degradado: linear-gradient(135deg, #0b1120 0%, #171d3d 50%, #201a45 100%);
+    --degradado-tarjeta: linear-gradient(180deg, #162032 0%, #0f172a 100%);
+    --sombra-sm: 0 1px 4px rgba(0, 0, 0, 0.3);
+    --sombra-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --sombra-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --sombra-neon: 0 0 15px rgba(56, 189, 248, 0.25);
+}
+
+/* --- TEMA ESPACIO (Cosmic Nebula) --- */
+body.tema-espacio {
+    --fondo: #050711;
+    --panel: #0d1326;
+    --panel-transparente: rgba(13, 19, 38, 0.92);
+    --panel-borde: #1e2947;
+    --panel-hover: #151e3a;
+    --texto: #f1f5f9;
+    --titulo-color: #ffffff;
+    --texto-secundario: #94a3b8;
+    --texto-mutado: #475569;
+    --texto-correcto: #2dd4bf;
+    --azul: #0ea5e9;
+    --azul-brillo: #38bdf8;
+    --azul-suave: rgba(14, 165, 233, 0.15);
+    --morado: #8b5cf6;
+    --morado-brillo: #a78bfa;
+    --morado-suave: rgba(139, 92, 246, 0.15);
+    --amarillo-btn: #fbbf24;
+    --amarillo-hover: #f59e0b;
+    --degradado: radial-gradient(circle at top, #1a173b 0%, #050711 85%);
+    --degradado-tarjeta: linear-gradient(180deg, #0d1326 0%, #080c1a 100%);
+    --sombra-sm: 0 1px 4px rgba(0, 0, 0, 0.4);
+    --sombra-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+    --sombra-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
+    --sombra-neon: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+/* --- RESET Y REGLAS FUNDAMENTALES --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    min-height: 100vh;
+    font-family: var(--fuente-ui);
+    background-color: var(--fondo);
+    color: var(--texto);
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Barra de desplazamiento refinada */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.25);
+    border-radius: var(--radio-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--morado);
+}

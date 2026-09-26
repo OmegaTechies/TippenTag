@@ -1,0 +1,585 @@
+/* ==========================================================================
+   css/layout.css - Tippen Tag (DenkKraft)
+   Estructuras de cuadrícula, flexbox, paginación, filtros y adaptabilidad
+   ========================================================================== */
+
+/* --- LAYOUT 1: LANDING & PERFILES --- */
+.landing-contenedor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 90%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    min-height: 100vh;
+}
+
+.landing-marca {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.landing-logo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    background: #ffffff;
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.landing-logo:hover {
+    transform: scale(1.05);
+}
+
+/* Banner de Consejos Rotativos en Landing */
+.landing-consejo-caja {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radio-lg);
+    padding: 14px 22px;
+    max-width: 640px;
+    width: 100%;
+    margin: 10px auto 22px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-height: 84px;
+    box-sizing: border-box;
+}
+
+.consejo-etiqueta {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--amarillo-btn);
+}
+
+.landing-consejo-texto {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #ffffff;
+    margin: 0;
+    font-weight: 400;
+    transition: opacity 0.25s ease;
+}
+
+.consejo-indicadores {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.consejo-punto {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.consejo-punto.activo {
+    background: var(--amarillo-btn);
+    transform: scale(1.3);
+}
+
+.landing-seccion-perfiles {
+    width: 100%;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.landing-perfiles-header {
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: 0.9;
+    margin-bottom: 18px;
+}
+
+/* --- LAYOUT 2: MENÚ DE NIVELES (Estilo Osu! Song Select) --- */
+.menu-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 92%;
+    max-width: 1100px;
+    margin: 20px auto 16px auto;
+    padding: 14px 22px;
+    background: var(--panel);
+    border: 1px solid var(--panel-borde);
+    border-radius: var(--radio-lg);
+    box-shadow: var(--sombra-sm);
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.menu-usuario-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.menu-controles {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Contenedor de Búsqueda y Filtros de Niveles */
+.menu-filtros-contenedor {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 92%;
+    max-width: 1100px;
+    margin: 0 auto 16px auto;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* Barra de Filtros por Dificultad */
+.filtro-dificultad-barra {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filtro-etiqueta-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--texto-secundario);
+}
+
+.filtro-chips-grupo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.niveles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 18px;
+    width: 92%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-bottom: 12px;
+}
+
+/* Controles de Paginación Reutilizables y Extensos */
+.paginacion-contenedor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 92%;
+    max-width: 1100px;
+    margin: 14px auto 20px auto;
+    flex-wrap: wrap;
+}
+
+.paginacion-numeros {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.paginacion-indicador {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--texto-secundario);
+    margin-left: 8px;
+}
+
+.menu-acciones {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 92%;
+    max-width: 1100px;
+    margin: 16px auto 35px auto;
+}
+
+.menu-acciones-botones {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+/* --- LAYOUT 3: CREADOR / EDITOR DE NIVELES --- */
+.creador-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 92%;
+    max-width: 840px;
+    margin: 20px auto 14px auto;
+    padding: 16px 22px;
+    background: var(--panel);
+    border: 1px solid var(--panel-borde);
+    border-radius: var(--radio-lg);
+    box-shadow: var(--sombra-sm);
+}
+
+.formulario-creador {
+    width: 92%;
+    max-width: 840px;
+    margin: 0 auto 40px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.creador-seccion {
+    background: var(--panel);
+    border: 1px solid var(--panel-borde);
+    border-radius: var(--radio-lg);
+    padding: 20px 24px;
+    box-shadow: var(--sombra-sm);
+}
+
+.creador-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* --- LAYOUT 4: MOTOR DE JUEGO (HUD y Arena) --- */
+.juego-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 28px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--panel-borde);
+    box-shadow: var(--sombra-sm);
+    z-index: 10;
+    gap: 12px;
+    position: relative;
+}
+
+.juego-cabecera > :first-child {
+    flex: 0 0 auto;
+}
+
+.juego-hud-grupo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.juego-hud-centro {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 0 auto;
+}
+
+.juego-hud-derecha {
+    justify-content: flex-end;
+}
+
+.juego-area-texto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+    width: 100%;
+    position: relative;
+    cursor: text;
+    box-sizing: border-box;
+}
+
+.juego-panel-mascota {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--panel);
+    border-top: 1px solid var(--panel-borde);
+    padding: 12px 24px;
+    gap: 30px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.02);
+    min-height: 160px;
+    flex-wrap: wrap;
+}
+
+/* --- LAYOUT 5: MODALES (PRE-JUEGO, CREAR USUARIO, RESULTADOS, GUÍA) --- */
+.tarjeta-prejuego {
+    background: var(--panel);
+    padding: 28px 32px;
+    border-radius: var(--radio-lg);
+    border: 1px solid var(--panel-borde);
+    box-shadow: var(--sombra-lg);
+    width: 92%;
+    max-width: 520px;
+    margin: auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+}
+
+.modos-iconos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 12px 0 6px 0;
+}
+
+.tarjeta-guia-atajos {
+    background: var(--panel);
+    padding: 28px 32px;
+    border-radius: var(--radio-lg);
+    border: 1px solid var(--panel-borde);
+    box-shadow: var(--sombra-lg);
+    width: 92%;
+    max-width: 660px;
+    margin: auto;
+    max-height: 88vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+}
+
+.guia-secciones-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    text-align: left;
+}
+
+.tarjeta-ajustes {
+    background: var(--panel);
+    padding: 26px 30px;
+    border-radius: var(--radio-lg);
+    border: 1px solid var(--panel-borde);
+    box-shadow: var(--sombra-lg);
+    width: 92%;
+    max-width: 620px;
+    margin: auto;
+    max-height: 88vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+}
+
+.ajustes-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--panel-borde);
+    padding-bottom: 12px;
+}
+
+.ajustes-cabecera h3 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--titulo-color);
+}
+
+.ajustes-secciones {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-align: left;
+}
+
+.control-rango-grupo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.ajustes-pie {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+}
+
+/* --- LAYOUT 6: CINEMÁTICA Y NARRATIVA --- */
+.tarjeta-narrativa {
+    width: 92%;
+    max-width: 820px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.narrativa-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.narrativa-escenario {
+    width: 100%;
+    height: 340px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: var(--radio-lg);
+    border: 1px solid var(--panel-borde);
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(11, 17, 32, 0.7);
+}
+
+.narrativa-dialogo {
+    background: var(--panel);
+    padding: 20px 24px;
+    border-radius: var(--radio-lg);
+    border-left: 5px solid var(--morado);
+    box-shadow: var(--sombra-md);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* --- RESPONSIVIDAD PARA TABLETS Y TELÉFONOS MÓVILES --- */
+@media (max-width: 768px) {
+    .menu-cabecera {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        padding: 12px 16px;
+    }
+    .menu-usuario-info {
+        justify-content: center;
+    }
+    .menu-controles {
+        justify-content: center;
+    }
+    .filtro-dificultad-barra {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .menu-filtros-contenedor {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .niveles-grid {
+        grid-template-columns: 1fr;
+    }
+    .creador-grid-2col {
+        grid-template-columns: 1fr;
+    }
+    .guia-secciones-grid {
+        grid-template-columns: 1fr;
+    }
+    .juego-cabecera {
+        padding: 10px 14px;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    .juego-cabecera > :first-child {
+        align-self: flex-start;
+    }
+    .juego-hud-centro {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        order: 1;
+    }
+    .juego-hud-derecha {
+        justify-content: center;
+        width: 100%;
+        order: 2;
+    }
+    .juego-panel-mascota {
+        gap: 16px;
+        padding: 10px;
+    }
+    .img-teclado {
+        max-width: 100% !important;
+        height: auto;
+    }
+    .narrativa-escenario {
+        height: 240px;
+    }
+    .modos-iconos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    /* Tienda Estilo Deltarune en pantallas medianas y móviles */
+    .tienda-modal {
+        width: 95vw;
+        height: 92vh;
+        max-height: none;
+    }
+    .tienda-banner {
+        height: 34%;
+        min-height: 150px;
+        padding: 16px 18px;
+    }
+    .tienda-banner-contenido {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .tienda-banner-info {
+        max-width: 100%;
+    }
+    .tienda-banner-derecha {
+        align-self: flex-end;
+    }
+    .tienda-cuerpo {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+        padding: 14px;
+        gap: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .landing-contenedor {
+        padding: 20px 12px;
+    }
+    .landing-logo {
+        width: 95px;
+        height: 95px;
+    }
+    .tarjeta-prejuego, .tarjeta-guia-atajos, .tarjeta-ajustes {
+        padding: 20px 16px;
+    }
+    .juego-area-texto {
+        padding: 14px 10px;
+    }
+    .modos-iconos-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+}

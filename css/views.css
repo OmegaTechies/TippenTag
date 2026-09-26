@@ -1,0 +1,98 @@
+/* ==========================================================================
+   css/views.css - Tippen Tag (DenkKraft)
+   Transición, visibilidad y fondos ambientales para cada pantalla del juego
+   ========================================================================== */
+
+section {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Ocultación estricta y visualización activa fluida */
+.vista-oculta {
+    display: none !important;
+}
+
+.vista-activa {
+    display: flex;
+    flex-direction: column;
+    animation: vistaAparecer 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes vistaAparecer {
+    0% {
+        opacity: 0;
+        transform: translateY(12px) scale(0.99);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* --- VISTA 1: LANDING PAGE (Pantalla de Título DenkKraft) --- */
+#vista-landing {
+    background: var(--degradado);
+    color: #ffffff;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+#vista-landing::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+    animation: rotacionSuave 30s linear infinite;
+}
+
+@keyframes rotacionSuave {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --- VISTA CREAR USUARIO & PRE-JUEGO (Modales Centrados con Fondo Difuminado) --- */
+#vista-crear-usuario,
+#vista-prejuego {
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 100;
+}
+
+/* --- VISTA 2: MENÚ DE NIVELES Y CREADOR --- */
+#vista-menu,
+#vista-creador {
+    background-color: var(--fondo);
+    min-height: 100vh;
+    padding-bottom: 40px;
+}
+
+/* --- VISTA 4: PANTALLA DE JUEGO (Motor) --- */
+#vista-juego {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+    max-height: 100vh;
+    background-color: var(--fondo);
+    overflow: hidden;
+}
+
+/* --- VISTA 5: NARRATIVA Y CINEMÁTICA MOMOYE --- */
+#vista-narrativa {
+    background: radial-gradient(circle at center, rgba(30, 27, 75, 0.96) 0%, rgba(2, 6, 23, 0.98) 100%);
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    z-index: 150;
+}
