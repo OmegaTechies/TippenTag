@@ -44,21 +44,118 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cargarConfiguracion();
 
+    // ==========================================================================
+    // MODAL DE DIÁLOGO / ALERTAS NATIVAS DEL JUEGO (REEMPLAZO DE ALERT / CONFIRM)
+    // ==========================================================================
+    const modalDialogo = document.getElementById('modal-dialogo');
+    const dialogoTitulo = document.getElementById('dialogo-titulo');
+    const dialogoMensaje = document.getElementById('dialogo-mensaje');
+    const dialogoIconoCirculo = document.getElementById('dialogo-icono-circulo');
+    const dialogoIconoTexto = document.getElementById('dialogo-icono-texto');
+    const dialogoBtnAceptar = document.getElementById('dialogo-btn-aceptar');
+    const dialogoBtnCancelar = document.getElementById('dialogo-btn-cancelar');
+
+    let resolverDialogo = null;
+
+    function mostrarAlerta(mensaje, titulo = "Tippen Tag", tipo = "info") {
+        return new Promise((resolve) => {
+            if (!modalDialogo) {
+                alert(`${titulo}: ${mensaje}`);
+                resolve(true);
+                return;
+            }
+
+            if (dialogoTitulo) dialogoTitulo.textContent = titulo;
+            if (dialogoMensaje) dialogoMensaje.textContent = mensaje;
+            if (dialogoBtnCancelar) dialogoBtnCancelar.style.display = 'none';
+            if (dialogoBtnAceptar) dialogoBtnAceptar.textContent = 'Aceptar';
+
+            if (dialogoIconoCirculo && dialogoIconoTexto) {
+                dialogoIconoCirculo.className = 'dialogo-icono-circulo';
+                if (tipo === 'exito') {
+                    dialogoIconoCirculo.classList.add('exito');
+                    dialogoIconoTexto.textContent = '✓';
+                } else if (tipo === 'alerta') {
+                    dialogoIconoCirculo.classList.add('alerta');
+                    dialogoIconoTexto.textContent = '⚠️';
+                } else if (tipo === 'peligro' || tipo === 'error') {
+                    dialogoIconoCirculo.classList.add('peligro');
+                    dialogoIconoTexto.textContent = '✕';
+                } else {
+                    dialogoIconoTexto.textContent = 'ℹ️';
+                }
+            }
+
+            resolverDialogo = resolve;
+            modalDialogo.classList.remove('vista-oculta');
+        });
+    }
+
+    function mostrarConfirmacion(mensaje, titulo = "¿Confirmar acción?", tipo = "peligro") {
+        return new Promise((resolve) => {
+            if (!modalDialogo) {
+                const r = confirm(`${titulo}\n\n${mensaje}`);
+                resolve(r);
+                return;
+            }
+
+            if (dialogoTitulo) dialogoTitulo.textContent = titulo;
+            if (dialogoMensaje) dialogoMensaje.textContent = mensaje;
+            if (dialogoBtnCancelar) dialogoBtnCancelar.style.display = 'inline-block';
+            if (dialogoBtnAceptar) dialogoBtnAceptar.textContent = 'Confirmar';
+
+            if (dialogoIconoCirculo && dialogoIconoTexto) {
+                dialogoIconoCirculo.className = 'dialogo-icono-circulo';
+                if (tipo === 'peligro') {
+                    dialogoIconoCirculo.classList.add('peligro');
+                    dialogoIconoTexto.textContent = '🗑️';
+                } else {
+                    dialogoIconoCirculo.classList.add('alerta');
+                    dialogoIconoTexto.textContent = '❓';
+                }
+            }
+
+            resolverDialogo = resolve;
+            modalDialogo.classList.remove('vista-oculta');
+        });
+    }
+
+    if (dialogoBtnAceptar) {
+        dialogoBtnAceptar.addEventListener('click', () => {
+            if (modalDialogo) modalDialogo.classList.add('vista-oculta');
+            if (resolverDialogo) {
+                const fn = resolverDialogo;
+                resolverDialogo = null;
+                fn(true);
+            }
+        });
+    }
+
+    if (dialogoBtnCancelar) {
+        dialogoBtnCancelar.addEventListener('click', () => {
+            if (modalDialogo) modalDialogo.classList.add('vista-oculta');
+            if (resolverDialogo) {
+                const fn = resolverDialogo;
+                resolverDialogo = null;
+                fn(false);
+            }
+        });
+    }
+
     // --- ELEMENTOS Y CONTROL DE MÚSICA DE FONDO (MENÚ Y TIENDA) ---
     const audioBgmMenu = document.getElementById('audio-bgm-menu');
     const audioBgmTienda = document.getElementById('audio-bgm-tienda');
     const btnQuickBgm = document.getElementById('btn-quick-bgm');
     const txtQuickBgm = document.getElementById('txt-quick-bgm');
+    const btnLandingBgm = document.getElementById('btn-landing-bgm');
+    const txtLandingBgm = document.getElementById('txt-landing-bgm');
 
     function actualizarQuickBgmUI() {
-        if (!txtQuickBgm || !btnQuickBgm) return;
-        if (configApp.musicaMenuActiva) {
-            txtQuickBgm.textContent = 'Música: ON';
-            btnQuickBgm.classList.add('activo');
-        } else {
-            txtQuickBgm.textContent = 'Música: OFF';
-            btnQuickBgm.classList.remove('activo');
-        }
+        const texto = configApp.musicaMenuActiva ? 'Música: ON' : 'Música: OFF';
+        if (txtQuickBgm) txtQuickBgm.textContent = texto;
+        if (btnQuickBgm) btnQuickBgm.classList.toggle('activo', configApp.musicaMenuActiva);
+        if (txtLandingBgm) txtLandingBgm.textContent = texto;
+        if (btnLandingBgm) btnLandingBgm.classList.toggle('activo', configApp.musicaMenuActiva);
     }
 
     function sincronizarBgmMenu() {
@@ -135,24 +232,25 @@ document.addEventListener('DOMContentLoaded', () => {
     sincronizarBgmMenu();
     sincronizarBgmTienda();
 
-    if (btnQuickBgm) {
-        btnQuickBgm.addEventListener('click', () => {
-            configApp.musicaMenuActiva = !configApp.musicaMenuActiva;
-            guardarConfiguracion();
-            actualizarQuickBgmUI();
-            if (configApp.musicaMenuActiva) {
-                if (modalTienda && modalTienda.classList.contains('tienda-overlay-activo')) {
-                    reproducirMusicaTienda();
-                } else {
-                    reproducirMusicaMenu();
-                }
+    function alternarMusicaGeneral() {
+        configApp.musicaMenuActiva = !configApp.musicaMenuActiva;
+        guardarConfiguracion();
+        actualizarQuickBgmUI();
+        if (configApp.musicaMenuActiva) {
+            if (modalTienda && modalTienda.classList.contains('tienda-overlay-activo')) {
+                reproducirMusicaTienda();
             } else {
-                pausarMusicaMenu();
-                pausarMusicaTienda();
+                reproducirMusicaMenu();
             }
-            sincronizarAjustesModalUI();
-        });
+        } else {
+            pausarMusicaMenu();
+            pausarMusicaTienda();
+        }
+        sincronizarAjustesModalUI();
     }
+
+    if (btnQuickBgm) btnQuickBgm.addEventListener('click', alternarMusicaGeneral);
+    if (btnLandingBgm) btnLandingBgm.addEventListener('click', alternarMusicaGeneral);
 
     // --- NAVEGACIÓN ENTRE VISTAS ---
     const vistas = {
@@ -622,9 +720,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 await cargarTarjetasDeNiveles(); 
                 cambiarVista('menu');
+                mostrarAlerta("¡El nivel ha sido guardado exitosamente!", "Nivel Guardado", "exito");
             } catch (error) {
                 console.error("Error al guardar nivel en BD:", error);
-                alert("Hubo un problema al guardar el nivel.");
+                mostrarAlerta("Hubo un problema al guardar el nivel.", "Error al Guardar", "peligro");
             }
         });
     }
@@ -633,7 +732,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnEliminarNivel) {
         btnEliminarNivel.addEventListener('click', async () => {
             if (!idNivelEnEdicion) return;
-            const confirmado = confirm("¿Estás seguro de que deseas eliminar este nivel permanentemente? Esta acción no se puede deshacer.");
+            const confirmado = await mostrarConfirmacion(
+                "¿Estás seguro de que deseas eliminar este nivel permanentemente? Esta acción no se puede deshacer.",
+                "Eliminar Nivel",
+                "peligro"
+            );
             if (confirmado) {
                 try {
                     await window.TPTDatabase.eliminarNivel(idNivelEnEdicion);
@@ -642,9 +745,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     btnEliminarNivel.style.display = 'none';
                     await cargarTarjetasDeNiveles();
                     cambiarVista('menu');
+                    mostrarAlerta("El nivel ha sido eliminado con éxito.", "Nivel Eliminado", "exito");
                 } catch (e) {
                     console.error("Error al eliminar nivel:", e);
-                    alert("No se pudo eliminar el nivel.");
+                    mostrarAlerta("No se pudo eliminar el nivel.", "Error", "peligro");
                 }
             }
         });
@@ -969,6 +1073,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const todosLosNiveles = await window.TPTDatabase.obtenerTodos();
             
             const nivelesFiltrados = todosLosNiveles.filter(nivel => {
+                // Tier 1 (Juego Base): Solo lecciones oficiales DENKKRAFT
+                if (window.TPTTiers && !window.TPTTiers.tieneAccesoCreador()) {
+                    if (!nivel.esOficial) return false;
+                }
                 const dif = (nivel.dificultad || 'normal').toLowerCase();
                 const pasaDificultad = filtroTodasActivo || dificultadesSeleccionadas.has(dif);
                 if (!pasaDificultad) return false;
@@ -1275,6 +1383,14 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        const btnLandingAjustes = document.getElementById('btn-landing-ajustes');
+        if (btnLandingAjustes) {
+            btnLandingAjustes.addEventListener('click', () => {
+                sincronizarAjustesModalUI();
+                if (modalAjustes) modalAjustes.classList.remove('vista-oculta');
+            });
+        }
+
         if (btnCerrarAjustesX) {
             btnCerrarAjustesX.addEventListener('click', () => {
                 guardarConfiguracion();
@@ -1288,6 +1404,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (modalAjustes) modalAjustes.classList.add('vista-oculta');
             });
         }
+
+        const selectTierJuego = document.getElementById('select-tier-juego');
+        if (selectTierJuego) {
+            selectTierJuego.addEventListener('change', (e) => {
+                const nuevoTier = parseInt(e.target.value, 10);
+                if (window.TPTTiers) {
+                    window.TPTTiers.establecerTier(nuevoTier);
+                    mostrarAlerta(
+                        `Se ha activado: ${window.TPTTiers.obtenerNombreTier(nuevoTier)}.\nLas opciones, niveles y restricciones del juego se han actualizado.`,
+                        "Licencia / Tier Actualizado",
+                        "exito"
+                    );
+                }
+            });
+        }
     }
 
     // --- MODAL GUÍA DE ATAJOS Y SIGNOS ---
@@ -1295,6 +1426,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnAbrirGuia = document.getElementById('btn-abrir-guia');
     const btnGuiaAtajosJuego = document.getElementById('btn-guia-atajos-juego');
     const btnCerrarGuia = document.getElementById('btn-cerrar-guia');
+    const btnCerrarGuiaAtajosX = document.getElementById('btn-cerrar-guia-atajos-x');
     const btnEntendidoGuia = document.getElementById('btn-entendido-guia');
 
     function abrirModalGuia() {
@@ -1308,6 +1440,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnAbrirGuia) btnAbrirGuia.addEventListener('click', abrirModalGuia);
     if (btnGuiaAtajosJuego) btnGuiaAtajosJuego.addEventListener('click', abrirModalGuia);
     if (btnCerrarGuia) btnCerrarGuia.addEventListener('click', cerrarModalGuia);
+    if (btnCerrarGuiaAtajosX) btnCerrarGuiaAtajosX.addEventListener('click', cerrarModalGuia);
     if (btnEntendidoGuia) btnEntendidoGuia.addEventListener('click', cerrarModalGuia);
 
     // --- BOTONES GENERALES DE MENÚ ---
@@ -1317,6 +1450,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnIrCreador = document.getElementById('btn-ir-creador');
     if (btnIrCreador) {
         btnIrCreador.addEventListener('click', () => {
+            if (window.TPTTiers && !window.TPTTiers.tieneAccesoCreador()) {
+                mostrarAlerta(
+                    "El Estudio de Creación de Niveles está disponible a partir de la Edición Creador (Tier 2). En el juego base solo puedes jugar las lecciones oficiales DENKKRAFT.",
+                    "Función de Expansión (Tier 2)",
+                    "alerta"
+                );
+                return;
+            }
             idNivelEnEdicion = null;
             if (formCreador) formCreador.reset();
             if (btnEliminarNivel) btnEliminarNivel.style.display = 'none';
@@ -1592,7 +1733,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 actualizarInfoUsuarioMenu();
                 renderizarCatalogoTienda();
             } else {
-                alert(`Te faltan ${item.precio - usuarioActivo.puntos} puntos para desbloquear esto.`);
+                mostrarAlerta(
+                    `Te faltan ${item.precio - usuarioActivo.puntos} puntos para desbloquear "${item.nombre}". ¡Sigue jugando lecciones para conseguir más puntos!`,
+                    "Puntos Insuficientes",
+                    "alerta"
+                );
             }
         });
     }
@@ -1763,11 +1908,609 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    // ==========================================================================
+    // SISTEMA ACADÉMICO PARA ESTUDIANTES Y PORTAL DEL DOCENTE
+    // Criptografía HMAC-SHA256 para validación contra alteraciones (Anti-Cheat)
+    // ==========================================================================
+    const CLAVE_SECRETA_INSTITUCIONAL = "DenkKraft-TippenTag-AcademicAuth-HMAC-2026-SecurityKey";
+    let certificadoResultadoActual = null;
+
+    // Codificación segura Base64 para strings UTF-8 en navegadores
+    function codificarBase64Utf8(str) {
+        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+            return String.fromCharCode(parseInt(p1, 16));
+        }));
+    }
+
+    // Decodificación segura Base64 para strings UTF-8 en navegadores
+    function decodificarBase64Utf8(str) {
+        return decodeURIComponent(Array.prototype.map.call(atob(str), (c) => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+    }
+
+    // Generar firma criptográfica HMAC-SHA256 con Web Cryptography API nativa del navegador
+    async function generarFirmaHmacSha256(mensajeTexto) {
+        const encoder = new TextEncoder();
+        const keyData = encoder.encode(CLAVE_SECRETA_INSTITUCIONAL);
+        const cryptoKey = await window.crypto.subtle.importKey(
+            "raw",
+            keyData,
+            { name: "HMAC", hash: { name: "SHA-256" } },
+            false,
+            ["sign"]
+        );
+        const signatureBuffer = await window.crypto.subtle.sign("HMAC", cryptoKey, encoder.encode(mensajeTexto));
+        const hashArray = Array.from(new Uint8Array(signatureBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Empaquetar y firmar el certificado de evaluación del estudiante
+    async function empaquetarCertificado(payload) {
+        const payloadJson = JSON.stringify(payload);
+        const payloadB64 = codificarBase64Utf8(payloadJson);
+        const firmaHex = await generarFirmaHmacSha256(payloadJson);
+        const tokenCompleto = `TPT-CERT.${payloadB64}.${firmaHex}`;
+        return {
+            token: tokenCompleto,
+            datos: payload,
+            firma: firmaHex
+        };
+    }
+
+    // Validar un token o certificado académico
+    async function validarTokenAcademico(tokenOJson) {
+        if (!tokenOJson || typeof tokenOJson !== 'string') {
+            return { valido: false, error: 'El código proporcionado está vacío o no es válido.' };
+        }
+
+        const textoLimpio = tokenOJson.trim();
+
+        // Caso 1: Formato token seguro TPT-CERT.<base64>.<firmaHex>
+        if (textoLimpio.startsWith('TPT-CERT.')) {
+            const partes = textoLimpio.split('.');
+            if (partes.length !== 3) {
+                return { valido: false, error: 'La estructura del código TPT-CERT es incorrecta o está incompleta.' };
+            }
+            try {
+                const payloadJson = decodificarBase64Utf8(partes[1]);
+                const payload = JSON.parse(payloadJson);
+                const firmaRecibida = partes[2];
+                const firmaCalculada = await generarFirmaHmacSha256(payloadJson);
+
+                if (firmaCalculada.toLowerCase() === firmaRecibida.toLowerCase()) {
+                    return { valido: true, datos: payload };
+                } else {
+                    return { 
+                        valido: false, 
+                        error: '¡Firma digital no coincide! Los valores (WPM, precisión, usuario o fecha) fueron alterados manualmente.',
+                        datosAlterados: payload
+                    };
+                }
+            } catch (err) {
+                return { valido: false, error: 'Error al decodificar el certificado: formato o codificación corrupta.' };
+            }
+        }
+
+        // Caso 2: Formato archivo exportado JSON (.tptcert / .json)
+        try {
+            const parsed = JSON.parse(textoLimpio);
+            if (parsed.token) {
+                return await validarTokenAcademico(parsed.token);
+            } else if (parsed.datos && parsed.firma) {
+                const jsonDatos = JSON.stringify(parsed.datos);
+                const firmaCalculada = await generarFirmaHmacSha256(jsonDatos);
+                if (firmaCalculada.toLowerCase() === parsed.firma.toLowerCase()) {
+                    return { valido: true, datos: parsed.datos };
+                } else {
+                    return { 
+                        valido: false, 
+                        error: '¡El archivo de certificado fue modificado! La firma criptográfica HMAC no coincide.',
+                        datosAlterados: parsed.datos 
+                    };
+                }
+            } else {
+                return { valido: false, error: 'El archivo JSON no contiene un certificado DenkKraft reconocido.' };
+            }
+        } catch (e) {
+            return { valido: false, error: 'El texto ingresado no es un código ni un archivo de certificado válido.' };
+        }
+    }
+
+    // Invocado por TPTengine al culminar la partida para preparar la entrega del estudiante
+    async function prepararCertificadoResultado(metricas) {
+        const seccionEstudiante = document.getElementById('seccion-academica-estudiante');
+        const msgCopiado = document.getElementById('msg-academico-copiado');
+        if (msgCopiado) msgCopiado.style.display = 'none';
+
+        // Si la edición/tier activo no tiene acceso al módulo educativo (Tier 3), no mostramos la sección
+        if (window.TPTTiers && !window.TPTTiers.tieneAccesoDocente()) {
+            if (seccionEstudiante) seccionEstudiante.style.display = 'none';
+            certificadoResultadoActual = null;
+            return;
+        }
+
+        if (!metricas || !metricas.completado) {
+            if (seccionEstudiante) seccionEstudiante.style.display = 'none';
+            certificadoResultadoActual = null;
+            return;
+        }
+
+        if (seccionEstudiante) seccionEstudiante.style.display = 'flex';
+
+        const min = Math.floor(metricas.tiempoUsado / 60);
+        const seg = metricas.tiempoUsado % 60;
+        const tiempoStr = `${min}:${seg < 10 ? '0' + seg : seg}`;
+
+        const payload = {
+            estudiante: usuarioActivo ? usuarioActivo.nombre : 'Estudiante',
+            nivelId: metricas.nivel.id || 'nivel_custom',
+            nivelTitulo: metricas.nivel.titulo || 'Nivel de Práctica',
+            esOficial: Boolean(metricas.nivel.esOficial),
+            wpm: metricas.wpm,
+            precision: metricas.precision,
+            errores: metricas.errores,
+            tiempoSegundos: metricas.tiempoUsado,
+            tiempoFormateado: tiempoStr,
+            puntos: metricas.puntos,
+            modo: metricas.modo || 'original',
+            fechaEmision: new Date().toLocaleString('es-ES', { 
+                day: '2-digit', month: '2-digit', year: 'numeric', 
+                hour: '2-digit', minute: '2-digit', second: '2-digit' 
+            }),
+            timestamp: Date.now(),
+            emisor: "DenkKraft Tippen Tag v1.0 Academic Engine"
+        };
+
+        certificadoResultadoActual = await empaquetarCertificado(payload);
+    }
+
+    // Configurar botones del modal de resultados para el alumno
+    const btnCopiarCodigoEntrega = document.getElementById('btn-copiar-codigo-entrega');
+    const btnDescargarCertificado = document.getElementById('btn-descargar-certificado');
+    const msgAcademicoCopiado = document.getElementById('msg-academico-copiado');
+
+    if (btnCopiarCodigoEntrega) {
+        btnCopiarCodigoEntrega.addEventListener('click', async () => {
+            if (!certificadoResultadoActual || !certificadoResultadoActual.token) {
+                mostrarAlerta('Aún no se ha generado el código seguro del nivel.', 'Certificado no disponible', 'alerta');
+                return;
+            }
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(certificadoResultadoActual.token);
+                } else {
+                    const tempTa = document.createElement('textarea');
+                    tempTa.value = certificadoResultadoActual.token;
+                    document.body.appendChild(tempTa);
+                    tempTa.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempTa);
+                }
+                if (msgAcademicoCopiado) {
+                    msgAcademicoCopiado.style.display = 'block';
+                    setTimeout(() => {
+                        if (msgAcademicoCopiado) msgAcademicoCopiado.style.display = 'none';
+                    }, 3500);
+                }
+            } catch (err) {
+                mostrarAlerta(certificadoResultadoActual.token, 'Código de Entrega (Copia el texto)', 'info');
+            }
+        });
+    }
+
+    if (btnDescargarCertificado) {
+        btnDescargarCertificado.addEventListener('click', () => {
+            if (!certificadoResultadoActual) {
+                mostrarAlerta('Aún no se ha generado el archivo de certificado.', 'Certificado no disponible', 'alerta');
+                return;
+            }
+            const blob = new Blob([JSON.stringify(certificadoResultadoActual, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const alumnoNombreLimpio = (certificadoResultadoActual.datos.estudiante || 'Alumno').replace(/[^a-zA-Z0-9_-]/g, '_');
+            const nivelLimpio = (certificadoResultadoActual.datos.nivelTitulo || 'Nivel').replace(/[^a-zA-Z0-9_-]/g, '_');
+            a.href = url;
+            a.download = `Certificado_${alumnoNombreLimpio}_${nivelLimpio}.tptcert`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    }
+
+    // Configurar Portal del Docente
+    const modalPortalDocente = document.getElementById('modal-portal-docente');
+    const btnLandingPortalDocente = document.getElementById('btn-landing-portal-docente');
+    const btnMenuPortalDocente = document.getElementById('btn-menu-portal-docente');
+    const btnCerrarDocente = document.getElementById('btn-cerrar-docente');
+    const inputCodigoDocente = document.getElementById('input-codigo-docente');
+    const btnVerificarDocente = document.getElementById('btn-verificar-docente');
+    const btnDemoDocente = document.getElementById('btn-demo-docente');
+    const btnDemoAlterado = document.getElementById('btn-demo-alterado');
+    const dropzoneDocente = document.getElementById('dropzone-docente-cert');
+    const inputArchivoDocenteCert = document.getElementById('input-archivo-docente-cert');
+    const docenteCertNombre = document.getElementById('docente-cert-nombre');
+    const resultadoDocenteBox = document.getElementById('resultado-docente-box');
+    const selectDocenteNivelEsperado = document.getElementById('select-docente-nivel-esperado');
+
+    async function poblarSelectorLeccionesDocente() {
+        if (!selectDocenteNivelEsperado) return;
+        selectDocenteNivelEsperado.innerHTML = '<option value="">-- Detección Automática de Lección --</option>';
+        try {
+            const todosLosNiveles = await window.TPTDatabase.obtenerTodos();
+            todosLosNiveles.forEach(n => {
+                const opt = document.createElement('option');
+                opt.value = n.id;
+                opt.textContent = `${n.esOficial ? '[Oficial DenkKraft] ' : '[Comunidad] '}${n.titulo} (${n.id})`;
+                selectDocenteNivelEsperado.appendChild(opt);
+            });
+        } catch (e) {
+            console.error("Error al poblar selector de lecciones docente:", e);
+        }
+    }
+
+    function abrirPortalDocente() {
+        poblarSelectorLeccionesDocente();
+        if (modalPortalDocente) {
+            modalPortalDocente.classList.remove('vista-oculta');
+            const modalTarjeta = modalPortalDocente.querySelector('.tarjeta-portal-docente');
+            if (modalTarjeta) modalTarjeta.scrollTop = 0;
+            modalPortalDocente.scrollTop = 0;
+        }
+    }
+
+    function cerrarPortalDocente() {
+        if (modalPortalDocente) modalPortalDocente.classList.add('vista-oculta');
+    }
+
+    if (btnLandingPortalDocente) btnLandingPortalDocente.addEventListener('click', abrirPortalDocente);
+    if (btnMenuPortalDocente) btnMenuPortalDocente.addEventListener('click', abrirPortalDocente);
+    if (btnCerrarDocente) btnCerrarDocente.addEventListener('click', cerrarPortalDocente);
+
+    async function ejecutarValidacionDocente() {
+        if (!inputCodigoDocente || !resultadoDocenteBox) return;
+        const texto = inputCodigoDocente.value.trim();
+        if (!texto) {
+            resultadoDocenteBox.style.display = 'block';
+            resultadoDocenteBox.innerHTML = `
+                <div class="docente-reporte-invalido">
+                    <div class="docente-reporte-header">
+                        <span class="docente-status-icono invalido">✕</span>
+                        <div>
+                            <h4 class="docente-reporte-titulo" style="color: var(--rojo-error);">Campo Vacío</h4>
+                            <span class="docente-reporte-sub">Ingresa un código criptográfico o arrastra un archivo de certificado .tptcert</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            requestAnimationFrame(() => {
+                const modalTarjeta = document.querySelector('#modal-portal-docente .tarjeta-portal-docente');
+                if (modalTarjeta && resultadoDocenteBox) {
+                    modalTarjeta.scrollTo({
+                        top: resultadoDocenteBox.offsetTop - 15,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+            return;
+        }
+
+        const validacion = await validarTokenAcademico(texto);
+        resultadoDocenteBox.style.display = 'block';
+
+        if (validacion.valido) {
+            const cert = validacion.datos;
+            const todosLosNiveles = await window.TPTDatabase.obtenerTodos();
+
+            // Análisis de Autenticidad de Nivel y Detección de Suplantación (Spoofing)
+            const nivelPorId = todosLosNiveles.find(n => n.id === cert.nivelId);
+            const esNivelOficialPorId = Boolean(nivelPorId && nivelPorId.esOficial);
+
+            // ¿Existe un nivel oficial que tiene el MISMO título pero ID DIFERENTE?
+            const tituloCertLimpio = (cert.nivelTitulo || '').trim().toLowerCase();
+            const nivelOficialConMismoTitulo = todosLosNiveles.find(n => n.esOficial && n.titulo.trim().toLowerCase() === tituloCertLimpio);
+            const esSuplantacionTitulo = Boolean(nivelOficialConMismoTitulo && nivelOficialConMismoTitulo.id !== cert.nivelId);
+
+            // Comparación con nivel esperado seleccionado en el dropdown
+            const idEsperado = selectDocenteNivelEsperado ? selectDocenteNivelEsperado.value : '';
+            let htmlComparacion = '';
+            if (idEsperado) {
+                const nivelEsperadoObj = todosLosNiveles.find(n => n.id === idEsperado);
+                const nombreEsperado = nivelEsperadoObj ? nivelEsperadoObj.titulo : idEsperado;
+                if (cert.nivelId === idEsperado) {
+                    htmlComparacion = `
+                        <div class="docente-comparacion-box" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.06);">
+                            <span style="color: var(--verde-exito); font-weight: 700;">✓ Coincide con la lección requerida por el docente ("${nombreEsperado}")</span>
+                        </div>
+                    `;
+                } else {
+                    htmlComparacion = `
+                        <div class="docente-comparacion-box" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.06);">
+                            <span style="color: var(--rojo-error); font-weight: 700;">❌ No coincide con la asignación del docente:</span>
+                            <span style="font-size: 12px; color: var(--texto-secundario);">Se solicitó evaluar <strong>"${nombreEsperado}"</strong> (ID: <code>${idEsperado}</code>), pero este certificado pertenece a <strong>"${cert.nivelTitulo}"</strong> (ID: <code>${cert.nivelId}</code>).</span>
+                        </div>
+                    `;
+                }
+            }
+
+            // Alerta de Suplantación de Título
+            let htmlAlertaSuplantacion = '';
+            let badgeTipoNivel = '';
+            if (esSuplantacionTitulo) {
+                badgeTipoNivel = `<span class="badge-suplantacion">⚠️ Alerta: ID no coincide con Nivel Oficial</span>`;
+                htmlAlertaSuplantacion = `
+                    <div class="docente-alerta-suplantacion">
+                        <span class="docente-alerta-suplantacion-titulo">⚠️ ALERTA: POSIBLE SUPLANTACIÓN DE LECCIÓN DETECTADA</span>
+                        <p class="docente-alerta-suplantacion-texto">
+                            El estudiante entregó un examen con el título <strong>"${cert.nivelTitulo}"</strong>, que coincide con la lección oficial de DenkKraft. Sin embargo, el ID certificado digitalmente es <code>${cert.nivelId}</code> en lugar del oficial (<code>${nivelOficialConMismoTitulo.id}</code>).
+                            <br><strong>Motivo probable:</strong> El estudiante creó un nivel personalizado más corto con el mismo nombre para inflar sus resultados de WPM y precisión.
+                        </p>
+                    </div>
+                `;
+            } else if (esNivelOficialPorId) {
+                badgeTipoNivel = `<span class="badge-oficial-verificado">✓ Lección Oficial DenkKraft</span>`;
+            } else {
+                badgeTipoNivel = `<span class="badge-personalizado">ℹ️ Nivel Personalizado / Comunitario</span>`;
+            }
+
+            resultadoDocenteBox.innerHTML = `
+                <div class="docente-reporte-valido">
+                    <div class="docente-reporte-header">
+                        <span class="docente-status-icono valido">✓</span>
+                        <div>
+                            <h4 class="docente-reporte-titulo">Certificado Auténtico y Verificado</h4>
+                            <span class="docente-reporte-sub">Sello criptográfico digital válido • Sin alteraciones en métricas</span>
+                        </div>
+                        <div style="margin-left: auto; text-align: right;">
+                            ${badgeTipoNivel}
+                        </div>
+                    </div>
+
+                    ${htmlComparacion}
+                    ${htmlAlertaSuplantacion}
+
+                    <div class="docente-declaracion-oficial">
+                        El estudiante <strong>${cert.estudiante}</strong> completó el nivel <strong>${cert.nivelTitulo || cert.nivelId}</strong> con <strong>${cert.wpm} WPM</strong> y <strong>${cert.precision}%</strong> de precisión.
+                    </div>
+
+                    <div class="docente-detalles-grid">
+                        <div class="docente-detalle-item">
+                            <span class="docente-detalle-label">Estudiante</span>
+                            <span class="docente-detalle-val">${cert.estudiante}</span>
+                        </div>
+                        <div class="docente-detalle-item">
+                            <span class="docente-detalle-label">Nivel Evaluado</span>
+                            <span class="docente-detalle-val">${cert.nivelTitulo || cert.nivelId}</span>
+                        </div>
+                        <div class="docente-detalle-item">
+                            <span class="docente-detalle-label">ID de Lección en Firma</span>
+                            <span class="docente-detalle-val" style="font-size: 11.5px; color: ${esSuplantacionTitulo ? 'var(--rojo-error)' : 'var(--azul)'}; font-weight: 700;">${cert.nivelId}</span>
+                        </div>
+                        <div class="docente-detalle-item">
+                            <span class="docente-detalle-label">Velocidad Mecanográfica</span>
+                            <span class="docente-detalle-val">${cert.wpm} WPM</span>
+                        </div>
+                        <div class="docente-detalle-item">
+                            <span class="docente-detalle-label">Precisión de Tecleo</span>
+                            <span class="docente-detalle-val">${cert.precision}%</span>
+                        </div>
+                        <div class="docente-detalle-item">
+                            <span class="docente-detalle-label">Errores Registrados</span>
+                            <span class="docente-detalle-val">${cert.errores} fallos</span>
+                        </div>
+                        <div class="docente-detalle-item">
+                            <span class="docente-detalle-label">Tiempo Total</span>
+                            <span class="docente-detalle-val">${cert.tiempoFormateado || (cert.tiempoSegundos + 's')}</span>
+                        </div>
+                        <div class="docente-detalle-item">
+                            <span class="docente-detalle-label">Modo Jugado</span>
+                            <span class="docente-detalle-val">${cert.modo}</span>
+                        </div>
+                        <div class="docente-detalle-item" style="grid-column: 1 / -1;">
+                            <span class="docente-detalle-label">Fecha y Hora de Emisión</span>
+                            <span class="docente-detalle-val">${cert.fechaEmision}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            resultadoDocenteBox.innerHTML = `
+                <div class="docente-reporte-invalido">
+                    <div class="docente-reporte-header">
+                        <span class="docente-status-icono invalido">⚠️</span>
+                        <div>
+                            <h4 class="docente-reporte-titulo" style="color: var(--rojo-error);">¡Alerta: Certificado Inválido o Alterado!</h4>
+                            <span class="docente-reporte-sub">La firma criptográfica no coincide. Los datos fueron modificados manualmente o el formato es incorrecto.</span>
+                        </div>
+                    </div>
+                    <p class="docente-error-mensaje">${validacion.error}</p>
+                </div>
+            `;
+        }
+
+        // Desplazamiento automático suave hacia los resultados para garantizar visualización inmediata
+        requestAnimationFrame(() => {
+            const modalTarjeta = document.querySelector('#modal-portal-docente .tarjeta-portal-docente');
+            if (modalTarjeta && resultadoDocenteBox) {
+                modalTarjeta.scrollTo({
+                    top: resultadoDocenteBox.offsetTop - 15,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    }
+
+    if (btnVerificarDocente) {
+        btnVerificarDocente.addEventListener('click', ejecutarValidacionDocente);
+    }
+
+    // Botón Demo Válido
+    if (btnDemoDocente) {
+        btnDemoDocente.addEventListener('click', async () => {
+            const demoPayload = {
+                estudiante: "Carlos Méndez",
+                nivelId: "lvl_oficial_1",
+                nivelTitulo: "Lección de Inicio",
+                esOficial: true,
+                wpm: 58,
+                precision: 96,
+                errores: 3,
+                tiempoSegundos: 38,
+                tiempoFormateado: "0:38",
+                puntos: 120,
+                modo: "original",
+                fechaEmision: new Date().toLocaleString('es-ES'),
+                timestamp: Date.now(),
+                emisor: "DenkKraft Tippen Tag v1.0 Academic Engine"
+            };
+            const cert = await empaquetarCertificado(demoPayload);
+            if (inputCodigoDocente) inputCodigoDocente.value = cert.token;
+            if (docenteCertNombre) docenteCertNombre.style.display = 'none';
+            ejecutarValidacionDocente();
+        });
+    }
+
+    // Botón Demo Alterado / Trampa (Demuestra detección de ID suplantado y trampa de WPM)
+    if (btnDemoAlterado) {
+        btnDemoAlterado.addEventListener('click', async () => {
+            // Simulamos un estudiante que creó un nivel personalizado titulado "Lección de Inicio" con ID falso
+            const demoPayload = {
+                estudiante: "Alumno Astuto",
+                nivelId: "lvl_custom_trampa_99",
+                nivelTitulo: "Lección de Inicio", // Suplanta el nombre oficial
+                esOficial: false,
+                wpm: 145,
+                precision: 100,
+                errores: 0,
+                tiempoSegundos: 12,
+                tiempoFormateado: "0:12",
+                puntos: 200,
+                modo: "original",
+                fechaEmision: new Date().toLocaleString('es-ES'),
+                timestamp: Date.now(),
+                emisor: "DenkKraft Tippen Tag v1.0 Academic Engine"
+            };
+            const cert = await empaquetarCertificado(demoPayload);
+            if (inputCodigoDocente) inputCodigoDocente.value = cert.token;
+            if (docenteCertNombre) docenteCertNombre.style.display = 'none';
+            ejecutarValidacionDocente();
+        });
+    }
+
+    // Dropzone para arrastrar archivos .tptcert o .json en el portal del docente
+    if (dropzoneDocente && inputArchivoDocenteCert) {
+        dropzoneDocente.addEventListener('click', () => inputArchivoDocenteCert.click());
+
+        inputArchivoDocenteCert.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) procesarArchivoCertificadoDocente(file);
+        });
+
+        dropzoneDocente.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzoneDocente.classList.add('dragover');
+        });
+
+        dropzoneDocente.addEventListener('dragleave', () => {
+            dropzoneDocente.classList.remove('dragover');
+        });
+
+        dropzoneDocente.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzoneDocente.classList.remove('dragover');
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                procesarArchivoCertificadoDocente(e.dataTransfer.files[0]);
+            }
+        });
+
+        function procesarArchivoCertificadoDocente(file) {
+            if (docenteCertNombre) {
+                docenteCertNombre.textContent = `Archivo cargado: ${file.name}`;
+                docenteCertNombre.style.display = 'block';
+            }
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                if (inputCodigoDocente) {
+                    inputCodigoDocente.value = event.target.result;
+                    ejecutarValidacionDocente();
+                }
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    // Acciones adicionales del Portal del Docente (Limpiar formulario, Cerrar desde pie y Clic en fondo)
+    const btnLimpiarDocente = document.getElementById('btn-limpiar-docente');
+    if (btnLimpiarDocente) {
+        btnLimpiarDocente.addEventListener('click', () => {
+            if (inputCodigoDocente) inputCodigoDocente.value = '';
+            if (docenteCertNombre) {
+                docenteCertNombre.textContent = '';
+                docenteCertNombre.style.display = 'none';
+            }
+            if (resultadoDocenteBox) {
+                resultadoDocenteBox.innerHTML = '';
+                resultadoDocenteBox.style.display = 'none';
+            }
+            const modalTarjeta = document.querySelector('#modal-portal-docente .tarjeta-portal-docente');
+            if (modalTarjeta) modalTarjeta.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    const btnCerrarDocentePie = document.getElementById('btn-cerrar-docente-pie');
+    if (btnCerrarDocentePie) {
+        btnCerrarDocentePie.addEventListener('click', cerrarPortalDocente);
+    }
+
+    if (modalPortalDocente) {
+        modalPortalDocente.addEventListener('click', (e) => {
+            if (e.target === modalPortalDocente) cerrarPortalDocente();
+        });
+    }
+
+    // ==========================================================================
+    // GESTOR DE REGLAS DE TIERS / EDICIONES COMERCIALES
+    // ==========================================================================
+    function aplicarReglasDeTier() {
+        const tierActual = window.TPTTiers ? window.TPTTiers.obtenerTierActual() : 3;
+        const selectTierJuego = document.getElementById('select-tier-juego');
+        if (selectTierJuego) selectTierJuego.value = tierActual.toString();
+
+        const btnLandingDocente = document.getElementById('btn-landing-portal-docente');
+        const btnMenuDocente = document.getElementById('btn-menu-portal-docente');
+        const btnIrCreador = document.getElementById('btn-ir-creador');
+
+        // Permisos de Portal Docente (Tier 3)
+        const tieneDocente = window.TPTTiers ? window.TPTTiers.tieneAccesoDocente() : true;
+        if (btnLandingDocente) btnLandingDocente.style.display = tieneDocente ? 'inline-flex' : 'none';
+        if (btnMenuDocente) btnMenuDocente.style.display = tieneDocente ? 'inline-flex' : 'none';
+
+        // Permisos de Creador (Tier 2)
+        const tieneCreador = window.TPTTiers ? window.TPTTiers.tieneAccesoCreador() : true;
+        if (btnIrCreador) {
+            if (!tieneCreador) {
+                btnIrCreador.title = "Disponible en Edición Creador (Tier 2)";
+                btnIrCreador.style.opacity = "0.6";
+            } else {
+                btnIrCreador.title = "Crear un nuevo nivel";
+                btnIrCreador.style.opacity = "1";
+            }
+        }
+
+        // Recargar niveles en el menú si la vista está abierta o para actualizar el catálogo
+        cargarTarjetasDeNiveles();
+    }
+
     // Exposición de métodos para el motor y contexto global
     window.TPTui = { 
         cambiarVista: cambiarVista,
         sumarPuntos: sumarPuntos,
-        mostrarNarrativa: mostrarNarrativa
+        mostrarNarrativa: mostrarNarrativa,
+        prepararCertificadoResultado: prepararCertificadoResultado,
+        mostrarAlerta: mostrarAlerta,
+        mostrarConfirmacion: mostrarConfirmacion,
+        aplicarReglasDeTier: aplicarReglasDeTier
     };
 
     window.TPTDatabase.abrir().then(() => {
@@ -1777,6 +2520,7 @@ document.addEventListener('DOMContentLoaded', () => {
         configurarPaginacionNiveles();
         configurarModalAjustes();
         cargarPerfiles();
+        aplicarReglasDeTier();
         if (configApp.musicaMenuActiva) {
             reproducirMusicaMenu();
         }

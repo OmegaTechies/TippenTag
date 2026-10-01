@@ -4,6 +4,19 @@
    ========================================================================== */
 
 /* --- LAYOUT 1: LANDING & PERFILES --- */
+.landing-topbar {
+    width: 90%;
+    max-width: 960px;
+    margin: 16px auto 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 10;
+}
+
 .landing-contenedor {
     display: flex;
     flex-direction: column;
@@ -13,8 +26,8 @@
     width: 90%;
     max-width: 960px;
     margin: 0 auto;
-    padding: 30px 20px;
-    min-height: 100vh;
+    padding: 16px 20px 30px 20px;
+    min-height: calc(100vh - 60px);
 }
 
 .landing-marca {
@@ -428,6 +441,156 @@
     margin-top: 6px;
 }
 
+/* Modales Compartidos: Cabecera y Pie */
+.modal-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--panel-borde);
+    padding-bottom: 12px;
+    gap: 12px;
+}
+
+.modal-pie {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--panel-borde);
+}
+
+/* Modal Portal Docente y Validador */
+.tarjeta-portal-docente {
+    background: var(--panel);
+    padding: 24px 28px;
+    border-radius: var(--radio-lg);
+    border: 1px solid var(--panel-borde);
+    box-shadow: var(--sombra-lg);
+    width: 92%;
+    max-width: 740px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-sizing: border-box;
+    max-height: 88vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-behavior: smooth;
+    flex-shrink: 0;
+}
+
+.tarjeta-portal-docente::-webkit-scrollbar {
+    width: 7px;
+}
+
+.tarjeta-portal-docente::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: var(--radio-pill);
+}
+
+.tarjeta-portal-docente::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.4);
+    border-radius: var(--radio-pill);
+}
+
+.tarjeta-portal-docente::-webkit-scrollbar-thumb:hover {
+    background: var(--morado);
+}
+
+.portal-docente-comparador-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+    margin-bottom: 8px;
+}
+
+.select-docente,
+.select-tier {
+    width: 100%;
+}
+
+.portal-docente-input-bloque {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+}
+
+/* Modal de Diálogo Nativo (Reemplazo de alert y confirm) */
+.tarjeta-dialogo {
+    background: var(--panel);
+    padding: 24px 28px;
+    border-radius: var(--radio-lg);
+    border: 1px solid var(--panel-borde);
+    box-shadow: var(--sombra-lg);
+    width: 90%;
+    max-width: 440px;
+    margin: auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+}
+
+.dialogo-acciones {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.portal-docente-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.docente-detalles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Sección de Acción de la Tienda (debajo del preview) */
+.tienda-preview-accion-zona {
+    width: 100%;
+    margin: 8px 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* Apartado Académico en el Modal de Resultados */
+.resultado-seccion-academica {
+    background: var(--fondo);
+    border: 1px solid var(--panel-borde);
+    border-radius: var(--radio-md);
+    padding: 14px 16px;
+    margin: 14px 0 16px 0;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.resultado-academico-botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+}
+
 /* --- LAYOUT 6: CINEMÁTICA Y NARRATIVA --- */
 .tarjeta-narrativa {
     width: 92%;
@@ -534,6 +697,12 @@
     .modos-iconos-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    .landing-topbar {
+        justify-content: center;
+    }
+    .docente-detalles-grid {
+        grid-template-columns: 1fr;
+    }
     /* Tienda Estilo Deltarune en pantallas medianas y móviles */
     .tienda-modal {
         width: 95vw;
@@ -564,6 +733,20 @@
     }
 }
 
+@media (max-width: 560px) {
+    .docente-detalles-grid {
+        grid-template-columns: 1fr;
+    }
+    .portal-docente-acciones {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .portal-docente-acciones .btn-primario {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+}
+
 @media (max-width: 480px) {
     .landing-contenedor {
         padding: 20px 12px;
@@ -572,7 +755,7 @@
         width: 95px;
         height: 95px;
     }
-    .tarjeta-prejuego, .tarjeta-guia-atajos, .tarjeta-ajustes {
+    .tarjeta-prejuego, .tarjeta-guia-atajos, .tarjeta-ajustes, .tarjeta-portal-docente, .tarjeta-dialogo {
         padding: 20px 16px;
     }
     .juego-area-texto {

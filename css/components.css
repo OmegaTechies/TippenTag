@@ -932,18 +932,19 @@ button {
     }
 }
 
-/* 1. SECCIÓN SUPERIOR (~48% ALTURA): BANNER TIENDA / TENDERO */
+/* 1. SECCIÓN SUPERIOR (~36% ALTURA): BANNER TIENDA / TENDERO */
 .tienda-banner {
     position: relative;
-    height: 46%;
-    min-height: 220px;
+    height: 36%;
+    max-height: 220px;
+    min-height: 160px;
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(30, 27, 75, 0.9)), url('../assets/img/SHOPBG.png') center/cover no-repeat;
     background-color: #0b0f19;
     border-bottom: 2px solid var(--panel-borde);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 24px 28px;
+    padding: 20px 28px;
     box-sizing: border-box;
     overflow: hidden;
 }
@@ -1721,14 +1722,16 @@ button {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(11, 17, 32, 0.7);
+    background: rgba(11, 17, 32, 0.75);
     backdrop-filter: blur(6px);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     z-index: 2000;
-    padding: 16px;
+    padding: 24px 16px;
     box-sizing: border-box;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .tarjeta-resultado {
@@ -1878,4 +1881,479 @@ button {
     50% { transform: translateX(8px) rotate(4deg); }
     75% { transform: translateX(-8px) rotate(-4deg); }
     100% { transform: translateX(0); }
+}
+
+/* ==========================================================================
+   13. TOPBAR LANDING, PORTAL DOCENTE Y CERTIFICADOS ACADÉMICOS
+   ========================================================================== */
+.btn-quick-audio {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: var(--radio-pill);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-portal-docente {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 7px 14px;
+    border-radius: var(--radio-pill);
+    border: 1.5px solid var(--morado);
+    color: var(--morado);
+    background: var(--morado-suave);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-portal-docente svg {
+    stroke: currentColor;
+}
+
+.btn-portal-docente:hover {
+    border-color: var(--morado);
+    background: var(--morado);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+}
+
+.btn-portal-docente:hover svg {
+    stroke: #ffffff;
+}
+
+/* Botones en la barra superior de Landing (fondo de degradado) */
+.landing-topbar .btn-secundario {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.landing-topbar .btn-secundario svg {
+    stroke: #ffffff;
+    transition: stroke 0.2s ease;
+}
+
+.landing-topbar .btn-secundario:hover {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.landing-topbar .btn-secundario:hover svg {
+    stroke: #1d4ed8;
+}
+
+.landing-topbar .btn-portal-docente {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    color: #ffffff;
+}
+
+.landing-topbar .btn-portal-docente svg {
+    stroke: #ffffff;
+}
+
+.landing-topbar .btn-portal-docente:hover {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #7c3aed;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+.landing-topbar .btn-portal-docente:hover svg {
+    stroke: #7c3aed;
+}
+
+.landing-topbar .btn-quick-audio.activo {
+    background: rgba(16, 185, 129, 0.35);
+    border-color: rgba(16, 185, 129, 0.8);
+    color: #ffffff;
+}
+
+.landing-topbar .btn-quick-audio.activo:hover {
+    background: #ffffff;
+    color: #059669;
+    border-color: #ffffff;
+}
+
+.landing-topbar .btn-quick-audio.activo:hover svg {
+    stroke: #059669;
+}
+
+.modal-titulo {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--titulo-color);
+    line-height: 1.25;
+}
+
+.btn-cerrar-modal {
+    background: var(--fondo);
+    border: 1px solid var(--panel-borde);
+    color: var(--texto-secundario);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1;
+}
+
+.btn-cerrar-modal:hover {
+    background: var(--rojo-error);
+    color: #ffffff;
+    border-color: var(--rojo-error);
+    transform: rotate(90deg);
+}
+
+/* Certificación Académica en Modal de Victoria */
+.resultado-academico-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--titulo-color);
+}
+
+.resultado-academico-header svg {
+    stroke: var(--azul-brillo);
+}
+
+.resultado-academico-desc {
+    font-size: 12px;
+    color: var(--texto-secundario);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.btn-academico {
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: var(--radio-md);
+    cursor: pointer;
+}
+
+.mensaje-exito-copia {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--verde-exito);
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 6px 10px;
+    border-radius: var(--radio-sm);
+    text-align: center;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Elementos del Portal del Docente */
+.portal-docente-titulo-grupo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    text-align: left;
+}
+
+.portal-docente-instruccion {
+    font-size: 12.5px;
+    color: var(--texto-secundario);
+    line-height: 1.45;
+    margin: 0;
+    text-align: left;
+}
+
+.textarea-docente {
+    height: 60px;
+    min-height: 50px;
+    font-family: var(--fuente-mecanografia);
+    font-size: 12px;
+    resize: vertical;
+    border-radius: var(--radio-md);
+    padding: 8px 12px;
+    box-sizing: border-box;
+    width: 100%;
+    word-break: break-all;
+}
+
+.dropzone-docente {
+    padding: 8px 12px;
+    gap: 8px;
+    min-height: 48px;
+}
+
+.resultado-docente-box {
+    margin-top: 12px;
+    margin-bottom: 6px;
+    border-radius: var(--radio-md);
+    animation: fadeIn 0.25s ease-out;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Reporte Válido */
+.docente-reporte-valido {
+    background: rgba(16, 185, 129, 0.08);
+    border: 1.5px solid rgba(16, 185, 129, 0.45);
+    border-radius: var(--radio-md);
+    padding: 16px 20px;
+    text-align: left;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Reporte Inválido / Trampa detectada */
+.docente-reporte-invalido {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1.5px solid rgba(239, 68, 68, 0.5);
+    border-radius: var(--radio-md);
+    padding: 16px 20px;
+    text-align: left;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.docente-reporte-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+}
+
+.docente-status-icono {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.docente-status-icono.valido {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--verde-exito);
+    border: 1px solid var(--verde-exito);
+}
+
+.docente-status-icono.invalido {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--rojo-error);
+    border: 1px solid var(--rojo-error);
+}
+
+.docente-reporte-titulo {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--titulo-color);
+}
+
+.docente-reporte-sub {
+    font-size: 12px;
+    color: var(--texto-secundario);
+}
+
+.docente-declaracion-oficial {
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--texto);
+    background: var(--panel);
+    border-left: 4px solid var(--verde-exito);
+    padding: 10px 14px;
+    border-radius: var(--radio-sm);
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.docente-declaracion-oficial strong {
+    color: var(--azul-brillo);
+    font-weight: 700;
+}
+
+.docente-detalle-item {
+    background: var(--panel);
+    border: 1px solid var(--panel-borde);
+    border-radius: var(--radio-sm);
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.docente-detalle-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--texto-secundario);
+}
+
+.docente-detalle-val {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--texto);
+    font-family: var(--fuente-mecanografia);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.docente-error-mensaje {
+    font-size: 13px;
+    color: var(--rojo-error);
+    margin: 6px 0 0 0;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   14. MODAL DE DIÁLOGO NATIVO DEL JUEGO (REEMPLAZO DE ALERT / CONFIRM)
+   ========================================================================== */
+.dialogo-icono-circulo {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: var(--azul-suave);
+    border: 2px solid var(--azul);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+.dialogo-icono-circulo.exito {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: var(--verde-exito);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.dialogo-icono-circulo.alerta {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: var(--amarillo-btn);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+.dialogo-icono-circulo.peligro {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: var(--rojo-error);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.dialogo-titulo {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--titulo-color);
+    margin: 0;
+}
+
+.dialogo-mensaje {
+    font-size: 13.5px;
+    color: var(--texto-secundario);
+    line-height: 1.5;
+    margin: 0;
+    word-break: break-word;
+}
+
+/* ==========================================================================
+   15. COMPARADOR DE NIVELES Y DETECCIÓN DE SUPLANTACIÓN (PORTAL DOCENTE)
+   ========================================================================== */
+.docente-alerta-suplantacion {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1.5px solid var(--rojo-error);
+    border-radius: var(--radio-md);
+    padding: 12px 16px;
+    margin: 10px 0;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.docente-alerta-suplantacion-titulo {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--rojo-error);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.docente-alerta-suplantacion-texto {
+    font-size: 12.5px;
+    color: var(--texto);
+    margin: 0;
+    line-height: 1.45;
+}
+
+.docente-comparacion-box {
+    background: var(--fondo);
+    border: 1px dashed var(--panel-borde);
+    border-radius: var(--radio-sm);
+    padding: 10px 12px;
+    margin: 8px 0 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12.5px;
+}
+
+.badge-suplantacion {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--rojo-error);
+    border: 1px solid var(--rojo-error);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--radio-pill);
+    display: inline-block;
+}
+
+.badge-oficial-verificado {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--verde-exito);
+    border: 1px solid var(--verde-exito);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--radio-pill);
+    display: inline-block;
+}
+
+.badge-personalizado {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--amarillo-hover);
+    border: 1px solid var(--amarillo-btn);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--radio-pill);
+    display: inline-block;
 }

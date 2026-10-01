@@ -463,6 +463,19 @@ document.addEventListener('DOMContentLoaded', () => {
             resultadoErrores.textContent = `${erroresCometidos}`;
             resultadoPuntos.textContent = `+${puntosGlobales} pts`;
 
+            if (window.TPTui && window.TPTui.prepararCertificadoResultado) {
+                window.TPTui.prepararCertificadoResultado({
+                    completado: completado,
+                    nivel: nivelActivo,
+                    wpm: wpm,
+                    precision: precision,
+                    errores: erroresCometidos,
+                    tiempoUsado: tiempoUsado,
+                    puntos: puntosGlobales,
+                    modo: modoPartida
+                });
+            }
+
             btnReintentarNivel.onclick = () => {
                 modalResultado.classList.add('vista-oculta');
                 iniciarNivel(nivelActivo);

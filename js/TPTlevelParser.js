@@ -30,6 +30,17 @@ window.TPTlevelParser = {
 
     // --- EXPORTAR NIVEL (Descargar .json) ---
     exportar: async function(nivel) {
+        if (window.TPTTiers && !window.TPTTiers.tieneAccesoCreador()) {
+            if (window.TPTui && window.TPTui.mostrarAlerta) {
+                window.TPTui.mostrarAlerta(
+                    "La exportación de niveles forma parte de la Edición Creador (Tier 2). En la versión base solo están disponibles los niveles oficiales DENKKRAFT.",
+                    "Función de Edición Creador",
+                    "alerta"
+                );
+            }
+            return;
+        }
+
         // 1. Transformamos todos los posibles archivos multimedia a texto
         const audioB64 = await this.blobToBase64(nivel.archivoAudio);
         const imgInicioB64 = await this.blobToBase64(nivel.imgInicio);
@@ -56,6 +67,17 @@ window.TPTlevelParser = {
 
     // --- IMPORTAR NIVEL (Subir .json) ---
     importar: function(archivo, callbackExito) {
+        if (window.TPTTiers && !window.TPTTiers.tieneAccesoCreador()) {
+            if (window.TPTui && window.TPTui.mostrarAlerta) {
+                window.TPTui.mostrarAlerta(
+                    "La importación de niveles comunitarios forma parte de la Edición Creador (Tier 2). En el juego base solo están disponibles los niveles oficiales DENKKRAFT.",
+                    "Función de Edición Creador",
+                    "alerta"
+                );
+            }
+            return;
+        }
+
         const reader = new FileReader();
         
         reader.onload = async (event) => {
@@ -74,13 +96,17 @@ window.TPTlevelParser = {
 
                 // 4. Guardamos en la base de datos
                 await window.TPTDatabase.guardarNivel(nivelImportado);
-                alert(`¡Nivel "${nivelImportado.titulo}" importado con éxito!`);
+                if (window.TPTui && window.TPTui.mostrarAlerta) {
+                    window.TPTui.mostrarAlerta(`¡Nivel "${nivelImportado.titulo}" importado con éxito!`, "Nivel Importado", "exito");
+                }
                 
                 if (callbackExito) callbackExito();
 
             } catch (error) {
                 console.error("Error al importar nivel:", error);
-                alert("El archivo está corrupto o no es un nivel válido de Tippen Tag.");
+                if (window.TPTui && window.TPTui.mostrarAlerta) {
+                    window.TPTui.mostrarAlerta("El archivo está corrupto o no es un formato válido de Tippen Tag.", "Error de Importación", "peligro");
+                }
             }
         };
         reader.readAsText(archivo);
