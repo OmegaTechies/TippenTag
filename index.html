@@ -19,17 +19,20 @@
     <section id="vista-landing" class="vista-activa">
         <!-- Barra de Controles Rápidos de Inicio: Música, Ajustes y Portal Docente -->
         <div class="landing-topbar">
+            <button type="button" id="btn-landing-lang" class="btn-secundario btn-quick-lang" title="Sprache wechseln / Cambiar idioma">
+                🇩🇪 DE
+            </button>
             <button type="button" id="btn-landing-bgm" class="btn-secundario btn-quick-audio" title="Música del Juego: Alternar sonido">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
                 <span id="txt-landing-bgm">Música: ON</span>
             </button>
             <button type="button" id="btn-landing-ajustes" class="btn-secundario" title="Configurar sonido, música y guía">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                Ajustes
+                <span data-i18n="topbar.ajustes">Ajustes</span>
             </button>
             <button type="button" id="btn-landing-portal-docente" class="btn-secundario btn-portal-docente" title="Portal para validar certificados de estudiantes">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-                Portal Docente
+                <span data-i18n="topbar.portal_docente">Portal Docente</span>
             </button>
         </div>
 
@@ -42,21 +45,21 @@
             <h1 class="landing-titulo">Tippen Tag</h1>
             <!-- Banner de Consejos Rotativos de Mecanografía -->
             <div class="landing-consejo-caja" id="caja-consejo-landing">
-                <span class="consejo-etiqueta">Guía de Mecanografía</span>
+                <span class="consejo-etiqueta" data-i18n="landing.guia_mecanografia">Guía de Mecanografía</span>
                 <p class="landing-consejo-texto" id="landing-consejo-texto">Cargando consejos...</p>
                 <div class="consejo-indicadores" id="consejo-indicadores"></div>
             </div>
             
             <div class="landing-seccion-perfiles">
-                <h3 class="landing-perfiles-header">Selecciona tu Jugador</h3>
+                <h3 class="landing-perfiles-header" data-i18n="landing.selecciona_jugador">Selecciona tu Jugador</h3>
                 <div id="grid-perfiles" class="grid-perfiles">
                     <!-- Los perfiles se generan dinámicamente con JS -->
                 </div>
                 <!-- Paginación de Perfiles -->
                 <div class="paginacion-contenedor" id="paginacion-perfiles" style="display: none;">
-                    <button type="button" id="btn-perfiles-prev" class="btn-pag btn-secundario">Anterior</button>
+                    <button type="button" id="btn-perfiles-prev" class="btn-pag btn-secundario" data-i18n="comun.anterior">Anterior</button>
                     <span id="indicador-pag-perfiles" class="paginacion-indicador">Página 1 de 1</span>
-                    <button type="button" id="btn-perfiles-next" class="btn-pag btn-secundario">Siguiente</button>
+                    <button type="button" id="btn-perfiles-next" class="btn-pag btn-secundario" data-i18n="comun.siguiente">Siguiente</button>
                 </div>
             </div>
         </div>
@@ -68,30 +71,30 @@
     <section id="vista-crear-usuario" class="vista-oculta">
         <div class="tarjeta-prejuego">
             <div class="prejuego-cabecera-tarjeta">
-                <span class="prejuego-chip">Nuevo Jugador</span>
-                <h2>Crear Perfil</h2>
+                <span class="prejuego-chip" data-i18n="usuario.chip">Nuevo Jugador</span>
+                <h2 data-i18n="usuario.titulo">Crear Perfil</h2>
             </div>
             <form id="form-crear-usuario">
                 <div class="grupo-input">
-                    <label for="nombre-usuario-input">Nombre o Apodo:</label>
-                    <input type="text" id="nombre-usuario-input" class="input-estandar" placeholder="Ej: Alex" required autocomplete="off">
+                    <label for="nombre-usuario-input" data-i18n="usuario.nombre_label">Nombre o Apodo:</label>
+                    <input type="text" id="nombre-usuario-input" class="input-estandar" placeholder="Ej: Alex" data-i18n-placeholder="usuario.nombre_ph" required autocomplete="off">
                 </div>
                 
                 <div class="grupo-input">
-                    <label>Foto de Perfil (Opcional):</label>
+                    <label data-i18n="usuario.avatar_label">Foto de Perfil (Opcional):</label>
                     <div class="dropzone" id="dropzone-avatar">
                         <span class="dropzone-icono">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                         </span>
-                        <span class="dropzone-texto">Arrastra una imagen aquí o <u>haz clic para elegir</u></span>
+                        <span class="dropzone-texto" data-i18n="usuario.avatar_drop">Arrastra una imagen aquí o <u>haz clic para elegir</u></span>
                         <span id="avatar-nombre-archivo" class="dropzone-archivo-nombre" style="display: none;"></span>
                         <input type="file" id="avatar-usuario-input" class="input-archivo-oculto" accept="image/*">
                     </div>
                 </div>
 
                 <div class="grupo-acciones">
-                    <button type="button" id="btn-cancelar-usuario" class="btn-secundario">Cancelar</button>
-                    <button type="submit" class="btn-primario">Crear Perfil</button>
+                    <button type="button" id="btn-cancelar-usuario" class="btn-secundario" data-i18n="usuario.btn_cancelar">Cancelar</button>
+                    <button type="submit" class="btn-primario" data-i18n="usuario.btn_crear">Crear Perfil</button>
                 </div>
             </form>
         </div>
@@ -103,7 +106,7 @@
     <section id="vista-menu" class="vista-oculta">
         <header class="menu-cabecera">
             <div class="menu-usuario-info">
-                <div id="menu-avatar-display" class="perfil-circulo" style="width: 44px; height: 44px; font-size: 18px; border-width: 2px;"></div>
+                <div id="menu-avatar-display" class="perfil-circulo" style="width: 44px; height: 44px; font-size: calc(18px * var(--escala-texto, 1)); border-width: 2px;"></div>
                 <div>
                     <strong id="menu-nombre-usuario">Jugador</strong>
                     <div><span id="menu-puntos-usuario" class="badge badge-oficial">0 pts</span></div>
@@ -111,21 +114,24 @@
             </div>
             
             <div class="menu-controles">
+                <button type="button" id="btn-menu-lang" class="btn-secundario btn-quick-lang" title="Sprache wechseln / Cambiar idioma">
+                    🇩🇪 DE
+                </button>
                 <button type="button" id="btn-quick-bgm" class="btn-secundario" title="Música del Menú: Alternar sonido">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
                     <span id="txt-quick-bgm">Música: ON</span>
                 </button>
                 <button type="button" id="btn-abrir-ajustes" class="btn-secundario" title="Configurar sonido, música y guía">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                    Ajustes
+                    <span data-i18n="topbar.ajustes">Ajustes</span>
                 </button>
-                <button type="button" id="btn-abrir-guia" class="btn-secundario">Atajos y Guías</button>
-                <button type="button" id="btn-abrir-tienda" class="btn-tienda">Tienda</button>
+                <button type="button" id="btn-abrir-guia" class="btn-secundario" data-i18n="topbar.atajos">Atajos y Guías</button>
+                <button type="button" id="btn-abrir-tienda" class="btn-tienda" data-i18n="topbar.tienda">Tienda</button>
                 <button type="button" id="btn-menu-portal-docente" class="btn-secundario btn-portal-docente" title="Portal para validar certificados de estudiantes">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-                    Portal Docente
+                    <span data-i18n="topbar.portal_docente">Portal Docente</span>
                 </button>
-                <button type="button" id="btn-volver-landing" class="btn-secundario">Cambiar Jugador</button>
+                <button type="button" id="btn-volver-landing" class="btn-secundario" data-i18n="topbar.cambiar_jugador">Cambiar Jugador</button>
             </div>
         </header>
 
@@ -136,23 +142,23 @@
                     <span class="buscador-icono">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </span>
-                    <input type="text" id="input-buscar-nivel" class="buscador-input" placeholder="Buscar por título o contenido..." autocomplete="off">
+                    <input type="text" id="input-buscar-nivel" class="buscador-input" placeholder="Buscar por título o contenido..." data-i18n-placeholder="menu.buscar_ph" autocomplete="off">
                     <button type="button" id="btn-limpiar-busqueda" class="btn-limpiar-busqueda" title="Borrar búsqueda" style="display: none;">✕</button>
                 </div>
 
                 <!-- Barra de Segmentación y Filtros por Dificultad -->
                 <div class="filtro-dificultad-barra" id="filtro-dificultad-barra">
-                    <span class="filtro-etiqueta-label">Filtrar:</span>
+                    <span class="filtro-etiqueta-label" data-i18n="menu.filtrar_label">Filtrar:</span>
                     <div class="filtro-chips-grupo" id="filtro-chips-grupo">
-                        <button type="button" class="btn-filtro-reset activo" id="btn-filtro-todos" title="Mostrar todas las dificultades">Todas</button>
+                        <button type="button" class="btn-filtro-reset activo" id="btn-filtro-todos" title="Mostrar todas las dificultades" data-i18n="menu.filtro_todas">Todas</button>
                         <button type="button" class="chip-filtro chip-facil" data-dificultad="facil">
-                            <span class="punto-dificultad punto-facil"></span> Fácil
+                            <span class="punto-dificultad punto-facil"></span> <span data-i18n="menu.filtro_facil">Fácil</span>
                         </button>
                         <button type="button" class="chip-filtro chip-normal" data-dificultad="normal">
-                            <span class="punto-dificultad punto-normal"></span> Normal
+                            <span class="punto-dificultad punto-normal"></span> <span data-i18n="menu.filtro_normal">Normal</span>
                         </button>
                         <button type="button" class="chip-filtro chip-dificil" data-dificultad="dificil">
-                            <span class="punto-dificultad punto-dificil"></span> Difícil
+                            <span class="punto-dificultad punto-dificil"></span> <span data-i18n="menu.filtro_dificil">Difícil</span>
                         </button>
                     </div>
                 </div>
@@ -164,13 +170,13 @@
 
             <!-- Paginación Extendida de Niveles -->
             <div class="paginacion-contenedor" id="paginacion-niveles" style="display: none;">
-                <button type="button" id="btn-niveles-first" class="btn-pag btn-secundario" title="Primera página">«</button>
-                <button type="button" id="btn-niveles-prev" class="btn-pag btn-secundario" title="Página anterior">‹ Ant</button>
+                <button type="button" id="btn-niveles-first" class="btn-pag btn-secundario" title="Primera página" data-i18n-title="comun.primera_title">«</button>
+                <button type="button" id="btn-niveles-prev" class="btn-pag btn-secundario" title="Página anterior" data-i18n-title="comun.anterior_title"><span data-i18n="comun.ant_corto">‹ Ant</span></button>
                 <div class="paginacion-numeros" id="paginacion-niveles-numeros">
                     <!-- Botones numéricos de páginas generados dinámicamente -->
                 </div>
-                <button type="button" id="btn-niveles-next" class="btn-pag btn-secundario" title="Página siguiente">Sig ›</button>
-                <button type="button" id="btn-niveles-last" class="btn-pag btn-secundario" title="Última página">»</button>
+                <button type="button" id="btn-niveles-next" class="btn-pag btn-secundario" title="Página siguiente" data-i18n-title="comun.siguiente_title"><span data-i18n="comun.sig_corto">Sig ›</span></button>
+                <button type="button" id="btn-niveles-last" class="btn-pag btn-secundario" title="Última página" data-i18n-title="comun.ultima_title">»</button>
                 <span id="indicador-pag-niveles" class="paginacion-indicador">Página 1 de 1</span>
             </div>
         </main>
@@ -181,12 +187,12 @@
                 <span class="dropzone-icono">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 </span>
-                <span class="dropzone-texto">Arrastra un archivo <strong>.json</strong> de nivel aquí o <u>haz clic para importar</u></span>
+                <span class="dropzone-texto" data-i18n="menu.importar_drop">Arrastra un archivo <strong>.json</strong> de nivel aquí o <u>haz clic para importar</u></span>
                 <input type="file" id="input-archivo-importar" class="input-archivo-oculto" accept=".json">
             </div>
 
             <div class="menu-acciones-botones">
-                <button id="btn-ir-creador" class="btn-crear">+ Crear Nuevo Nivel</button>
+                <button id="btn-ir-creador" class="btn-crear" data-i18n="topbar.crear_nivel">+ Crear Nuevo Nivel</button>
             </div>
         </footer>
     </section>
@@ -197,7 +203,7 @@
     <section id="vista-prejuego" class="vista-oculta">
         <div class="tarjeta-prejuego">
             <div class="prejuego-cabecera-tarjeta">
-                <span class="prejuego-chip">Sala de Preparación</span>
+                <span class="prejuego-chip" data-i18n="prejuego.chip">Sala de Preparación</span>
                 <h2 id="prejuego-titulo">Cargando...</h2>
             </div>
             
@@ -205,7 +211,7 @@
                 <p id="prejuego-snippet" class="prejuego-snippet">"..."</p>
             </div>
             
-            <p id="prejuego-desc" class="prejuego-desc">Ajusta tu modo de desafío activando o desactivando los iconos:</p>
+            <p id="prejuego-desc" class="prejuego-desc" data-i18n="prejuego.desc">Ajusta tu modo de desafío activando o desactivando los iconos:</p>
             
             <!-- Selector de Modos con Iconos Interactivos -->
             <div class="modos-iconos-grid">
@@ -213,25 +219,25 @@
                     <span class="mod-icono-simbolo">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                     </span>
-                    <span class="mod-icono-nombre">Original</span>
+                    <span class="mod-icono-nombre" data-i18n="prejuego.mod_original">Original</span>
                 </button>
                 <button type="button" id="btn-mod-tiempo" class="btn-mod-icono" title="Límite de tiempo con temporizador">
                     <span class="mod-icono-simbolo">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                     </span>
-                    <span class="mod-icono-nombre">Tiempo</span>
+                    <span class="mod-icono-nombre" data-i18n="prejuego.mod_tiempo">Tiempo</span>
                 </button>
                 <button type="button" id="btn-mod-vidas" class="btn-mod-icono" title="Modo con vidas (fallos limitados)">
                     <span class="mod-icono-simbolo">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                     </span>
-                    <span class="mod-icono-nombre">Vidas</span>
+                    <span class="mod-icono-nombre" data-i18n="prejuego.mod_vidas">Vidas</span>
                 </button>
                 <button type="button" id="btn-mod-viaje" class="btn-mod-icono" title="Modo relajado sin presión">
                     <span class="mod-icono-simbolo">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>
                     </span>
-                    <span class="mod-icono-nombre">Viaje</span>
+                    <span class="mod-icono-nombre" data-i18n="prejuego.mod_viaje">Viaje</span>
                 </button>
             </div>
 
@@ -239,14 +245,14 @@
 
             <div class="opciones-jugador" id="contenedor-jugador-tiempo" style="display: none;">
                 <div class="grupo-input">
-                    <label for="jugador-tiempo-input">Ajustar Tiempo Límite (Segundos):</label>
+                    <label for="jugador-tiempo-input" data-i18n="prejuego.ajustar_tiempo">Ajustar Tiempo Límite (Segundos):</label>
                     <input type="number" id="jugador-tiempo-input" class="input-estandar" min="10" max="600" value="45">
                 </div>
             </div>
 
             <div class="grupo-acciones">
-                <button id="btn-cancelar-prejuego" class="btn-secundario">← Volver al Menú</button>
-                <button id="btn-iniciar-motor" class="btn-primario">¡Comenzar Nivel!</button>
+                <button id="btn-cancelar-prejuego" class="btn-secundario" data-i18n="prejuego.volver_menu">← Volver al Menú</button>
+                <button id="btn-iniciar-motor" class="btn-primario" data-i18n="prejuego.iniciar">¡Comenzar Nivel!</button>
             </div>
         </div>
     </section>
@@ -257,104 +263,104 @@
     <section id="vista-creador" class="vista-oculta">
         <header class="creador-cabecera">
             <div>
-                <h2>Estudio de Creación de Niveles</h2>
-                <p class="creador-subtitulo">Crea o edita guiones mecanográficos personalizados</p>
+                <h2 data-i18n="creador.titulo">Estudio de Creación de Niveles</h2>
+                <p class="creador-subtitulo" data-i18n="creador.subtitulo">Crea o edita guiones mecanográficos personalizados</p>
             </div>
-            <button type="button" id="btn-cancelar-creacion-top" class="btn-secundario">← Volver</button>
+            <button type="button" id="btn-cancelar-creacion-top" class="btn-secundario" data-i18n="comun.volver">← Volver</button>
         </header>
 
         <form id="form-crear-nivel" class="formulario-creador">
             <!-- Sección 1: Contenido -->
             <div class="creador-seccion">
-                <h3 class="creador-seccion-titulo">Contenido del Nivel</h3>
+                <h3 class="creador-seccion-titulo" data-i18n="creador.sec_contenido">Contenido del Nivel</h3>
                 <div class="grupo-input">
-                    <label for="titulo-input">Título de la Lección / Canción</label>
-                    <input type="text" id="titulo-input" class="input-estandar" placeholder="Ej: Poema a la Luna" required>
+                    <label for="titulo-input" data-i18n="creador.leccion_titulo">Título de la Lección / Canción</label>
+                    <input type="text" id="titulo-input" class="input-estandar" placeholder="Ej: Poema a la Luna" data-i18n-placeholder="creador.leccion_ph" required>
                 </div>
                 <div class="grupo-input">
-                    <label for="dificultad-input">Dificultad Sugerida</label>
+                    <label for="dificultad-input" data-i18n="creador.dificultad">Dificultad Sugerida</label>
                     <select id="dificultad-input" class="input-estandar">
-                        <option value="facil">Fácil (Palabras cortas y simples)</option>
-                        <option value="normal" selected>Normal (Frases y puntuación)</option>
-                        <option value="dificil">Difícil (Trabalenguas y ritmo rápido)</option>
+                        <option value="facil" data-i18n="creador.diff_facil">Fácil (Palabras cortas y simples)</option>
+                        <option value="normal" selected data-i18n="creador.diff_normal">Normal (Frases y puntuación)</option>
+                        <option value="dificil" data-i18n="creador.diff_dificil">Difícil (Trabalenguas y ritmo rápido)</option>
                     </select>
                 </div>
                 <div class="grupo-input">
-                    <label for="texto-input">Texto a Mecanografiar</label>
-                    <textarea id="texto-input" class="textarea-estandar" required placeholder="Escribe o pega aquí el texto que el jugador deberá teclear..."></textarea>
-                    <small class="input-ayuda">El motor dividirá automáticamente los textos largos en bloques de lectura cómodos.</small>
+                    <label for="texto-input" data-i18n="creador.texto_label">Texto a Mecanografiar</label>
+                    <textarea id="texto-input" class="textarea-estandar" required placeholder="Escribe o pega aquí el texto que el jugador deberá teclear..." data-i18n-placeholder="creador.texto_ph"></textarea>
+                    <small class="input-ayuda" data-i18n="creador.texto_ayuda">El motor dividirá automáticamente los textos largos en bloques de lectura cómodos.</small>
                 </div>
             </div>
 
             <!-- Sección 2: Reglas de juego -->
             <div class="creador-seccion">
-                <h3 class="creador-seccion-titulo">Reglas y Modos de Juego</h3>
+                <h3 class="creador-seccion-titulo" data-i18n="creador.sec_reglas">Reglas y Modos de Juego</h3>
                 <div class="creador-grid-2col">
                     <div class="grupo-input">
-                        <label for="modo-juego-input">Modo de Juego Base</label>
+                        <label for="modo-juego-input" data-i18n="creador.modo_base">Modo de Juego Base</label>
                         <select id="modo-juego-input" class="input-estandar">
-                            <option value="viaje">Viaje (Sin límites de tiempo ni vidas)</option>
-                            <option value="normal" selected>Normal (Por tiempo límite)</option>
-                            <option value="vital">Vital (Por vidas / fallos)</option>
-                            <option value="dificil">Difícil (Tiempo estricto y vidas)</option>
+                            <option value="viaje" data-i18n="creador.modo_viaje">Viaje (Sin límites de tiempo ni vidas)</option>
+                            <option value="normal" selected data-i18n="creador.modo_normal">Normal (Por tiempo límite)</option>
+                            <option value="vital" data-i18n="creador.modo_vital">Vital (Por vidas / fallos)</option>
+                            <option value="dificil" data-i18n="creador.modo_dificil">Difícil (Tiempo estricto y vidas)</option>
                         </select>
                     </div>
                     <div class="grupo-input">
-                        <label for="tiempo-input">Tiempo Límite (Segundos)</label>
+                        <label for="tiempo-input" data-i18n="creador.tiempo_limite">Tiempo Límite (Segundos)</label>
                         <input type="number" id="tiempo-input" class="input-estandar" value="45" min="10" max="600">
                     </div>
                 </div>
                 <div class="grupo-input">
-                    <label for="vidas-input">Cantidad de Vidas (Modo Vital o Difícil)</label>
+                    <label for="vidas-input" data-i18n="creador.vidas_max">Cantidad de Vidas (Modo Vital o Difícil)</label>
                     <input type="number" id="vidas-input" class="input-estandar" value="3" min="1" max="10">
                 </div>
             </div>
 
             <!-- Sección 3: Audio (Drag and Drop) -->
             <div class="creador-seccion">
-                <h3 class="creador-seccion-titulo">Audio y Dictado (Opcional)</h3>
+                <h3 class="creador-seccion-titulo" data-i18n="creador.sec_audio">Audio y Dictado (Opcional)</h3>
                 <div class="grupo-input">
-                    <label>Pista de Audio o Canción (MP3 / WAV / OGG):</label>
+                    <label data-i18n="creador.audio_label">Pista de Audio o Canción (MP3 / WAV / OGG):</label>
                     <div class="dropzone" id="dropzone-audio">
                         <span class="dropzone-icono">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
                         </span>
-                        <span class="dropzone-texto">Arrastra una canción o dictado aquí o <u>haz clic para elegir</u></span>
+                        <span class="dropzone-texto" data-i18n="creador.audio_drop">Arrastra una canción o dictado aquí o <u>haz clic para elegir</u></span>
                         <span id="audio-nombre-archivo" class="dropzone-archivo-nombre" style="display: none;"></span>
                         <input type="file" id="audio-input" class="input-archivo-oculto" accept="audio/*">
                     </div>
-                    <small class="input-ayuda">Ideal para dictados rítmicos o canciones al estilo osu!</small>
+                    <small class="input-ayuda" data-i18n="creador.audio_ayuda">Ideal para dictados rítmicos o canciones al estilo osu!</small>
                 </div>
             </div>
 
             <!-- Sección 4: Narrativa (Drag and Drop) -->
             <div class="creador-seccion">
-                <h3 class="creador-seccion-titulo">Historia de Momoye (Opcional)</h3>
+                <h3 class="creador-seccion-titulo" data-i18n="creador.sec_narrativa">Historia de Momoye (Opcional)</h3>
                 <div class="grupo-input">
-                    <label for="historia-inicio-input">Diálogos de Inicio</label>
-                    <textarea id="historia-inicio-input" class="textarea-estandar" placeholder="Ej: ¡El Momoye escapó! | ¡Recupera este texto antes de que sea tarde! (Separa diálogos con '|')"></textarea>
+                    <label for="historia-inicio-input" data-i18n="creador.dialogo_inicio">Diálogos de Inicio</label>
+                    <textarea id="historia-inicio-input" class="textarea-estandar" placeholder="Ej: ¡El Momoye escapó! | ¡Recupera este texto antes de que sea tarde! (Separa diálogos con '|')" data-i18n-placeholder="creador.dialogo_inicio_ph"></textarea>
                     
-                    <label class="label-archivo">Imagen de Inicio (Opcional):</label>
+                    <label class="label-archivo" data-i18n="creador.img_inicio">Imagen de Inicio (Opcional):</label>
                     <div class="dropzone" id="dropzone-img-inicio">
                         <span class="dropzone-icono">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                         </span>
-                        <span class="dropzone-texto">Arrastra una imagen de inicio o <u>haz clic</u></span>
+                        <span class="dropzone-texto" data-i18n="creador.img_inicio_drop">Arrastra una imagen de inicio o <u>haz clic</u></span>
                         <span id="img-inicio-nombre-archivo" class="dropzone-archivo-nombre" style="display: none;"></span>
                         <input type="file" id="img-inicio-input" class="input-archivo-oculto" accept="image/*">
                     </div>
                 </div>
                 
                 <div class="grupo-input">
-                    <label for="historia-fin-input">Diálogos de Victoria</label>
-                    <textarea id="historia-fin-input" class="textarea-estandar" placeholder="Ej: ¡Victoria! | El Momoye aprendió la lección. (Separa diálogos con '|')"></textarea>
+                    <label for="historia-fin-input" data-i18n="creador.dialogo_fin">Diálogos de Victoria</label>
+                    <textarea id="historia-fin-input" class="textarea-estandar" placeholder="Ej: ¡Victoria! | El Momoye aprendió la lección. (Separa diálogos con '|')" data-i18n-placeholder="creador.dialogo_fin_ph"></textarea>
                     
-                    <label class="label-archivo">Imagen de Victoria (Opcional):</label>
+                    <label class="label-archivo" data-i18n="creador.img_fin">Imagen de Victoria (Opcional):</label>
                     <div class="dropzone" id="dropzone-img-fin">
                         <span class="dropzone-icono">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                         </span>
-                        <span class="dropzone-texto">Arrastra una imagen de fin o <u>haz clic</u></span>
+                        <span class="dropzone-texto" data-i18n="creador.img_fin_drop">Arrastra una imagen de fin o <u>haz clic</u></span>
                         <span id="img-fin-nombre-archivo" class="dropzone-archivo-nombre" style="display: none;"></span>
                         <input type="file" id="img-fin-input" class="input-archivo-oculto" accept="image/*">
                     </div>
@@ -362,15 +368,15 @@
 
                 <div class="grupo-input checkbox-grupo">
                     <input type="checkbox" id="animacion-golpe-input" class="checkbox-estandar">
-                    <label for="animacion-golpe-input">Habilitar animación especial de la Mascota golpeando a Momoye al ganar</label>
+                    <label for="animacion-golpe-input" data-i18n="creador.animacion_golpe">Habilitar animación especial de la Mascota golpeando a Momoye al ganar</label>
                 </div>
             </div>
                         
             <div class="grupo-acciones">
-                <button type="button" id="btn-eliminar-nivel" class="btn-peligro" style="display: none;">Eliminar Nivel</button>
+                <button type="button" id="btn-eliminar-nivel" class="btn-peligro" style="display: none;" data-i18n="creador.eliminar_btn">Eliminar Nivel</button>
                 <div style="display: flex; gap: 10px; margin-left: auto;">
-                    <button type="button" id="btn-cancelar-creacion" class="btn-secundario">Cancelar</button>
-                    <button type="submit" class="btn-primario">Guardar Nivel</button>
+                    <button type="button" id="btn-cancelar-creacion" class="btn-secundario" data-i18n="comun.cancelar">Cancelar</button>
+                    <button type="submit" class="btn-primario" data-i18n="creador.guardar_btn">Guardar Nivel</button>
                 </div>
             </div>
         </form>
@@ -381,7 +387,7 @@
          ========================================== -->
     <section id="vista-juego" class="vista-oculta">
         <header class="juego-cabecera">
-            <button id="btn-abandonar-juego" class="btn-secundario">← Abandonar</button>
+            <button id="btn-abandonar-juego" class="btn-secundario" data-i18n="juego.abandonar">← Abandonar</button>
             
             <div class="juego-hud-grupo juego-hud-centro">
                 <div id="reloj-juego" class="indicador-reloj">00:45</div>
@@ -390,7 +396,7 @@
 
             <div class="juego-hud-grupo juego-hud-derecha">
                 <button id="btn-control-audio" class="btn-secundario btn-control-audio" style="display: none;" title="Pausar / Reanudar Música (Alt + P)">Pausar Música <small>[Alt + P]</small></button>
-                <button id="btn-guia-atajos-juego" class="btn-secundario" title="Ver signos y atajos">Atajos</button>
+                <button id="btn-guia-atajos-juego" class="btn-secundario" title="Ver signos y atajos" data-i18n="juego.atajos">Atajos</button>
                 <button id="btn-toggle-guia" class="btn-secundario btn-toggle-guia" title="Mostrar u ocultar teclado guía">Guía: ON</button>
                 <button id="btn-toggle-sonido" class="btn-secundario btn-toggle-sonido" title="Efectos de sonido">Sonido: ON</button>
                 <div id="puntos-juego" class="indicador-puntos">0 pts</div>
@@ -427,25 +433,25 @@
         <div id="modal-resultado" class="modal-overlay vista-oculta">
             <div class="tarjeta-resultado">
                 <div id="resultado-icono" class="resultado-icono" style="display: none;"></div>
-                <h2 id="resultado-titulo" class="resultado-titulo">¡Nivel Completado!</h2>
-                <p id="resultado-subtitulo" class="resultado-subtitulo">Excelente destreza mecanográfica</p>
+                <h2 id="resultado-titulo" class="resultado-titulo" data-i18n="resultado.completado_titulo">¡Nivel Completado!</h2>
+                <p id="resultado-subtitulo" class="resultado-subtitulo" data-i18n="resultado.completado_sub">Excelente destreza mecanográfica</p>
                 
                 <div class="resultado-stats-grid">
                     <div class="stat-card">
                         <span class="stat-valor" id="resultado-wpm">0</span>
-                        <span class="stat-etiqueta">WPM (Velocidad)</span>
+                        <span class="stat-etiqueta" data-i18n="resultado.wpm">WPM (Velocidad)</span>
                     </div>
                     <div class="stat-card">
                         <span class="stat-valor" id="resultado-precision">100%</span>
-                        <span class="stat-etiqueta">Precisión</span>
+                        <span class="stat-etiqueta" data-i18n="resultado.precision">Precisión</span>
                     </div>
                     <div class="stat-card">
                         <span class="stat-valor" id="resultado-errores">0</span>
-                        <span class="stat-etiqueta">Errores</span>
+                        <span class="stat-etiqueta" data-i18n="resultado.errores">Errores</span>
                     </div>
                     <div class="stat-card">
                         <span class="stat-valor" id="resultado-puntos">+50</span>
-                        <span class="stat-etiqueta">Puntos Ganados</span>
+                        <span class="stat-etiqueta" data-i18n="resultado.puntos_ganados">Puntos Ganados</span>
                     </div>
                 </div>
 
@@ -453,24 +459,24 @@
                 <div class="resultado-seccion-academica" id="seccion-academica-estudiante">
                     <div class="resultado-academico-header">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-                        <span>Certificación Académica para Entrega al Profesor</span>
-                        <span class="badge badge-oficial" style="margin-left: auto;">Sello de Autenticidad</span>
+                        <span data-i18n="resultado.academico_titulo">Certificación Académica para Entrega al Profesor</span>
+                        <span class="badge badge-oficial" style="margin-left: auto;" data-i18n="resultado.academico_sello">Sello de Autenticidad</span>
                     </div>
-                    <p class="resultado-academico-desc">Genera tu código seguro de entrega con tu nombre y métricas verificado contra alteraciones:</p>
+                    <p class="resultado-academico-desc" data-i18n="resultado.academico_desc">Genera tu código seguro de entrega con tu nombre y métricas verificado contra alteraciones:</p>
                     <div class="resultado-academico-botones">
-                        <button type="button" id="btn-copiar-codigo-entrega" class="btn-secundario btn-academico" title="Copiar código de entrega cifrado para enviar a tu profesor">
+                        <button type="button" id="btn-copiar-codigo-entrega" class="btn-secundario btn-academico" title="Copiar código de entrega cifrado para enviar a tu profesor" data-i18n="resultado.copiar_codigo">
                             Copiar Código para Profesor
                         </button>
-                        <button type="button" id="btn-descargar-certificado" class="btn-secundario btn-academico" title="Descargar archivo de certificado firmado (.tptcert)">
+                        <button type="button" id="btn-descargar-certificado" class="btn-secundario btn-academico" title="Descargar archivo de certificado firmado (.tptcert)" data-i18n="resultado.descargar_cert">
                             Descargar Certificado
                         </button>
                     </div>
-                    <span id="msg-academico-copiado" class="mensaje-exito-copia" style="display: none;">✓ ¡Código verificado copiado al portapapeles!</span>
+                    <span id="msg-academico-copiado" class="mensaje-exito-copia" style="display: none;" data-i18n="resultado.copiado_exito">✓ ¡Código verificado copiado al portapapeles!</span>
                 </div>
 
                 <div class="grupo-acciones resultado-acciones">
-                    <button id="btn-reintentar-nivel" class="btn-secundario">Reintentar</button>
-                    <button id="btn-continuar-resultado" class="btn-primario">Continuar</button>
+                    <button id="btn-reintentar-nivel" class="btn-secundario" data-i18n="resultado.reintentar">Reintentar</button>
+                    <button id="btn-continuar-resultado" class="btn-primario" data-i18n="resultado.continuar">Continuar</button>
                 </div>
             </div>
         </div>
@@ -482,17 +488,17 @@
     <section id="vista-narrativa" class="vista-oculta">
         <div class="tarjeta-narrativa">
             <div class="narrativa-topbar">
-                <span class="narrativa-badge">Cinemática de Historia</span>
-                <button id="btn-saltar-narrativa" class="btn-secundario btn-saltar">Saltar</button>
+                <span class="narrativa-badge" data-i18n="narrativa.badge">Cinemática de Historia</span>
+                <button id="btn-saltar-narrativa" class="btn-secundario btn-saltar" data-i18n="narrativa.saltar">Saltar</button>
             </div>
 
             <!-- Escenario interactivo para imágenes o batalla Mascota vs Momoye -->
             <div id="narrativa-escenario" class="narrativa-escenario"></div>
             
             <div class="narrativa-dialogo">
-                <div id="narrativa-hablante" class="narrativa-hablante">Narrador</div>
+                <div id="narrativa-hablante" class="narrativa-hablante" data-i18n="narrativa.hablante_narrador">Narrador</div>
                 <p id="narrativa-texto"></p>
-                <button id="btn-continuar-narrativa" class="btn-primario">Siguiente</button>
+                <button id="btn-continuar-narrativa" class="btn-primario" data-i18n="comun.siguiente">Siguiente</button>
             </div>
         </div>
     </section>
@@ -503,34 +509,34 @@
     <div id="modal-guia-atajos" class="modal-overlay vista-oculta">
         <div class="tarjeta-guia-atajos">
             <div class="modal-cabecera">
-                <h3 class="modal-titulo">Guía de Teclas, Acentos y Atajos</h3>
-                <button type="button" id="btn-cerrar-guia" class="btn-cerrar-modal" title="Cerrar guía">✕</button>
+                <h3 class="modal-titulo" data-i18n="guia.titulo">Guía de Teclas, Acentos y Atajos</h3>
+                <button type="button" id="btn-cerrar-guia" class="btn-cerrar-modal" title="Cerrar guía" data-i18n-title="comun.cerrar">✕</button>
             </div>
 
             <div class="guia-secciones-grid">
                 <!-- Sección Destacada: Cómo Escribir Acentos y Tildes -->
                 <div class="guia-card guia-card-destacada">
-                    <h4>Cómo Escribir Acentos y Tildes (á, é, í, ó, ú)</h4>
-                    <p class="guia-destacado-texto">En teclados con distribución en español, las tildes se introducen pulsando dos teclas en orden secuencial:</p>
+                    <h4 data-i18n="guia.acentos_titulo">Cómo Escribir Acentos y Tildes (á, é, í, ó, ú)</h4>
+                    <p class="guia-destacado-texto" data-i18n="guia.acentos_intro">En teclados con distribución en español, las tildes se introducen pulsando dos teclas en orden secuencial:</p>
                     <div class="guia-pasos-lista">
                         <div class="guia-paso">
                             <span class="guia-paso-num">1</span>
-                            <span>Presiona y suelta la tecla de tilde <kbd class="tecla-badge">´</kbd> (ubicada justo a la derecha de la letra <kbd class="tecla-badge">P</kbd>). No aparecerá nada aún en pantalla porque es una tecla de acentuación previa.</span>
+                            <span data-i18n="guia.paso1">Presiona y suelta la tecla de tilde <kbd class="tecla-badge">´</kbd> (ubicada justo a la derecha de la letra <kbd class="tecla-badge">P</kbd>). No aparecerá nada aún en pantalla porque es una tecla de acentuación previa.</span>
                         </div>
                         <div class="guia-paso">
                             <span class="guia-paso-num">2</span>
-                            <span>A continuación, presiona la vocal que deseas acentuar: <kbd class="tecla-badge">A</kbd>, <kbd class="tecla-badge">E</kbd>, <kbd class="tecla-badge">I</kbd>, <kbd class="tecla-badge">O</kbd> o <kbd class="tecla-badge">U</kbd>. La letra aparecerá con su tilde: <strong>á, é, í, ó, ú</strong>.</span>
+                            <span data-i18n="guia.paso2">A continuación, presiona la vocal que deseas acentuar: <kbd class="tecla-badge">A</kbd>, <kbd class="tecla-badge">E</kbd>, <kbd class="tecla-badge">I</kbd>, <kbd class="tecla-badge">O</kbd> o <kbd class="tecla-badge">U</kbd>. La letra aparecerá con su tilde: <strong>á, é, í, ó, ú</strong>.</span>
                         </div>
                         <div class="guia-paso">
                             <span class="guia-paso-num">3</span>
-                            <span>Para vocales mayúsculas con tilde: presiona <kbd class="tecla-badge">´</kbd> (suelta), mantén presionado <kbd class="tecla-badge">Shift</kbd> y pulsa la vocal → <strong>Á, É, Í, Ó, Ú</strong>.</span>
+                            <span data-i18n="guia.paso3">Para vocales mayúsculas con tilde: presiona <kbd class="tecla-badge">´</kbd> (suelta), mantén presionado <kbd class="tecla-badge">Shift</kbd> y pulsa la vocal → <strong>Á, É, Í, Ó, Ú</strong>.</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Columna 1: Signos de Puntuación -->
                 <div class="guia-card">
-                    <h4>Signos y Puntuación Frecuentes</h4>
+                    <h4 data-i18n="guia.signos_titulo">Signos y Puntuación Frecuentes</h4>
                     <div class="guia-fila">
                         <span>Paréntesis <strong>( )</strong></span>
                         <div><kbd class="tecla-badge">Shift</kbd> + <kbd class="tecla-badge">8</kbd> / <kbd class="tecla-badge">9</kbd></div>
@@ -567,32 +573,32 @@
 
                 <!-- Columna 2: Atajos del Juego -->
                 <div class="guia-card">
-                    <h4>Atajos Rápidos de Tippen Tag</h4>
+                    <h4 data-i18n="guia.atajos_titulo">Atajos Rápidos de Tippen Tag</h4>
                     <div class="guia-fila">
-                        <span>Pausar / Reanudar Música</span>
+                        <span data-i18n="guia.atajo_musica">Pausar / Reanudar Música</span>
                         <div><kbd class="tecla-badge">Alt</kbd> + <kbd class="tecla-badge">P</kbd></div>
                     </div>
                     <div class="guia-fila">
-                        <span>Reenfocar Teclado</span>
-                        <span style="font-size: 11.5px; color: var(--azul);">Clic en la pantalla</span>
+                        <span data-i18n="guia.atajo_reenfocar">Reenfocar Teclado</span>
+                        <span style="font-size: calc(11.5px * var(--escala-texto, 1)); color: var(--azul);" data-i18n="guia.atajo_reenfocar_desc">Clic en la pantalla</span>
                     </div>
                     <div class="guia-fila">
-                        <span>Alternar Guía de Dedos</span>
+                        <span data-i18n="guia.atajo_guia">Alternar Guía de Dedos</span>
                         <div><kbd class="tecla-badge">Guía</kbd></div>
                     </div>
                     <div class="guia-fila">
-                        <span>Efectos de Sonido</span>
+                        <span data-i18n="guia.atajo_sonido">Efectos de Sonido</span>
                         <div><kbd class="tecla-badge">Sonido</kbd></div>
                     </div>
                     <div class="guia-fila">
-                        <span>Importar Nivel</span>
-                        <span style="font-size: 11.5px; color: var(--verde-exito);">Arrastra archivo .json</span>
+                        <span data-i18n="guia.atajo_importar">Importar Nivel</span>
+                        <span style="font-size: calc(11.5px * var(--escala-texto, 1)); color: var(--verde-exito);" data-i18n="guia.atajo_importar_desc">Arrastra archivo .json</span>
                     </div>
                 </div>
             </div>
 
             <div class="modal-pie">
-                <button type="button" id="btn-entendido-guia" class="btn-primario">
+                <button type="button" id="btn-entendido-guia" class="btn-primario" data-i18n="guia.entendido">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     Entendido y Volver
                 </button>
@@ -606,8 +612,8 @@
     <div id="modal-ajustes" class="modal-overlay vista-oculta">
         <div class="tarjeta-ajustes">
             <div class="modal-cabecera">
-                <h3 class="modal-titulo">Ajustes Generales</h3>
-                <button type="button" id="btn-cerrar-ajustes-x" class="btn-cerrar-modal" title="Cerrar ajustes">✕</button>
+                <h3 class="modal-titulo" data-i18n="ajustes.titulo">Ajustes Generales</h3>
+                <button type="button" id="btn-cerrar-ajustes-x" class="btn-cerrar-modal" title="Cerrar ajustes" data-i18n-title="comun.cerrar">✕</button>
             </div>
 
             <div class="ajustes-secciones">
@@ -617,9 +623,9 @@
                         <div class="ajuste-info">
                             <span class="ajuste-titulo">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-                                Música de Fondo del Menú
+                                <span data-i18n="ajustes.bgm_menu_titulo">Música de Fondo del Menú</span>
                             </span>
-                            <span class="ajuste-desc">Música ambiental mientras navegas por los niveles y opciones</span>
+                            <span class="ajuste-desc" data-i18n="ajustes.bgm_menu_desc">Música ambiental mientras navegas por los niveles y opciones</span>
                         </div>
                         <button type="button" id="btn-toggle-bgm-menu" class="btn-ajuste-toggle activo">Activada</button>
                     </div>
@@ -628,7 +634,7 @@
                         <span id="badge-vol-bgm" class="valor-rango-badge">50%</span>
                     </div>
                     <div class="ajuste-ruta-info">
-                        Pista de audio configurada: <code id="ruta-musica-menu-texto" class="ajuste-ruta-codigo">Sin pista asignada</code>
+                        <span data-i18n="ajustes.pista_config">Pista de audio configurada:</span> <code id="ruta-musica-menu-texto" class="ajuste-ruta-codigo">Sin pista asignada</code>
                     </div>
                 </div>
 
@@ -638,9 +644,9 @@
                         <div class="ajuste-info">
                             <span class="ajuste-titulo">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
-                                Volumen de Canciones en Niveles
+                                <span data-i18n="ajustes.bgm_niveles_titulo">Volumen de Canciones en Niveles</span>
                             </span>
-                            <span class="ajuste-desc">Volumen de las pistas musicales y dictados al jugar niveles</span>
+                            <span class="ajuste-desc" data-i18n="ajustes.bgm_niveles_desc">Volumen de las pistas musicales y dictados al jugar niveles</span>
                         </div>
                     </div>
                     <div class="control-rango-grupo">
@@ -655,9 +661,9 @@
                         <div class="ajuste-info">
                             <span class="ajuste-titulo">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                                Efectos de Sonido (SFX)
+                                <span data-i18n="ajustes.sfx_titulo">Efectos de Sonido (SFX)</span>
                             </span>
-                            <span class="ajuste-desc">Sonidos de tecleo correcto, errores, combos y fanfarria de victoria</span>
+                            <span class="ajuste-desc" data-i18n="ajustes.sfx_desc">Sonidos de tecleo correcto, errores, combos y fanfarria de victoria</span>
                         </div>
                         <button type="button" id="btn-toggle-sfx-ajustes" class="btn-ajuste-toggle activo">Activados</button>
                     </div>
@@ -673,9 +679,9 @@
                         <div class="ajuste-info">
                             <span class="ajuste-titulo">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="9" y1="16" x2="15" y2="16"></line></svg>
-                                Guía Visual de Dedos en Partida
+                                <span data-i18n="ajustes.guia_titulo">Guía Visual de Dedos en Partida</span>
                             </span>
-                            <span class="ajuste-desc">Mostrar por defecto la imagen de dedos y teclas al empezar a jugar</span>
+                            <span class="ajuste-desc" data-i18n="ajustes.guia_desc">Mostrar por defecto la imagen de dedos y teclas al empezar a jugar</span>
                         </div>
                         <button type="button" id="btn-toggle-guia-ajustes" class="btn-ajuste-toggle activo">Activada</button>
                     </div>
@@ -687,9 +693,9 @@
                         <div class="ajuste-info">
                             <span class="ajuste-titulo">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                                Versión / Edición del Juego (DLCs)
+                                <span data-i18n="ajustes.tier_titulo">Versión / Edición del Juego (DLCs)</span>
                             </span>
-                            <span class="ajuste-desc">Alterna entre los 3 tiers comerciales para comprobar las funciones activas</span>
+                            <span class="ajuste-desc" data-i18n="ajustes.tier_desc">Alterna entre los 3 tiers comerciales para comprobar las funciones activas</span>
                         </div>
                     </div>
                     <div class="control-rango-grupo">
@@ -700,10 +706,49 @@
                         </select>
                     </div>
                 </div>
+
+                <!-- Ajuste 6: Tamaño de Texto y Accesibilidad -->
+                <div class="ajuste-card">
+                    <div class="ajuste-card-header">
+                        <div class="ajuste-info">
+                            <span class="ajuste-titulo">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                                <span data-i18n="ajustes.escala_titulo">Tamaño de Texto y Accesibilidad</span>
+                            </span>
+                            <span class="ajuste-desc" data-i18n="ajustes.escala_desc">Aumenta o reduce el tamaño base de las letras en pantalla</span>
+                        </div>
+                    </div>
+                    <div class="control-rango-grupo">
+                        <input type="range" id="slider-escala-texto" class="rango-estandar" min="90" max="170" value="100" step="5" aria-label="Escala de texto">
+                        <span id="badge-escala-texto" class="valor-rango-badge">100%</span>
+                    </div>
+                    <div class="escala-quick-btns">
+                        <button type="button" id="btn-escala-menos" class="btn-secundario btn-escala-step" title="Reducir tamaño (–10%)">A−</button>
+                        <button type="button" id="btn-escala-reset" class="btn-secundario btn-escala-step" title="Restablecer tamaño predeterminado (100%)">100%</button>
+                        <button type="button" id="btn-escala-mas" class="btn-secundario btn-escala-step" title="Aumentar tamaño (+10%)">A+</button>
+                    </div>
+                </div>
+
+                <!-- Ajuste 7: Idioma del Sistema (i18n) -->
+                <div class="ajuste-card">
+                    <div class="ajuste-card-header">
+                        <div class="ajuste-info">
+                            <span class="ajuste-titulo">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                <span data-i18n="ajustes.idioma_titulo">Idioma del Sistema / Systemsprache</span>
+                            </span>
+                            <span class="ajuste-desc" data-i18n="ajustes.idioma_desc">Selecciona entre Español y Alemán para los textos de la interfaz</span>
+                        </div>
+                    </div>
+                    <div class="idioma-botones-grupo">
+                        <button type="button" id="btn-lang-es" class="btn-lang-pill activo">🇪🇸 Español</button>
+                        <button type="button" id="btn-lang-de" class="btn-lang-pill">🇩🇪 Deutsch</button>
+                    </div>
+                </div>
             </div>
 
             <div class="ajustes-pie modal-pie">
-                <button type="button" id="btn-guardar-ajustes" class="btn-primario">Aceptar y Guardar</button>
+                <button type="button" id="btn-guardar-ajustes" class="btn-primario" data-i18n="ajustes.guardar_btn">Aceptar y Guardar</button>
             </div>
         </div>
     </div>
@@ -715,42 +760,42 @@
         <div class="tarjeta-portal-docente">
             <div class="modal-cabecera">
                 <div class="portal-docente-titulo-grupo">
-                    <span class="badge badge-oficial">DenkKraft Académico</span>
-                    <h3 class="modal-titulo">Portal del Docente / Validador de Calificaciones</h3>
+                    <span class="badge badge-oficial" data-i18n="docente.badge">DenkKraft Académico</span>
+                    <h3 class="modal-titulo" data-i18n="docente.titulo">Portal del Docente / Validador de Calificaciones</h3>
                 </div>
-                <button type="button" id="btn-cerrar-docente" class="btn-cerrar-modal" title="Cerrar portal docente">✕</button>
+                <button type="button" id="btn-cerrar-docente" class="btn-cerrar-modal" title="Cerrar portal docente" data-i18n-title="docente.cerrar_title">✕</button>
             </div>
 
-            <p class="portal-docente-instruccion">
+            <p class="portal-docente-instruccion" data-i18n="docente.instruccion">
                 Ingresa el código seguro generado por el estudiante o arrastra su archivo de certificado (<strong>.tptcert</strong>). El sistema verificará la autenticidad matemática de las métricas de tecleo, fecha, nombre del alumno e ID de lección contra cualquier tipo de manipulación.
             </p>
 
             <div class="portal-docente-comparador-grupo">
-                <label for="select-docente-nivel-esperado">Verificar contra Lección del Plan de Estudios (Opcional):</label>
+                <label for="select-docente-nivel-esperado" data-i18n="docente.comparar_label">Verificar contra Lección del Plan de Estudios (Opcional):</label>
                 <select id="select-docente-nivel-esperado" class="input-estandar select-docente">
-                    <option value="">-- Detección Automática de Lección --</option>
+                    <option value="" data-i18n="docente.comparar_auto">-- Detección Automática de Lección --</option>
                 </select>
             </div>
 
             <div class="portal-docente-input-bloque">
-                <label for="input-codigo-docente">Código Seguro del Estudiante:</label>
-                <textarea id="input-codigo-docente" class="textarea-estandar textarea-docente" placeholder="Pega aquí el código seguro del alumno (ej: TPT-CERT.eyJlc3R1ZGlhbnRl...)..."></textarea>
+                <label for="input-codigo-docente" data-i18n="docente.codigo_label">Código Seguro del Estudiante:</label>
+                <textarea id="input-codigo-docente" class="textarea-estandar textarea-docente" placeholder="Pega aquí el código seguro del alumno (ej: TPT-CERT.eyJlc3R1ZGlhbnRl...)..." data-i18n-placeholder="docente.codigo_ph"></textarea>
                 
                 <div class="dropzone dropzone-docente" id="dropzone-docente-cert">
                     <span class="dropzone-icono">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                     </span>
-                    <span class="dropzone-texto">O arrastra el archivo de certificado <strong>.tptcert</strong> o <strong>.json</strong> aquí</span>
+                    <span class="dropzone-texto" data-i18n="docente.drop_texto">O arrastra el archivo de certificado <strong>.tptcert</strong> o <strong>.json</strong> aquí</span>
                     <span id="docente-cert-nombre" class="dropzone-archivo-nombre" style="display: none;"></span>
                     <input type="file" id="input-archivo-docente-cert" class="input-archivo-oculto" accept=".tptcert,.json">
                 </div>
 
                 <div class="portal-docente-acciones">
-                    <button type="button" id="btn-demo-docente" class="btn-secundario" title="Cargar un certificado de prueba válido para verificar cómo funciona">Cargar Ejemplo Válido</button>
-                    <button type="button" id="btn-demo-alterado" class="btn-secundario" title="Probar cómo el sistema detecta intentos de trampa o alteración">Probar Detección de Trampa</button>
+                    <button type="button" id="btn-demo-docente" class="btn-secundario" title="Cargar un certificado de prueba válido para verificar cómo funciona" data-i18n="docente.btn_demo_valido">Cargar Ejemplo Válido</button>
+                    <button type="button" id="btn-demo-alterado" class="btn-secundario" title="Probar cómo el sistema detecta intentos de trampa o alteración" data-i18n="docente.btn_demo_alterado">Probar Detección de Trampa</button>
                     <button type="button" id="btn-verificar-docente" class="btn-primario" style="margin-left: auto;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        Verificar Autenticidad
+                        <span data-i18n="docente.btn_verificar">Verificar Autenticidad</span>
                     </button>
                 </div>
             </div>
@@ -762,8 +807,8 @@
 
             <!-- Pie de acciones del modal para navegar cómodamente tras revisar resultados -->
             <div class="modal-pie portal-docente-pie">
-                <button type="button" id="btn-limpiar-docente" class="btn-secundario" title="Limpiar formulario para validar otro examen">Limpiar</button>
-                <button type="button" id="btn-cerrar-docente-pie" class="btn-primario" title="Cerrar el portal del docente">Cerrar Validador</button>
+                <button type="button" id="btn-limpiar-docente" class="btn-secundario" title="Limpiar formulario para validar otro examen" data-i18n="docente.btn_limpiar">Limpiar</button>
+                <button type="button" id="btn-cerrar-docente-pie" class="btn-primario" title="Cerrar el portal del docente" data-i18n="docente.btn_cerrar">Cerrar Validador</button>
             </div>
         </div>
     </div>
@@ -779,8 +824,8 @@
             <h3 id="dialogo-titulo" class="dialogo-titulo">Notificación</h3>
             <p id="dialogo-mensaje" class="dialogo-mensaje"></p>
             <div class="dialogo-acciones">
-                <button type="button" id="dialogo-btn-cancelar" class="btn-secundario" style="display: none;">Cancelar</button>
-                <button type="button" id="dialogo-btn-aceptar" class="btn-primario">Aceptar</button>
+                <button type="button" id="dialogo-btn-cancelar" class="btn-secundario" style="display: none;" data-i18n="comun.cancelar">Cancelar</button>
+                <button type="button" id="dialogo-btn-aceptar" class="btn-primario" data-i18n="comun.aceptar">Aceptar</button>
             </div>
         </div>
     </div>
@@ -795,16 +840,16 @@
                 <div class="tienda-banner-filtro"></div>
                 <div class="tienda-banner-contenido">
                     <div class="tienda-banner-info">
-                        <span class="tienda-banner-tag">DenkKraft Bazar</span>
-                        <h2 class="tienda-banner-titulo">Tienda de Tippen Tag</h2>
-                        <p class="tienda-banner-subtexto">Personaliza a tus mascotas rítmicas y el ambiente de tus partidas</p>
+                        <span class="tienda-banner-tag" data-i18n="tienda.tag">DenkKraft Bazar</span>
+                        <h2 class="tienda-banner-titulo" data-i18n="tienda.titulo">Tienda de Tippen Tag</h2>
+                        <p class="tienda-banner-subtexto" data-i18n="tienda.subtitulo">Personaliza a tus mascotas rítmicas y el ambiente de tus partidas</p>
                     </div>
                     <div class="tienda-banner-derecha">
                         <div class="tienda-monedas-badge">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v12M15 9.5a3.5 3.5 0 0 0-7 0c0 3.5 7 2 7 5.5a3.5 3.5 0 0 1-7 0"></path></svg>
                             <span id="display-puntos-tienda">0 pts</span>
                         </div>
-                        <button type="button" id="btn-cerrar-tienda" class="btn-tienda-cerrar-x" title="Cerrar tienda">✕</button>
+                        <button type="button" id="btn-cerrar-tienda" class="btn-tienda-cerrar-x" title="Cerrar tienda" data-i18n-title="comun.cerrar">✕</button>
                     </div>
                 </div>
             </header>
@@ -835,7 +880,7 @@
                             Un alegre compañero felino que te animará golpeando sus tambores al compás de cada tecla que pulses.
                         </p>
                         <div class="tienda-preview-precio-fila">
-                            <span class="tienda-preview-precio-label">Precio:</span>
+                            <span class="tienda-preview-precio-label" data-i18n="tienda.precio">Precio:</span>
                             <span id="tienda-preview-precio" class="tienda-preview-precio-valor">Gratis</span>
                         </div>
                     </div>
@@ -846,11 +891,11 @@
                     <nav class="tienda-tabs-categorias" role="tablist">
                         <button type="button" id="tab-tienda-mascotas" class="tab-tienda-categoria activo" data-categoria="mascotas" role="tab" aria-selected="true">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4c0 1.5.8 2.8 2 3.5C7.6 10.4 6 12.5 6 15c0 3.3 2.7 6 6 6s6-2.7 6-6c0-2.5-1.6-4.6-4-5.5 1.2-.7 2-2 2-3.5a4 4 0 0 0-4-4z"></path></svg>
-                            Mascotas
+                            <span data-i18n="tienda.tab_mascotas">Mascotas</span>
                         </button>
                         <button type="button" id="tab-tienda-temas" class="tab-tienda-categoria" data-categoria="temas" role="tab" aria-selected="false">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a7 7 0 0 0 7 7c0 2-1 3.5-2.5 4.5"></path></svg>
-                            Temas Visuales
+                            <span data-i18n="tienda.tab_temas">Temas Visuales</span>
                         </button>
                     </nav>
 
@@ -861,7 +906,7 @@
                     <footer class="tienda-panel-pie">
                         <button type="button" id="btn-tienda-salir" class="btn-secundario btn-tienda-salir">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                            Salir de la Tienda
+                            <span data-i18n="tienda.salir">Salir de la Tienda</span>
                         </button>
                     </footer>
                 </section>
@@ -874,6 +919,7 @@
     <audio id="audio-bgm-tienda" loop preload="auto"></audio>
 
     <!-- Scripts en orden estricto de dependencia -->
+    <script src="js/TPTi18n.js"></script>
     <script src="js/TPTdb.js"></script>
     <script src="js/TPTlevelParser.js"></script>
     <script src="js/TPTengine.js"></script>

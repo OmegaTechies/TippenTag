@@ -64,8 +64,25 @@ const TPTDatabase = {
             },
             {
                 id: "lvl_oficial_2",
+                titulo: "Guten Tag!",
+                dificultad: "facil",
+                modo: "normal",
+                tiempo_limite: 60,
+                vidas: 3,
+                texto: "Guten Tag! Mein Name ist DenkKraft. Ich lerne Deutsch. Das ist sehr gut. Die Sonne scheint und der Himmel ist blau.",
+                autorNombre: "DenkKraft",
+                autorId: "denkkraft_oficial",
+                historiaInicio: "El Momoye ha cruzado la frontera y ahora roba frases básicas en alemán. | ¡Es hora de calentar los dedos con palabras sencillas! | Recuerda: en alemán los sustantivos (como Name, Sonne, Himmel) siempre empiezan en mayúscula.",
+                historiaFin: "¡Sehr gut! | Recuperaste el texto y asustaste al Momoye con tu excelente tecleo. ¡El idioma no es un límite!",
+                imgInicio: "assets/img/momoye.png",
+                imgFin: "mascota",
+                animacionGolpe: false,
+                esOficial: true
+            },
+            {
+                id: "lvl_oficial_3",
                 titulo: "Tres Tristes Tigres",
-                dificultad: "dificil",
+                dificultad: "normal",
                 modo: "normal",
                 tiempo_limite: 45,
                 vidas: 3,
@@ -80,7 +97,24 @@ const TPTDatabase = {
                 esOficial: true
             },
             {
-                id: "lvl_oficial_3",
+                id: "lvl_oficial_4",
+                titulo: "Hänsel und Gretel",
+                dificultad: "normal",
+                modo: "normal",
+                tiempo_limite: 70,
+                vidas: 3,
+                texto: "Vor einem grossen Walde wohnte ein armer Holzhacker mit seiner Frau und seinen zwei Kindern; das Bübchen hiess Hänsel und das Mädchen Gretel",
+                autorNombre: "DenkKraft",
+                autorId: "denkkraft_oficial",
+                historiaInicio: "¡El Momoye se ha metido en los cuentos clásicos de los Hermanos Grimm! | Aquí te encontrarás por primera vez con las diéresis (ä, ü), se pueden hacer apretando Alt + Diéresis (está ubicada al lado de la letra P o de la Ñ según la distribución) seguida de la vocal que usarás.| ¡Mantén el ritmo y no te dejes intimidar!",
+                historiaFin: "¡Wunderbar! | El duende andino soltó el cuento y huyó hacia el bosque oscuro. ¡Sigue así!",
+                imgInicio: "assets/img/momoye.png",
+                imgFin: "mascota",
+                animacionGolpe: false,
+                esOficial: true
+            },
+            {
+                id: "lvl_oficial_5",
                 titulo: "Leyenda del Páramo",
                 dificultad: "normal",
                 modo: "normal",
@@ -99,7 +133,7 @@ const TPTDatabase = {
             
             // Literatura Alemana (Goethe)
             {
-                id: "lvl_oficial_4",
+                id: "lvl_oficial_6",
                 titulo: "El Rey de los Elfos",
                 dificultad: "normal",
                 modo: "vital",
@@ -118,7 +152,7 @@ const TPTDatabase = {
 
             // // Alma Llanera (Rafael Bolívar Coronado)
            {
-                id: "lvl_oficial_5",
+                id: "lvl_oficial_7",
                 titulo: "El Alma Llanera",
                 dificultad: "dificil",
                 modo: "dificil",
@@ -135,15 +169,34 @@ const TPTDatabase = {
                 esOficial: true
             },
 
+            
+            // Literatura Alemana (Heinrich Heine)
+            {
+                id: "lvl_oficial_8",
+                titulo: "Die Lorelei",
+                dificultad: "dificil",
+                modo: "dificil",
+                tiempo_limite: 65,
+                vidas: 4,
+                texto: "Ich weiss nicht, was soll es bedeuten, dass ich so traurig bin; ein Märchen aus alten Zeiten, das kommt mir nicht aus dem Sinn. Die Luft ist kühl und es dunkelt, und ruhig fliesst der Rhein.",
+                autorNombre: "DenkKraft",
+                autorId: "denkkraft_oficial",
+                historiaInicio: "¡El Momoye navegó hasta el río Rin y robó el poema más famoso de Heinrich Heine! | Recuerda que en alemán todos los sustantivos van en mayúscula. | ¡Cuidado con las las diéresis (ä, ü)!",
+                historiaFin: "¡Ausgezeichnet! | La leyenda de la sirena del Rin está a salvo. | El Momoye no pudo con semejante nivel de gramática europea.",
+                imgInicio: "assets/img/momoye.png",
+                imgFin: "mascota", 
+                animacionGolpe: true, // La mascota le dará un golpe al Momoye al terminar
+                esOficial: true
+            },
             //Poesía en Alemán vaina dura
             {
-                id: "lvl_oficial_6",
+                id: "lvl_oficial_9",
                 titulo: "Oda a la Alegría",
                 dificultad: "dificil",
                 modo: "dificil",
                 tiempo_limite: 45,
                 vidas: 3,
-                texto: "Freude, schöner Götterfunken, Tochter aus Elysium, Wir betreten feuertrunken, Himmlische, dein Heiligtum!",
+                texto: "Freude, schöner Götterfunken, Tochter aus Elysium, Wir betreten feuertrunken, Himmlische, dein Heiligtum! Deine Zauber binden wieder, was die Mode streng geteilt; alle Menschen werden Brüder, wo dein sanfter Flügel weilt.",
                 autorNombre: "DenkKraft",
                 autorId: "denkkraft_oficial",
                 historiaInicio: "¡Batalla Final! | El Gran Tututuku ha combinado su magia con la pluma de Schiller, ahora puede escribir en perfecto alemán. | ¡Las mayúsculas intercaladas, diéresis (ü) y palabras complejas te pondrán a prueba! | ¡Demuestra tu DenkKraft!",
@@ -154,7 +207,7 @@ const TPTDatabase = {
                 esOficial: true
             },
             {
-                id: "lvl_oficial_cucaracha",
+                id: "lvl_oficial_99",
                 titulo: "La Cucaracha",
                 dificultad: "dificil",
                 modo: "dificil",

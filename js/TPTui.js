@@ -18,10 +18,24 @@ document.addEventListener('DOMContentLoaded', () => {
         volumenNiveles: 80,    // 0 a 100
         sfxActivo: true,
         volumenSFX: 70,        // 0 a 100
-        guiaTecladoActiva: true
+        guiaTecladoActiva: true,
+        escalaTexto: 100,      // 90 a 170 (%)
+        idioma: 'es'           // 'es' | 'de'
     };
 
     let configApp = { ...CONFIG_PREDETERMINADA };
+
+    function aplicarEscalaTexto(porcentaje) {
+        const p = Math.max(90, Math.min(170, parseInt(porcentaje, 10) || 100));
+        configApp.escalaTexto = p;
+        document.documentElement.style.setProperty('--escala-texto', (p / 100).toString());
+        
+        const badge = document.getElementById('badge-escala-texto');
+        if (badge) badge.textContent = `${p}%`;
+        
+        const slider = document.getElementById('slider-escala-texto');
+        if (slider && parseInt(slider.value, 10) !== p) slider.value = p;
+    }
 
     function cargarConfiguracion() {
         try {
@@ -33,6 +47,12 @@ document.addEventListener('DOMContentLoaded', () => {
             configApp = { ...CONFIG_PREDETERMINADA };
         }
         window.TPTConfig = configApp;
+        aplicarEscalaTexto(configApp.escalaTexto || 100);
+        if (window.TPTi18n) {
+            const idiomaGuardado = localStorage.getItem('tippen_tag_lang') || configApp.idioma || 'es';
+            window.TPTi18n.setLanguage(idiomaGuardado);
+            configApp.idioma = idiomaGuardado;
+        }
     }
 
     function guardarConfiguracion() {
@@ -151,7 +171,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const txtLandingBgm = document.getElementById('txt-landing-bgm');
 
     function actualizarQuickBgmUI() {
-        const texto = configApp.musicaMenuActiva ? 'Música: ON' : 'Música: OFF';
+        const estadoStr = configApp.musicaMenuActiva 
+            ? (window.TPTi18n ? window.TPTi18n.t('comun.on') : 'ON') 
+            : (window.TPTi18n ? window.TPTi18n.t('comun.off') : 'OFF');
+        const texto = window.TPTi18n 
+            ? window.TPTi18n.t('topbar.musica', { estado: estadoStr })
+            : (configApp.musicaMenuActiva ? 'Música: ON' : 'Música: OFF');
         if (txtQuickBgm) txtQuickBgm.textContent = texto;
         if (btnQuickBgm) btnQuickBgm.classList.toggle('activo', configApp.musicaMenuActiva);
         if (txtLandingBgm) txtLandingBgm.textContent = texto;
@@ -306,7 +331,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function actualizarPuntosTienda() {
         const display = document.getElementById('display-puntos-tienda');
         if (display && usuarioActivo) {
-            display.textContent = `${(usuarioActivo.puntos || 0).toLocaleString('es-ES')} pts`;
+            const unidad = window.TPTi18n ? window.TPTi18n.t('comun.puntos') : 'pts';
+            display.textContent = `${(usuarioActivo.puntos || 0).toLocaleString('es-ES')} ${unidad}`;
         }
     }
 
@@ -317,7 +343,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const avatarDisplay = document.getElementById('menu-avatar-display');
 
         if (nombreDisplay) nombreDisplay.textContent = usuarioActivo.nombre;
-        if (puntosDisplay) puntosDisplay.textContent = `${(usuarioActivo.puntos || 0).toLocaleString('es-ES')} pts`;
+        if (puntosDisplay) {
+            const unidad = window.TPTi18n ? window.TPTi18n.t('comun.puntos') : 'pts';
+            puntosDisplay.textContent = `${(usuarioActivo.puntos || 0).toLocaleString('es-ES')} ${unidad}`;
+        }
         
         if (avatarDisplay) {
             if (usuarioActivo.avatarBlob) {
@@ -444,8 +473,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const indicadoresEl = document.getElementById('consejo-indicadores');
         if (!textoEl || !indicadoresEl) return;
 
+        clearInterval(intervaloConsejos);
+        const listaActual = window.TPTi18n ? window.TPTi18n.obtenerConsejos() : consejosMecanografia;
+
         indicadoresEl.innerHTML = '';
-        consejosMecanografia.forEach((_, idx) => {
+        listaActual.forEach((_, idx) => {
             const punto = document.createElement('span');
             punto.className = `consejo-punto ${idx === 0 ? 'activo' : ''}`;
             punto.title = `Consejo ${idx + 1}`;
@@ -457,10 +489,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         function mostrarConsejo(idx) {
-            indiceConsejoActual = idx;
+            const arr = window.TPTi18n ? window.TPTi18n.obtenerConsejos() : consejosMecanografia;
+            indiceConsejoActual = (idx >= 0 && idx < arr.length) ? idx : 0;
             textoEl.style.opacity = '0';
             setTimeout(() => {
-                textoEl.textContent = consejosMecanografia[indiceConsejoActual];
+                textoEl.textContent = arr[indiceConsejoActual];
                 textoEl.style.opacity = '1';
                 const puntos = indicadoresEl.querySelectorAll('.consejo-punto');
                 puntos.forEach((p, i) => {
@@ -470,7 +503,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function siguienteConsejo() {
-            const siguiente = (indiceConsejoActual + 1) % consejosMecanografia.length;
+            const arr = window.TPTi18n ? window.TPTi18n.obtenerConsejos() : consejosMecanografia;
+            const siguiente = (indiceConsejoActual + 1) % arr.length;
             mostrarConsejo(siguiente);
         }
 
@@ -845,24 +879,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (descModoActivo) {
             if (modOriginalActivo) {
-                const modoBase = (nivelSeleccionado.modo || 'normal').toUpperCase();
                 if (nivelSeleccionado.modo === 'viaje') {
-                    descModoActivo.textContent = `Modo Original del Nivel: VIAJE (Relajado, sin límite de tiempo ni vidas)`;
+                    descModoActivo.textContent = window.TPTi18n ? window.TPTi18n.t('modo.desc_original_viaje') : `Modo Original del Nivel: VIAJE (Relajado, sin límite de tiempo ni vidas)`;
                 } else if (nivelSeleccionado.modo === 'vital') {
-                    descModoActivo.textContent = `Modo Original del Nivel: VITAL (${nivelSeleccionado.vidas || 3} vidas)`;
+                    descModoActivo.textContent = window.TPTi18n 
+                        ? window.TPTi18n.t('modo.desc_original_vital', { vidas: nivelSeleccionado.vidas || 3 }) 
+                        : `Modo Original del Nivel: VITAL (${nivelSeleccionado.vidas || 3} vidas)`;
                 } else if (nivelSeleccionado.modo === 'dificil') {
-                    descModoActivo.textContent = `Modo Original del Nivel: DIFÍCIL (${nivelSeleccionado.tiempo_limite || 45}s / ${nivelSeleccionado.vidas || 3} vidas)`;
+                    descModoActivo.textContent = window.TPTi18n 
+                        ? window.TPTi18n.t('modo.desc_original_dificil', { tiempo: nivelSeleccionado.tiempo_limite || 45, vidas: nivelSeleccionado.vidas || 3 }) 
+                        : `Modo Original del Nivel: DIFÍCIL (${nivelSeleccionado.tiempo_limite || 45}s / ${nivelSeleccionado.vidas || 3} vidas)`;
                 } else {
-                    descModoActivo.textContent = `Modo Original del Nivel: CONTRARRELOJ (${nivelSeleccionado.tiempo_limite || 45}s)`;
+                    descModoActivo.textContent = window.TPTi18n 
+                        ? window.TPTi18n.t('modo.desc_original_tiempo', { tiempo: nivelSeleccionado.tiempo_limite || 45 }) 
+                        : `Modo Original del Nivel: CONTRARRELOJ (${nivelSeleccionado.tiempo_limite || 45}s)`;
                 }
             } else if (modoCalculado === 'viaje') {
-                descModoActivo.textContent = `Modo Viaje: Relajación total, sin límites de tiempo ni vidas.`;
+                descModoActivo.textContent = window.TPTi18n ? window.TPTi18n.t('modo.desc_viaje') : `Modo Viaje: Relajación total, sin límites de tiempo ni vidas.`;
             } else if (modoCalculado === 'vital') {
-                descModoActivo.textContent = `Modo Vital: Sin límite de tiempo, pero pierdes si agotas tus vidas.`;
+                descModoActivo.textContent = window.TPTi18n ? window.TPTi18n.t('modo.desc_vital') : `Modo Vital: Sin límite de tiempo, pero pierdes si agotas tus vidas.`;
             } else if (modoCalculado === 'dificil') {
-                descModoActivo.textContent = `Modo Difícil: Desafío estricto con tiempo y vidas activas.`;
+                descModoActivo.textContent = window.TPTi18n ? window.TPTi18n.t('modo.desc_dificil') : `Modo Difícil: Desafío estricto con tiempo y vidas activas.`;
             } else {
-                descModoActivo.textContent = `Modo Contrarreloj: Completa el texto antes de que acabe el tiempo.`;
+                descModoActivo.textContent = window.TPTi18n ? window.TPTi18n.t('modo.desc_tiempo') : `Modo Contrarreloj: Completa el texto antes de que acabe el tiempo.`;
             }
         }
     }
@@ -1134,13 +1173,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 mensajeVacio.style.textAlign = 'center';
                 mensajeVacio.style.padding = '35px 20px';
                 mensajeVacio.style.color = 'var(--texto-secundario)';
+                const msgSinNiveles = window.TPTi18n ? window.TPTi18n.t('menu.sin_niveles') : 'No se encontraron lecciones que coincidan con la búsqueda.';
                 mensajeVacio.innerHTML = `
-                    <p style="font-size: 15px; margin-bottom: 12px;">No se encontraron niveles con los filtros o búsqueda actuales.</p>
+                    <p style="font-size: calc(15px * var(--escala-texto, 1)); margin-bottom: 12px;">${msgSinNiveles}</p>
                 `;
                 const btnReset = document.createElement('button');
                 btnReset.type = 'button';
                 btnReset.className = 'btn-secundario';
-                btnReset.textContent = 'Restablecer Filtros y Búsqueda';
+                btnReset.textContent = window.TPTi18n ? window.TPTi18n.t('menu.reset_filtros') : 'Restablecer Filtros y Búsqueda';
                 btnReset.addEventListener('click', () => {
                     const inputBuscar = document.getElementById('input-buscar-nivel');
                     if (inputBuscar) {
@@ -1165,26 +1205,36 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (nivel.esOficial) {
                         const bOficial = document.createElement('span');
                         bOficial.className = 'badge badge-oficial';
-                        bOficial.textContent = 'DenkKraft';
+                        bOficial.textContent = window.TPTi18n ? window.TPTi18n.t('badge.oficial') : 'DenkKraft';
                         headerBadges.appendChild(bOficial);
                     } else if (nivel.autorNombre) {
                         const bAutor = document.createElement('span');
                         bAutor.className = 'badge badge-autor';
                         bAutor.textContent = nivel.autorNombre;
-                        bAutor.title = `Creador: ${nivel.autorNombre} (ID: ${nivel.id})`;
+                        bAutor.title = window.TPTi18n 
+                            ? window.TPTi18n.t('badge.creador_title', { autor: nivel.autorNombre, id: nivel.id })
+                            : `Creador: ${nivel.autorNombre} (ID: ${nivel.id})`;
                         headerBadges.appendChild(bAutor);
+                    } else {
+                        const bComunidad = document.createElement('span');
+                        bComunidad.className = 'badge badge-autor';
+                        bComunidad.textContent = window.TPTi18n ? window.TPTi18n.t('badge.comunidad') : 'Comunidad';
+                        headerBadges.appendChild(bComunidad);
                     }
 
                     const bDif = document.createElement('span');
-                    const difClase = nivel.dificultad === 'facil' ? 'badge-facil' : (nivel.dificultad === 'dificil' ? 'badge-dificil' : 'badge-normal');
+                    const difClave = (nivel.dificultad || 'normal').toLowerCase();
+                    const difClase = difClave === 'facil' ? 'badge-facil' : (difClave === 'dificil' ? 'badge-dificil' : 'badge-normal');
                     bDif.className = `badge ${difClase}`;
-                    bDif.textContent = (nivel.dificultad || 'Normal').toUpperCase();
+                    bDif.textContent = window.TPTi18n 
+                        ? window.TPTi18n.t(`badge.${difClave}`) 
+                        : (nivel.dificultad || 'Normal').toUpperCase();
                     headerBadges.appendChild(bDif);
 
                     if (nivel.archivoAudio) {
                         const bAudio = document.createElement('span');
                         bAudio.className = 'badge badge-audio';
-                        bAudio.textContent = 'Audio';
+                        bAudio.textContent = window.TPTi18n ? window.TPTi18n.t('badge.audio') : 'Audio';
                         headerBadges.appendChild(bAudio);
                     }
 
@@ -1206,7 +1256,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const btnJugar = document.createElement('button');
                     btnJugar.className = 'btn-jugar-nivel';
-                    btnJugar.textContent = 'Jugar';
+                    btnJugar.textContent = window.TPTi18n ? window.TPTi18n.t('menu.card_jugar') : 'Jugar';
                     btnJugar.addEventListener('click', () => {
                         nivelSeleccionado = nivel;
                         prepararPantallaPreJuego(nivel);
@@ -1217,8 +1267,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!nivel.esOficial) {
                         const btnEditar = document.createElement('button');
                         btnEditar.className = 'btn-secundario';
-                        btnEditar.textContent = 'Editar';
-                        btnEditar.title = 'Editar o eliminar este nivel';
+                        btnEditar.textContent = window.TPTi18n ? window.TPTi18n.t('menu.card_editar') : 'Editar';
+                        btnEditar.title = window.TPTi18n ? window.TPTi18n.t('menu.card_editar_title') : 'Editar o eliminar este nivel';
                         btnEditar.addEventListener('click', () => {
                             idNivelEnEdicion = nivel.id; 
                             audioEnEdicion = nivel.archivoAudio; 
@@ -1277,8 +1327,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         const btnExportar = document.createElement('button');
                         btnExportar.className = 'btn-secundario';
-                        btnExportar.textContent = 'Exportar';
-                        btnExportar.title = 'Exportar como archivo .json';
+                        btnExportar.textContent = window.TPTi18n ? window.TPTi18n.t('menu.card_exportar') : 'Exportar';
+                        btnExportar.title = window.TPTi18n ? window.TPTi18n.t('menu.card_exportar_title') : 'Exportar como archivo .json';
                         btnExportar.addEventListener('click', () => {
                             if (window.TPTlevelParser) {
                                 window.TPTlevelParser.exportar(nivel);
@@ -1304,7 +1354,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (paginacionNiveles && indicadorPagNiveles) {
                 if (totalPaginasNiveles > 1) {
                     paginacionNiveles.style.display = 'flex';
-                    indicadorPagNiveles.textContent = `Página ${paginaNivelesActual} de ${totalPaginasNiveles} (${nivelesFiltrados.length} niv.)`;
+                    indicadorPagNiveles.textContent = window.TPTi18n
+                        ? window.TPTi18n.t('menu.paginacion', { actual: paginaNivelesActual, total: totalPaginasNiveles, cant: nivelesFiltrados.length })
+                        : `Página ${paginaNivelesActual} de ${totalPaginasNiveles} (${nivelesFiltrados.length} niv.)`;
                     
                     if (btnFirst) btnFirst.disabled = (paginaNivelesActual <= 1);
                     if (btnPrev) btnPrev.disabled = (paginaNivelesActual <= 1);
@@ -1325,7 +1377,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             btnNum.type = 'button';
                             btnNum.className = `btn-pag-numero ${i === paginaNivelesActual ? 'activo' : ''}`;
                             btnNum.textContent = i;
-                            btnNum.title = `Ir a la página ${i}`;
+                            btnNum.title = window.TPTi18n ? window.TPTi18n.t('menu.ir_a_pagina', { num: i }) : `Ir a la página ${i}`;
                             btnNum.addEventListener('click', async () => {
                                 paginaNivelesActual = i;
                                 await cargarTarjetasDeNiveles();
@@ -1360,8 +1412,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnToggleGuiaAjustes = document.getElementById('btn-toggle-guia-ajustes');
 
     function sincronizarAjustesModalUI() {
+        const txtActiva = window.TPTi18n ? window.TPTi18n.t('comun.activo') : 'Activada';
+        const txtDesactiva = window.TPTi18n ? window.TPTi18n.t('comun.desactivado') : 'Desactivada';
+
         if (btnToggleBgmMenu) {
-            btnToggleBgmMenu.textContent = configApp.musicaMenuActiva ? 'Activada' : 'Desactivada';
+            btnToggleBgmMenu.textContent = configApp.musicaMenuActiva ? txtActiva : txtDesactiva;
             btnToggleBgmMenu.classList.toggle('activo', configApp.musicaMenuActiva);
         }
         if (sliderVolBgm) sliderVolBgm.value = configApp.volumenMenu;
@@ -1372,15 +1427,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sliderVolNiveles) sliderVolNiveles.value = configApp.volumenNiveles;
         if (badgeVolNiveles) badgeVolNiveles.textContent = `${configApp.volumenNiveles}%`;
         if (btnToggleSfxAjustes) {
-            btnToggleSfxAjustes.textContent = configApp.sfxActivo ? 'Activados' : 'Desactivados';
+            btnToggleSfxAjustes.textContent = configApp.sfxActivo ? txtActiva : txtDesactiva;
             btnToggleSfxAjustes.classList.toggle('activo', configApp.sfxActivo);
         }
         if (sliderVolSfx) sliderVolSfx.value = configApp.volumenSFX;
         if (badgeVolSfx) badgeVolSfx.textContent = `${configApp.volumenSFX}%`;
         if (btnToggleGuiaAjustes) {
-            btnToggleGuiaAjustes.textContent = configApp.guiaTecladoActiva ? 'Activada' : 'Desactivada';
+            btnToggleGuiaAjustes.textContent = configApp.guiaTecladoActiva ? txtActiva : txtDesactiva;
             btnToggleGuiaAjustes.classList.toggle('activo', configApp.guiaTecladoActiva);
         }
+
+        // Ajuste 6: Tamaño de Texto y Accesibilidad
+        const sliderEscalaTexto = document.getElementById('slider-escala-texto');
+        const badgeEscalaTexto = document.getElementById('badge-escala-texto');
+        if (sliderEscalaTexto) sliderEscalaTexto.value = configApp.escalaTexto || 100;
+        if (badgeEscalaTexto) badgeEscalaTexto.textContent = `${configApp.escalaTexto || 100}%`;
+
+        // Ajuste 7: Idioma del Sistema
+        const langAct = window.TPTi18n ? window.TPTi18n.getLanguage() : (configApp.idioma || 'es');
+        const btnLangEs = document.getElementById('btn-lang-es');
+        const btnLangDe = document.getElementById('btn-lang-de');
+        if (btnLangEs) btnLangEs.classList.toggle('activo', langAct === 'es');
+        if (btnLangDe) btnLangDe.classList.toggle('activo', langAct === 'de');
     }
 
     function configurarModalAjustes() {
@@ -1447,6 +1515,92 @@ document.addEventListener('DOMContentLoaded', () => {
                 sincronizarAjustesModalUI();
             });
         }
+
+        // --- CONTROLES DE TAMAÑO DE TEXTO Y ACCESIBILIDAD ---
+        const sliderEscalaTexto = document.getElementById('slider-escala-texto');
+        if (sliderEscalaTexto) {
+            sliderEscalaTexto.addEventListener('input', (e) => {
+                aplicarEscalaTexto(e.target.value);
+                guardarConfiguracion();
+            });
+        }
+
+        const btnEscalaMenos = document.getElementById('btn-escala-menos');
+        if (btnEscalaMenos) {
+            btnEscalaMenos.addEventListener('click', () => {
+                aplicarEscalaTexto((configApp.escalaTexto || 100) - 10);
+                guardarConfiguracion();
+            });
+        }
+
+        const btnEscalaReset = document.getElementById('btn-escala-reset');
+        if (btnEscalaReset) {
+            btnEscalaReset.addEventListener('click', () => {
+                aplicarEscalaTexto(100);
+                guardarConfiguracion();
+            });
+        }
+
+        const btnEscalaMas = document.getElementById('btn-escala-mas');
+        if (btnEscalaMas) {
+            btnEscalaMas.addEventListener('click', () => {
+                aplicarEscalaTexto((configApp.escalaTexto || 100) + 10);
+                guardarConfiguracion();
+            });
+        }
+
+        // --- CONTROLES DE IDIOMA (SISTEMA BILINGÜE ES / DE) ---
+        function cambiarIdioma(nuevoIdioma) {
+            if (window.TPTi18n) {
+                window.TPTi18n.setLanguage(nuevoIdioma);
+                configApp.idioma = nuevoIdioma;
+                guardarConfiguracion();
+                sincronizarAjustesModalUI();
+            }
+        }
+
+        const btnLangEs = document.getElementById('btn-lang-es');
+        if (btnLangEs) {
+            btnLangEs.addEventListener('click', () => cambiarIdioma('es'));
+        }
+
+        const btnLangDe = document.getElementById('btn-lang-de');
+        if (btnLangDe) {
+            btnLangDe.addEventListener('click', () => cambiarIdioma('de'));
+        }
+
+        const btnLandingLang = document.getElementById('btn-landing-lang');
+        if (btnLandingLang) {
+            btnLandingLang.addEventListener('click', () => {
+                if (window.TPTi18n) {
+                    window.TPTi18n.toggleLanguage();
+                    configApp.idioma = window.TPTi18n.getLanguage();
+                    guardarConfiguracion();
+                    sincronizarAjustesModalUI();
+                }
+            });
+        }
+
+        const btnMenuLang = document.getElementById('btn-menu-lang');
+        if (btnMenuLang) {
+            btnMenuLang.addEventListener('click', () => {
+                if (window.TPTi18n) {
+                    window.TPTi18n.toggleLanguage();
+                    configApp.idioma = window.TPTi18n.getLanguage();
+                    guardarConfiguracion();
+                    sincronizarAjustesModalUI();
+                }
+            });
+        }
+
+        window.addEventListener('tpt:languagechange', () => {
+            actualizarQuickBgmUI();
+            sincronizarAjustesModalUI();
+            iniciarConsejosRotativos();
+            if (typeof renderizarCatalogoTienda === 'function') renderizarCatalogoTienda();
+            if (typeof cargarTarjetasDeNiveles === 'function') cargarTarjetasDeNiveles();
+            if (typeof actualizarModosUI === 'function') actualizarModosUI();
+        });
 
         if (btnAbrirAjustes) {
             btnAbrirAjustes.addEventListener('click', () => {
@@ -1594,7 +1748,7 @@ document.addEventListener('DOMContentLoaded', () => {
             {
                 id: 'capibara',
                 tipo: 'mascota',
-                nombre: 'Chiwirón',
+                nombre: 'Chui el Chiwire',
                 precio: 99999999,
                 desc: 'Animal místico de la creación de Dios, amigo de todos, enemigo solo de sí mismo.',
                 mascotaClase: 'mascota-capibara'
@@ -1762,24 +1916,35 @@ document.addEventListener('DOMContentLoaded', () => {
                                 (item.tipo === 'tema' && (usuarioActivo.temaEquipado || 'claro') === item.id);
             const esSeleccionado = itemTiendaSeleccionado && itemTiendaSeleccionado.id === item.id && itemTiendaSeleccionado.tipo === item.tipo;
 
+            const meta = (item.tipo === 'mascota' && window.TPTi18n) 
+                ? (window.TPTi18n.obtenerMetadatosMascota(item.id) || item)
+                : ((item.tipo === 'tema' && window.TPTi18n) 
+                    ? (window.TPTi18n.obtenerMetadatosTema(item.id) || item) 
+                    : item);
+            const nombreItem = meta.nombre || item.nombre;
+
             const fila = document.createElement('div');
             fila.className = `tienda-item-fila ${esSeleccionado ? 'item-seleccionado' : ''}`;
             
             let estadoTexto = '';
             let estadoClase = 'tienda-item-estado';
             if (estaEquipado) {
-                estadoTexto = 'Equipado';
+                estadoTexto = window.TPTi18n ? window.TPTi18n.t('tienda.equipado') : 'Equipado';
                 estadoClase += ' estado-equipado';
             } else if (yaComprado) {
-                estadoTexto = 'Adquirido';
+                estadoTexto = window.TPTi18n ? window.TPTi18n.t('tienda.adquirido') : 'Adquirido';
             } else {
-                estadoTexto = `${item.precio.toLocaleString('es-ES')} pts`;
+                estadoTexto = `${item.precio.toLocaleString('es-ES')} ${window.TPTi18n ? window.TPTi18n.t('comun.puntos') : 'pts'}`;
             }
+
+            const precioTexto = item.precio === 0 
+                ? (window.TPTi18n ? window.TPTi18n.t('tienda.gratuito') : 'Gratuito') 
+                : `${item.precio.toLocaleString('es-ES')} ${window.TPTi18n ? window.TPTi18n.t('comun.puntos') : 'pts'}`;
 
             fila.innerHTML = `
                 <div class="tienda-item-info">
-                    <span class="tienda-item-nombre">${item.nombre}</span>
-                    <span class="tienda-item-precio">${item.precio === 0 ? 'Gratuito' : (item.precio.toLocaleString('es-ES') + ' pts')}</span>
+                    <span class="tienda-item-nombre">${nombreItem}</span>
+                    <span class="tienda-item-precio">${precioTexto}</span>
                 </div>
                 <span class="${estadoClase}">${estadoTexto}</span>
             `;
@@ -1813,14 +1978,26 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        if (previewTitulo) previewTitulo.textContent = item.nombre;
+        const meta = (item.tipo === 'mascota' && window.TPTi18n) 
+            ? (window.TPTi18n.obtenerMetadatosMascota(item.id) || item)
+            : ((item.tipo === 'tema' && window.TPTi18n) 
+                ? (window.TPTi18n.obtenerMetadatosTema(item.id) || item) 
+                : item);
+        const nombreItem = meta.nombre || item.nombre;
+        const descItem = meta.desc || item.desc;
+
+        if (previewTitulo) previewTitulo.textContent = nombreItem;
         if (previewTipo) {
-            previewTipo.textContent = item.tipo === 'mascota' ? 'Mascota Compañera' : 'Tema Visual';
+            previewTipo.textContent = item.tipo === 'mascota' 
+                ? (window.TPTi18n ? window.TPTi18n.t('tienda.tipo_mascota') : 'Mascota Compañera') 
+                : (window.TPTi18n ? window.TPTi18n.t('tienda.tipo_tema') : 'Tema Visual');
             previewTipo.className = item.tipo === 'mascota' ? 'badge badge-oficial' : 'badge badge-facil';
         }
-        if (previewDesc) previewDesc.textContent = item.desc;
+        if (previewDesc) previewDesc.textContent = descItem;
         if (previewPrecio) {
-            previewPrecio.textContent = item.precio === 0 ? 'Gratis' : `${item.precio.toLocaleString('es-ES')} pts`;
+            previewPrecio.textContent = item.precio === 0 
+                ? (window.TPTi18n ? window.TPTi18n.t('tienda.gratis') : 'Gratis') 
+                : `${item.precio.toLocaleString('es-ES')} ${window.TPTi18n ? window.TPTi18n.t('comun.puntos') : 'pts'}`;
         }
 
         if (previewVisual) {
@@ -1835,7 +2012,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 swatchCard.style.backgroundColor = item.colorFondo;
                 swatchCard.style.borderColor = item.colorAcento;
                 swatchCard.innerHTML = `
-                    <span class="swatch-titulo" style="color: ${item.id === 'claro' ? '#0f172a' : '#ffffff'};">${item.nombre}</span>
+                    <span class="swatch-titulo" style="color: ${item.id === 'claro' ? '#0f172a' : '#ffffff'};">${nombreItem}</span>
                     <div class="swatch-barras">
                         <div class="swatch-barra" style="background: ${item.colorAcento};"></div>
                         <div class="swatch-barra" style="background: ${item.id === 'claro' ? '#94a3b8' : '#334155'};"></div>
@@ -1854,21 +2031,24 @@ document.addEventListener('DOMContentLoaded', () => {
                                 (item.tipo === 'tema' && (usuarioActivo.temaEquipado || 'claro') === item.id);
 
             if (estaEquipado) {
-                btnAccionPreview.textContent = 'Equipado';
+                btnAccionPreview.textContent = window.TPTi18n ? window.TPTi18n.t('tienda.equipado') : 'Equipado';
                 btnAccionPreview.className = 'btn-primario btn-tienda-accion';
                 btnAccionPreview.style.background = 'rgba(16, 185, 129, 0.2)';
                 btnAccionPreview.style.borderColor = 'var(--verde-exito)';
                 btnAccionPreview.style.color = 'var(--verde-exito)';
                 btnAccionPreview.disabled = true;
             } else if (yaComprado) {
-                btnAccionPreview.textContent = 'Equipar';
+                btnAccionPreview.textContent = window.TPTi18n ? window.TPTi18n.t('tienda.equipar') : 'Equipar';
                 btnAccionPreview.className = 'btn-primario btn-tienda-accion';
                 btnAccionPreview.style.background = 'var(--azul)';
                 btnAccionPreview.style.borderColor = 'var(--azul)';
                 btnAccionPreview.style.color = '#ffffff';
                 btnAccionPreview.disabled = false;
             } else {
-                btnAccionPreview.textContent = `Comprar (${item.precio.toLocaleString('es-ES')} pts)`;
+                const txtComprar = window.TPTi18n 
+                    ? window.TPTi18n.t('tienda.comprar', { precio: item.precio.toLocaleString('es-ES') }) 
+                    : `Comprar (${item.precio.toLocaleString('es-ES')} pts)`;
+                btnAccionPreview.textContent = txtComprar;
                 btnAccionPreview.className = 'btn-primario btn-tienda-accion';
                 btnAccionPreview.style.background = 'var(--morado)';
                 btnAccionPreview.style.borderColor = 'var(--morado)';
@@ -1906,11 +2086,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 actualizarInfoUsuarioMenu();
                 renderizarCatalogoTienda();
             } else {
-                mostrarAlerta(
-                    `Te faltan ${(item.precio - usuarioActivo.puntos).toLocaleString('es-ES')} puntos para desbloquear "${item.nombre}". ¡Sigue jugando lecciones para conseguir más puntos!`,
-                    "Puntos Insuficientes",
-                    "alerta"
-                );
+                const meta = (item.tipo === 'mascota' && window.TPTi18n) 
+                    ? (window.TPTi18n.obtenerMetadatosMascota(item.id) || item)
+                    : ((item.tipo === 'tema' && window.TPTi18n) 
+                        ? (window.TPTi18n.obtenerMetadatosTema(item.id) || item) 
+                        : item);
+                const nombreItem = meta.nombre || item.nombre;
+                const faltantes = item.precio - usuarioActivo.puntos;
+                const msg = window.TPTi18n 
+                    ? window.TPTi18n.t('tienda.falta_puntos', { faltantes: faltantes.toLocaleString('es-ES'), nombre: nombreItem })
+                    : `Te faltan ${faltantes.toLocaleString('es-ES')} puntos para desbloquear "${nombreItem}". ¡Sigue jugando lecciones para conseguir más puntos!`;
+                const tit = window.TPTi18n ? window.TPTi18n.t('tienda.puntos_insuficientes') : "Puntos Insuficientes";
+                mostrarAlerta(msg, tit, "alerta");
             }
         });
     }
@@ -2454,7 +2641,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     htmlComparacion = `
                         <div class="docente-comparacion-box" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.06);">
                             <span style="color: var(--rojo-error); font-weight: 700;">❌ No coincide con la asignación del docente:</span>
-                            <span style="font-size: 12px; color: var(--texto-secundario);">Se solicitó evaluar <strong>"${nombreEsperado}"</strong> (ID: <code>${idEsperado}</code>), pero este certificado pertenece a <strong>"${cert.nivelTitulo}"</strong> (ID: <code>${cert.nivelId}</code>).</span>
+                            <span style="font-size: calc(12px * var(--escala-texto, 1)); color: var(--texto-secundario);">Se solicitó evaluar <strong>"${nombreEsperado}"</strong> (ID: <code>${idEsperado}</code>), pero este certificado pertenece a <strong>"${cert.nivelTitulo}"</strong> (ID: <code>${cert.nivelId}</code>).</span>
                         </div>
                     `;
                 }
@@ -2528,11 +2715,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <div class="docente-detalle-item">
                             <span class="docente-detalle-label">ID de Lección en Firma</span>
-                            <span class="docente-detalle-val" style="font-size: 11.5px; color: ${esSuplantacionTitulo ? 'var(--rojo-error)' : 'var(--azul)'}; font-weight: 700;">${cert.nivelId}</span>
+                            <span class="docente-detalle-val" style="font-size: calc(11.5px * var(--escala-texto, 1)); color: ${esSuplantacionTitulo ? 'var(--rojo-error)' : 'var(--azul)'}; font-weight: 700;">${cert.nivelId}</span>
                         </div>
                         <div class="docente-detalle-item">
                             <span class="docente-detalle-label">Integridad de Texto</span>
-                            <span class="docente-detalle-val" style="font-size: 11.5px; font-weight: 700;">
+                            <span class="docente-detalle-val" style="font-size: calc(11.5px * var(--escala-texto, 1)); font-weight: 700;">
                                 ${estadoIntegridadTexto === 'valido' 
                                     ? '<span style="color: var(--verde-exito);">✓ Texto Original Íntegro</span>' 
                                     : (estadoIntegridadTexto === 'alterado' 

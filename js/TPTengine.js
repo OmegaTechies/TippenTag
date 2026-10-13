@@ -168,7 +168,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('tippen_tag_config', JSON.stringify(window.TPTConfig));
                 } catch (e) {}
             }
-            btnToggleSonido.textContent = SoundFX.activado ? 'Sonido: ON' : 'Sonido: OFF';
+            const estadoStr = SoundFX.activado 
+                ? (window.TPTi18n ? window.TPTi18n.t('comun.on') : 'ON') 
+                : (window.TPTi18n ? window.TPTi18n.t('comun.off') : 'OFF');
+            btnToggleSonido.textContent = window.TPTi18n ? window.TPTi18n.t('juego.sonido_btn', { estado: estadoStr }) : `Sonido: ${estadoStr}`;
             btnToggleSonido.title = SoundFX.activado ? 'Desactivar sonido' : 'Activar sonido';
         });
     }
@@ -177,19 +180,24 @@ document.addEventListener('DOMContentLoaded', () => {
         btnToggleGuia.addEventListener('click', () => {
             imgTeclado.classList.toggle('guia-oculta');
             const oculta = imgTeclado.classList.contains('guia-oculta');
-            btnToggleGuia.textContent = oculta ? 'Guía: OFF' : 'Guía: ON';
+            const estadoStr = oculta 
+                ? (window.TPTi18n ? window.TPTi18n.t('comun.off') : 'OFF') 
+                : (window.TPTi18n ? window.TPTi18n.t('comun.on') : 'ON');
+            btnToggleGuia.textContent = window.TPTi18n ? window.TPTi18n.t('juego.guia_btn', { estado: estadoStr }) : `Guía: ${estadoStr}`;
         });
     }
 
     // Control y Atajo de Pausar Canción (Alt + P)
     function alternarPausaCancion() {
         if (!nivelActivo || !nivelActivo.archivoAudio || !reproductorAudio) return;
+        const txtPausar = window.TPTi18n ? window.TPTi18n.t('juego.pausar_audio') : 'Pausar Música';
+        const txtReanudar = window.TPTi18n ? window.TPTi18n.t('juego.reanudar_audio') : 'Reanudar Música';
         if (reproductorAudio.paused) {
             reproductorAudio.play().catch(() => {});
-            if (btnControlAudio) btnControlAudio.innerHTML = `Pausar Música <small>[Alt + P]</small>`;
+            if (btnControlAudio) btnControlAudio.innerHTML = `${txtPausar} <small>[Alt + P]</small>`;
         } else {
             reproductorAudio.pause();
-            if (btnControlAudio) btnControlAudio.innerHTML = `Reanudar Música <small>[Alt + P]</small>`;
+            if (btnControlAudio) btnControlAudio.innerHTML = `${txtReanudar} <small>[Alt + P]</small>`;
         }
     }
 
@@ -207,10 +215,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         reproductorAudio.addEventListener('play', () => {
-            if (btnControlAudio) btnControlAudio.innerHTML = `Pausar Música <small>[Alt + P]</small>`;
+            const txtPausar = window.TPTi18n ? window.TPTi18n.t('juego.pausar_audio') : 'Pausar Música';
+            if (btnControlAudio) btnControlAudio.innerHTML = `${txtPausar} <small>[Alt + P]</small>`;
         });
         reproductorAudio.addEventListener('pause', () => {
-            if (btnControlAudio) btnControlAudio.innerHTML = `Reanudar Música <small>[Alt + P]</small>`;
+            const txtReanudar = window.TPTi18n ? window.TPTi18n.t('juego.reanudar_audio') : 'Reanudar Música';
+            if (btnControlAudio) btnControlAudio.innerHTML = `${txtReanudar} <small>[Alt + P]</small>`;
         });
     }
 
@@ -267,7 +277,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!displayVidas) return;
         if (modoPartida === 'vital' || modoPartida === 'dificil') {
             displayVidas.style.display = 'inline-flex';
-            displayVidas.textContent = `Vidas: ${vidasActuales} / ${vidasMaximas}`;
+            displayVidas.textContent = window.TPTi18n 
+                ? window.TPTi18n.t('juego.vidas', { actual: vidasActuales, max: vidasMaximas })
+                : `Vidas: ${vidasActuales} / ${vidasMaximas}`;
         } else {
             displayVidas.style.display = 'none';
         }
@@ -276,7 +288,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function actualizarComboUI() {
         if (!displayCombo) return;
         if (rachaCombo >= 5) {
-            displayCombo.textContent = `Combo x${rachaCombo}`;
+            displayCombo.textContent = window.TPTi18n 
+                ? window.TPTi18n.t('juego.combo', { num: rachaCombo })
+                : `Combo x${rachaCombo}`;
             displayCombo.classList.add('combo-activo');
         } else {
             displayCombo.classList.remove('combo-activo');
@@ -325,8 +339,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const guiaActiva = window.TPTConfig.guiaTecladoActiva !== false;
             if (imgTeclado) imgTeclado.classList.toggle('guia-oculta', !guiaActiva);
-            if (btnToggleGuia) btnToggleGuia.textContent = guiaActiva ? 'Guía: ON' : 'Guía: OFF';
-            if (btnToggleSonido) btnToggleSonido.textContent = SoundFX.activado ? 'Sonido: ON' : 'Sonido: OFF';
+            const estadoGuia = guiaActiva ? (window.TPTi18n ? window.TPTi18n.t('comun.on') : 'ON') : (window.TPTi18n ? window.TPTi18n.t('comun.off') : 'OFF');
+            const estadoSnd = SoundFX.activado ? (window.TPTi18n ? window.TPTi18n.t('comun.on') : 'ON') : (window.TPTi18n ? window.TPTi18n.t('comun.off') : 'OFF');
+            if (btnToggleGuia) btnToggleGuia.textContent = window.TPTi18n ? window.TPTi18n.t('juego.guia_btn', { estado: estadoGuia }) : `Guía: ${estadoGuia}`;
+            if (btnToggleSonido) btnToggleSonido.textContent = window.TPTi18n ? window.TPTi18n.t('juego.sonido_btn', { estado: estadoSnd }) : `Sonido: ${estadoSnd}`;
         }
 
         // Control de audio
@@ -350,7 +366,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 if (btnControlAudio) {
                     btnControlAudio.style.display = 'inline-flex';
-                    btnControlAudio.innerHTML = `Pausar Música <small>[Alt + P]</small>`;
+                    const txtPausar = window.TPTi18n ? window.TPTi18n.t('juego.pausar_audio') : 'Pausar Música';
+                    btnControlAudio.innerHTML = `${txtPausar} <small>[Alt + P]</small>`;
                 }
             } else {
                 reproductorAudio.pause();
@@ -380,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1600));
 
             countdownTimeouts.push(setTimeout(() => {
-                countdownNumero.textContent = "¡ESCRIBE!";
+                countdownNumero.textContent = window.TPTi18n ? window.TPTi18n.t('juego.escribe') : "¡ESCRIBE!";
                 SoundFX.beep(880, 0.15);
             }, 2400));
 
@@ -468,11 +485,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (modalResultado) {
             resultadoIcono.textContent = '';
             resultadoIcono.style.display = 'none';
-            resultadoTitulo.textContent = completado ? '¡Nivel Superado!' : '¡Desafío Fallido!';
-            resultadoTitulo.style.color = completado ? 'var(--azul)' : 'var(--rojo-error)';
-            resultadoSubtitulo.textContent = completado 
-                ? '¡Gran velocidad y ritmo mecanográfico!' 
-                : 'Se acabaron las vidas o el tiempo límite. ¡Sigue practicando!';
+            if (completado) {
+                resultadoTitulo.textContent = window.TPTi18n ? window.TPTi18n.t('resultado.completado_titulo') : '¡Nivel Completado!';
+                resultadoTitulo.style.color = 'var(--azul)';
+                resultadoSubtitulo.textContent = window.TPTi18n ? window.TPTi18n.t('resultado.completado_sub') : 'Excelente destreza mecanográfica';
+            } else if (tiempoRestante <= 0 && modoPartida !== 'viaje') {
+                resultadoTitulo.textContent = window.TPTi18n ? window.TPTi18n.t('resultado.tiempo_titulo') : '¡Tiempo Agotado!';
+                resultadoTitulo.style.color = 'var(--rojo-error)';
+                resultadoSubtitulo.textContent = window.TPTi18n ? window.TPTi18n.t('resultado.tiempo_sub') : 'El tiempo se terminó. ¡Sigue practicando para mejorar tu velocidad!';
+            } else {
+                resultadoTitulo.textContent = window.TPTi18n ? window.TPTi18n.t('resultado.vidas_titulo') : '¡Sin Vidas!';
+                resultadoTitulo.style.color = 'var(--rojo-error)';
+                resultadoSubtitulo.textContent = window.TPTi18n ? window.TPTi18n.t('resultado.vidas_sub') : 'Agotaste tus oportunidades. ¡Concéntrate en la precisión!';
+            }
             
             resultadoWpm.textContent = `${wpm}`;
             resultadoPrecision.textContent = `${precision}%`;
@@ -543,7 +568,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mascotaDisplay.classList.add('mascota-escribiendo');
         setTimeout(() => mascotaDisplay.classList.remove('mascota-escribiendo'), 80);
 
-        if (letraTecleada.toLowerCase() === fraseActual[indiceActual].toLowerCase()) {
+        if (letraTecleada === fraseActual[indiceActual]) {
             if (spanActual) spanActual.classList.add('correct');
             puntosGlobales += 1;
             caracteresCorrectos++;

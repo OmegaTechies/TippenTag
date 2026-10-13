@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    css/layout.css - Tippen Tag (DenkKraft)
    Estructuras de cuadrícula, flexbox, paginación, filtros y adaptabilidad
    ========================================================================== */
@@ -72,7 +72,7 @@
 }
 
 .consejo-etiqueta {
-    font-size: 11px;
+    font-size: calc(11px * var(--escala-texto, 1));
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -80,7 +80,7 @@
 }
 
 .landing-consejo-texto {
-    font-size: 14px;
+    font-size: calc(14px * var(--escala-texto, 1));
     line-height: 1.5;
     color: #ffffff;
     margin: 0;
@@ -117,7 +117,7 @@
 }
 
 .landing-perfiles-header {
-    font-size: 16px;
+    font-size: calc(16px * var(--escala-texto, 1));
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1.5px;
@@ -177,7 +177,7 @@
 }
 
 .filtro-etiqueta-label {
-    font-size: 13px;
+    font-size: calc(13px * var(--escala-texto, 1));
     font-weight: 600;
     color: var(--texto-secundario);
 }
@@ -219,7 +219,7 @@
 }
 
 .paginacion-indicador {
-    font-size: 13px;
+    font-size: calc(13px * var(--escala-texto, 1));
     font-weight: 600;
     color: var(--texto-secundario);
     margin-left: 8px;
@@ -417,7 +417,7 @@
 
 .ajustes-cabecera h3 {
     margin: 0;
-    font-size: 20px;
+    font-size: calc(20px * var(--escala-texto, 1));
     color: var(--titulo-color);
 }
 
