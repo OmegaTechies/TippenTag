@@ -126,6 +126,175 @@ body.tema-espacio {
     --sombra-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
     --sombra-neon: 0 0 20px rgba(139, 92, 246, 0.3);
 }
+/* --- TEMA CAFÉ DE OTOÑO (Cálido y relajante) --- */
+body.tema-cafe_otono {
+    --fondo: #2c1e16;
+    --panel: #3e2b20;
+    --panel-transparente: rgba(62, 43, 32, 0.92);
+    --panel-borde: #5c4033;
+    --panel-hover: #4a3528;
+    --texto: #f4e1d2;
+    --titulo-color: #ffffff;
+    --texto-secundario: #d2b49e;
+    --texto-mutado: #a88d7b;
+    --texto-correcto: #d35400;
+    --azul: #d35400;
+    --azul-brillo: #e67e22;
+    --azul-suave: rgba(211, 84, 0, 0.15);
+    --morado: #c0392b;
+    --morado-brillo: #e74c3c;
+    --morado-suave: rgba(192, 57, 43, 0.15);
+    --amarillo-btn: #f39c12;
+    --amarillo-hover: #f1c40f;
+    --degradado: linear-gradient(135deg, #2c1e16 0%, #3e2b20 100%);
+    --degradado-tarjeta: linear-gradient(180deg, #3e2b20 0%, #2c1e16 100%);
+}
+
+/* --- TEMA BOSQUE MÍSTICO (Naturaleza profunda) --- */
+body.tema-bosque {
+    --fondo: #1b281b;
+    --panel: #263626;
+    --panel-transparente: rgba(38, 54, 38, 0.92);
+    --panel-borde: #384d38;
+    --panel-hover: #2f422f;
+    --texto: #e8f5e9;
+    --titulo-color: #ffffff;
+    --texto-secundario: #a5d6a7;
+    --texto-mutado: #81c784;
+    --texto-correcto: #4caf50;
+    --azul: #4caf50;
+    --azul-brillo: #66bb6a;
+    --azul-suave: rgba(76, 175, 80, 0.15);
+    --morado: #2e7d32;
+    --morado-brillo: #43a047;
+    --morado-suave: rgba(46, 125, 50, 0.15);
+    --amarillo-btn: #fdd835;
+    --amarillo-hover: #ffeb3b;
+    --degradado: linear-gradient(135deg, #1b281b 0%, #263626 100%);
+    --degradado-tarjeta: linear-gradient(180deg, #263626 0%, #1b281b 100%);
+}
+
+/* --- TEMA OCÉANO PROFUNDO (Concentración total) --- */
+body.tema-oceano {
+    --fondo: #0a192f;
+    --panel: #112240;
+    --panel-transparente: rgba(17, 34, 64, 0.92);
+    --panel-borde: #233554;
+    --panel-hover: #1d2d50;
+    --texto: #ccd6f6;
+    --titulo-color: #e6f1ff;
+    --texto-secundario: #8892b0;
+    --texto-mutado: #606a86;
+    --texto-correcto: #64ffda;
+    --azul: #64ffda;
+    --azul-brillo: #14b8a6;
+    --azul-suave: rgba(100, 255, 218, 0.15);
+    --morado: #0ea5e9;
+    --morado-brillo: #38bdf8;
+    --morado-suave: rgba(14, 165, 233, 0.15);
+    --amarillo-btn: #fbbf24;
+    --amarillo-hover: #fcd34d;
+    --degradado: linear-gradient(135deg, #0a192f 0%, #112240 100%);
+    --degradado-tarjeta: linear-gradient(180deg, #112240 0%, #0a192f 100%);
+}
+
+/* --- TEMA DRÁCULA (Clásico de Desarrolladores) --- */
+body.tema-dracula {
+    --fondo: #282a36;
+    --panel: #44475a;
+    --panel-transparente: rgba(68, 71, 90, 0.92);
+    --panel-borde: #6272a4;
+    --panel-hover: #4e5166;
+    --texto: #f8f8f2;
+    --titulo-color: #ffffff;
+    --texto-secundario: #bd93f9;
+    --texto-mutado: #6272a4;
+    --texto-correcto: #50fa7b;
+    --azul: #50fa7b;
+    --azul-brillo: #69ff94;
+    --azul-suave: rgba(80, 250, 123, 0.15);
+    --morado: #ff79c6;
+    --morado-brillo: #ff92d0;
+    --morado-suave: rgba(255, 121, 198, 0.15);
+    --amarillo-btn: #f1fa8c;
+    --amarillo-hover: #ffffa5;
+    --degradado: linear-gradient(135deg, #282a36 0%, #44475a 100%);
+    --degradado-tarjeta: linear-gradient(180deg, #44475a 0%, #282a36 100%);
+}
+
+/* --- TEMA MONOCROMO (Cero distracciones) --- */
+body.tema-monocromo {
+    --fondo: #f5f5f5;
+    --panel: #ffffff;
+    --panel-transparente: rgba(255, 255, 255, 0.95);
+    --panel-borde: #e0e0e0;
+    --panel-hover: #eeeeee;
+    --texto: #121212;
+    --titulo-color: #000000;
+    --texto-secundario: #555555;
+    --texto-mutado: #9e9e9e;
+    --texto-correcto: #212121;
+    --azul: #212121;
+    --azul-brillo: #424242;
+    --azul-suave: rgba(33, 33, 33, 0.1);
+    --morado: #616161;
+    --morado-brillo: #757575;
+    --morado-suave: rgba(97, 97, 97, 0.1);
+    --amarillo-btn: #e0e0e0;
+    --amarillo-hover: #d5d5d5;
+    --degradado: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
+    --degradado-tarjeta: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+}
+
+/* --- TEMA CYBERPUNK (Neón y Alta Energía) --- */
+body.tema-cyberpunk {
+    --fondo: #0d0e15;
+    --panel: #161824;
+    --panel-transparente: rgba(22, 24, 36, 0.92);
+    --panel-borde: #2a2e45;
+    --panel-hover: #1e2132;
+    --texto: #e0e0e0;
+    --titulo-color: #ffffff;
+    --texto-secundario: #8c92ac;
+    --texto-mutado: #525876;
+    --texto-correcto: #00ffcc;
+    --azul: #00ffcc;
+    --azul-brillo: #33ffdb;
+    --azul-suave: rgba(0, 255, 204, 0.15);
+    --morado: #ff007f;
+    --morado-brillo: #ff3399;
+    --morado-suave: rgba(255, 0, 127, 0.15);
+    --amarillo-btn: #fcee0a;
+    --amarillo-hover: #fff34d;
+    --degradado: linear-gradient(135deg, #ff007f 0%, #00ffcc 100%);
+    --degradado-tarjeta: linear-gradient(180deg, #161824 0%, #0d0e15 100%);
+    --sombra-neon: 0 0 15px rgba(0, 255, 204, 0.3);
+}
+
+/* --- TEMA VAPORWAVE (Nostalgia 80s) --- */
+body.tema-vaporwave {
+    --fondo: #2b213a;
+    --panel: #382a4b;
+    --panel-transparente: rgba(56, 42, 75, 0.92);
+    --panel-borde: #4d3a66;
+    --panel-hover: #433359;
+    --texto: #f8f8f2;
+    --titulo-color: #ffffff;
+    --texto-secundario: #bd93f9;
+    --texto-mutado: #8465b3;
+    --texto-correcto: #ff79c6;
+    --azul: #ff79c6;
+    --azul-brillo: #ff92d0;
+    --azul-suave: rgba(255, 121, 198, 0.15);
+    --morado: #8be9fd;
+    --morado-brillo: #a4ffff;
+    --morado-suave: rgba(139, 233, 253, 0.15);
+    --amarillo-btn: #ffb86c;
+    --amarillo-hover: #ffc98b;
+    --degradado: linear-gradient(135deg, #ff79c6 0%, #8be9fd 100%);
+    --degradado-tarjeta: linear-gradient(180deg, #382a4b 0%, #2b213a 100%);
+    --sombra-neon: 0 0 15px rgba(255, 121, 198, 0.3);
+}
 
 /* --- RESET Y REGLAS FUNDAMENTALES --- */
 *, *::before, *::after {

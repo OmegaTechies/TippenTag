@@ -331,15 +331,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Control de audio
         if (nivel.archivoAudio) {
-            const audioUrl = URL.createObjectURL(nivel.archivoAudio);
-            reproductorAudio.src = audioUrl;
-            reproductorAudio.style.display = 'block';
-            if (window.TPTConfig && window.TPTConfig.volumenNiveles != null) {
-                reproductorAudio.volume = window.TPTConfig.volumenNiveles / 100;
+            let audioUrl = null;
+            try {
+                if (typeof nivel.archivoAudio === 'string') {
+                    audioUrl = nivel.archivoAudio;
+                } else if (nivel.archivoAudio instanceof Blob) {
+                    audioUrl = URL.createObjectURL(nivel.archivoAudio);
+                }
+            } catch (errAudio) {
+                console.error("Error al procesar archivoAudio:", errAudio);
             }
-            if (btnControlAudio) {
-                btnControlAudio.style.display = 'inline-flex';
-                btnControlAudio.innerHTML = `Pausar Música <small>[Alt + P]</small>`;
+
+            if (audioUrl) {
+                reproductorAudio.src = audioUrl;
+                reproductorAudio.style.display = 'block';
+                if (window.TPTConfig && window.TPTConfig.volumenNiveles != null) {
+                    reproductorAudio.volume = window.TPTConfig.volumenNiveles / 100;
+                }
+                if (btnControlAudio) {
+                    btnControlAudio.style.display = 'inline-flex';
+                    btnControlAudio.innerHTML = `Pausar Música <small>[Alt + P]</small>`;
+                }
+            } else {
+                reproductorAudio.pause();
+                reproductorAudio.style.display = 'none';
+                if (btnControlAudio) btnControlAudio.style.display = 'none';
             }
         } else {
             reproductorAudio.pause();

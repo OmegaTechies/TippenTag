@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function actualizarPuntosTienda() {
         const display = document.getElementById('display-puntos-tienda');
         if (display && usuarioActivo) {
-            display.textContent = `${usuarioActivo.puntos} pts`;
+            display.textContent = `${(usuarioActivo.puntos || 0).toLocaleString('es-ES')} pts`;
         }
     }
 
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const avatarDisplay = document.getElementById('menu-avatar-display');
 
         if (nombreDisplay) nombreDisplay.textContent = usuarioActivo.nombre;
-        if (puntosDisplay) puntosDisplay.textContent = `${usuarioActivo.puntos} pts`;
+        if (puntosDisplay) puntosDisplay.textContent = `${(usuarioActivo.puntos || 0).toLocaleString('es-ES')} pts`;
         
         if (avatarDisplay) {
             if (usuarioActivo.avatarBlob) {
@@ -333,7 +333,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function aplicarCosmetico(tipo, valor) {
         if (tipo === 'tema') {
-            document.body.classList.remove('tema-claro', 'tema-oscuro', 'tema-espacio');
+            // Eliminar dinámicamente cualquier clase de tema previo (que inicie con 'tema-')
+            const clasesTemaPrevias = Array.from(document.body.classList).filter(cls => cls.startsWith('tema-'));
+            clasesTemaPrevias.forEach(cls => document.body.classList.remove(cls));
             document.body.classList.add(`tema-${valor}`);
         } else if (tipo === 'mascota') {
             const mascotaDisplay = document.getElementById('mascota-display');
@@ -653,7 +655,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formCreador.addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            const idNivel = idNivelEnEdicion ? idNivelEnEdicion : "lvl_" + Date.now();
+            let idNivel = idNivelEnEdicion ? idNivelEnEdicion : "lvl_" + Date.now();
             const titulo = document.getElementById('titulo-input').value.trim();
             const texto = document.getElementById('texto-input').value.trim();
             const dificultad = document.getElementById('dificultad-input').value;
@@ -679,8 +681,34 @@ document.addEventListener('DOMContentLoaded', () => {
             let archivoImgFinNuevo = document.getElementById('img-fin-input').files[0];
             let imgFinFinal = archivoImgFinNuevo ? archivoImgFinNuevo : imgFinEnEdicion;
 
+            // Seguridad de Autoría y Detección de Modificación de Exámenes:
+            let nivelOriginal = null;
+            if (idNivelEnEdicion) {
+                nivelOriginal = await window.TPTDatabase.obtenerNivelPorId(idNivelEnEdicion);
+            }
+
+            const autorActualId = usuarioActivo ? usuarioActivo.id : 'anonimo';
+            const autorActualNombre = usuarioActivo ? usuarioActivo.nombre : 'Comunidad';
+
+            const esMismoAutor = Boolean(nivelOriginal && nivelOriginal.autorId && nivelOriginal.autorId === autorActualId);
+            const esNivelDeOtroAutor = Boolean(nivelOriginal && nivelOriginal.autorId && nivelOriginal.autorId !== autorActualId);
+
+            let forkeado = false;
+            // Si el usuario edita un nivel creado por otra persona (p. ej. un estudiante editando el examen del docente),
+            // NO se le permite sobrescribir el examen del docente ni retener su ID original. Se ramifica con nuevo ID.
+            if (idNivelEnEdicion && esNivelDeOtroAutor) {
+                idNivel = "lvl_copia_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+                forkeado = true;
+            }
+
+            const hashTexto = await generarHashTexto(texto);
+
             const nivelProcesado = {
                 id: idNivel,
+                autorId: forkeado ? autorActualId : (esMismoAutor ? nivelOriginal.autorId : autorActualId),
+                autorNombre: forkeado ? autorActualNombre : (esMismoAutor ? nivelOriginal.autorNombre : autorActualNombre),
+                hashTexto: hashTexto,
+                caracteresTexto: texto.length,
                 titulo: titulo,
                 dificultad: dificultad, 
                 modo: modoJuego, 
@@ -697,7 +725,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                if (idNivelEnEdicion) {
+                if (idNivelEnEdicion && !forkeado) {
                     await window.TPTDatabase.actualizarNivel(nivelProcesado);
                 } else {
                     await window.TPTDatabase.guardarNivel(nivelProcesado);
@@ -720,7 +748,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 await cargarTarjetasDeNiveles(); 
                 cambiarVista('menu');
-                mostrarAlerta("¡El nivel ha sido guardado exitosamente!", "Nivel Guardado", "exito");
+                if (forkeado) {
+                    mostrarAlerta(
+                        `Has personalizado un nivel creado por "${nivelOriginal.autorNombre || 'otro autor'}". Para garantizar la seguridad académica y evitar trampas en exámenes, se guardó como una versión tuya con un nuevo ID (${idNivel}), preservando intacto el nivel original del docente.`,
+                        "Nueva Versión Personal",
+                        "alerta"
+                    );
+                } else {
+                    mostrarAlerta("¡El nivel ha sido guardado exitosamente!", "Nivel Guardado", "exito");
+                }
             } catch (error) {
                 console.error("Error al guardar nivel en BD:", error);
                 mostrarAlerta("Hubo un problema al guardar el nivel.", "Error al Guardar", "peligro");
@@ -1131,6 +1167,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         bOficial.className = 'badge badge-oficial';
                         bOficial.textContent = 'DenkKraft';
                         headerBadges.appendChild(bOficial);
+                    } else if (nivel.autorNombre) {
+                        const bAutor = document.createElement('span');
+                        bAutor.className = 'badge badge-autor';
+                        bAutor.textContent = nivel.autorNombre;
+                        bAutor.title = `Creador: ${nivel.autorNombre} (ID: ${nivel.id})`;
+                        headerBadges.appendChild(bAutor);
                     }
 
                     const bDif = document.createElement('span');
@@ -1195,6 +1237,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             actualizarCamposModoCreador();
 
+                            const lblAudio = document.getElementById('audio-nombre-archivo');
+                            if (lblAudio) {
+                                if (nivel.archivoAudio) {
+                                    const nombreAudio = typeof nivel.archivoAudio === 'string' ? nivel.archivoAudio.split('/').pop() : (nivel.archivoAudio.name || 'Audio cargado');
+                                    lblAudio.textContent = `Pista actual: ${nombreAudio}`;
+                                    lblAudio.style.display = 'block';
+                                } else {
+                                    lblAudio.style.display = 'none';
+                                }
+                            }
+                            const lblImgInicio = document.getElementById('img-inicio-nombre-archivo');
+                            if (lblImgInicio) {
+                                if (nivel.imgInicio) {
+                                    const nombreImg = typeof nivel.imgInicio === 'string' ? nivel.imgInicio.split('/').pop() : (nivel.imgInicio.name || 'Imagen cargada');
+                                    lblImgInicio.textContent = `Imagen actual: ${nombreImg}`;
+                                    lblImgInicio.style.display = 'block';
+                                } else {
+                                    lblImgInicio.style.display = 'none';
+                                }
+                            }
+                            const lblImgFin = document.getElementById('img-fin-nombre-archivo');
+                            if (lblImgFin) {
+                                if (nivel.imgFin) {
+                                    const nombreImg = typeof nivel.imgFin === 'string' ? nivel.imgFin.split('/').pop() : (nivel.imgFin.name || 'Imagen cargada');
+                                    lblImgFin.textContent = `Imagen actual: ${nombreImg}`;
+                                    lblImgFin.style.display = 'block';
+                                } else {
+                                    lblImgFin.style.display = 'none';
+                                }
+                            }
                             const creadorTitulo = document.querySelector('.creador-cabecera h2');
                             if (creadorTitulo) creadorTitulo.textContent = `Editar: ${nivel.titulo}`;
                             if (btnEliminarNivel) btnEliminarNivel.style.display = 'inline-flex';
@@ -1474,26 +1546,58 @@ document.addEventListener('DOMContentLoaded', () => {
             {
                 id: 'gato',
                 tipo: 'mascota',
-                nombre: 'Gato Bongo',
+                nombre: 'Gato teclero',
                 precio: 0,
-                desc: 'Un simpático felino que toca los bongós rítmicamente al compás de cada tecla que pulses.',
+                desc: 'Raza de gato especializada en apretar teclas, se acostumbra al ritmo de tecleo de su dueño.',
                 mascotaClase: 'mascota-gato'
             },
             {
                 id: 'perro',
                 tipo: 'mascota',
-                nombre: 'Perro Guardián',
-                precio: 150,
-                desc: 'Un leal can con auriculares gamer que supervisa tu ritmo y celebra tus mejores rachas.',
+                nombre: 'Perro gamer',
+                precio: 2500,
+                desc: 'Animal muy noble que te acompañará a escribir mientras escucha su canción favorita',
                 mascotaClase: 'mascota-perro'
             },
             {
                 id: 'mapache',
                 tipo: 'mascota',
-                nombre: 'Mapache Cósmico',
-                precio: 200,
-                desc: 'Un audaz mapache con visor holográfico proveniente de lejanas galaxias de mecanografía.',
+                nombre: 'Mapache con lentes',
+                precio: 6000,
+                desc: 'Un audaz mapache con problemas de visión pero muchas ganas de aprender.',
                 mascotaClase: 'mascota-mapache'
+            },
+            {
+                id: 'oso',
+                tipo: 'mascota',
+                nombre: 'Oso optimista',
+                precio: 10000,
+                desc: 'Un alegre oso pardo con gorrita, sabe escribir muy rápido, aunque a veces falla, como todos, pero no se rinda en mejorar.',
+                mascotaClase: 'mascota-oso'
+            },
+            {
+                id: 'pastor',
+                tipo: 'mascota',
+                nombre: 'Pastor Alemán',
+                precio: 30000,
+                desc: 'Fiel guardián proveniente de europa, especializado en el pastoreo y ahora aprendiendo a usar un teclado para modernizarse.',
+                mascotaClase: 'mascota-pastor'
+            },
+            {
+                id: 'triplet',
+                tipo: 'mascota',
+                nombre: 'Tippen Tippen Tag',
+                precio: 67676676,
+                desc: 'El legendario trío mecanográfico sincronizado. Su velocidad legendaria desafía los límites del teclado.',
+                mascotaClase: 'mascota-triplet'
+            },
+            {
+                id: 'capibara',
+                tipo: 'mascota',
+                nombre: 'Chiwirón',
+                precio: 99999999,
+                desc: 'Animal místico de la creación de Dios, amigo de todos, enemigo solo de sí mismo.',
+                mascotaClase: 'mascota-capibara'
             }
         ],
         temas: [
@@ -1510,7 +1614,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 id: 'oscuro',
                 tipo: 'tema',
                 nombre: 'Noche Arcade',
-                precio: 50,
+                precio: 1000,
                 desc: 'Ambiente nocturno con tonos violetas y acentos neón diseñado para proteger la vista en sesiones largas.',
                 colorFondo: '#0b1120',
                 colorAcento: '#7c3aed'
@@ -1519,11 +1623,75 @@ document.addEventListener('DOMContentLoaded', () => {
                 id: 'espacio',
                 tipo: 'tema',
                 nombre: 'Espacio Cósmico',
-                precio: 100,
+                precio: 2000,
                 desc: 'Inmersión interestelar profunda con estrellas púrpuras, contrastes vibrantes y estilo futurista.',
                 colorFondo: '#09081a',
                 colorAcento: '#ec4899'
+            },
+            {
+                id: 'cafe_otono',
+                tipo: 'tema',
+                nombre: 'Café de Otoño',
+                precio: 3000,
+                desc: 'Tonos cálidos, marrones y naranjas. Muy relajante a la vista para sesiones largas de lectura.',
+                colorFondo: '#2c1e16',
+                colorAcento: '#d35400'
+            },
+            {
+                id: 'bosque',
+                tipo: 'tema',
+                nombre: 'Bosque Místico',
+                precio: 3000,
+                desc: 'Verdes tierra y esmeralda. Brinda una sensación de naturaleza y tranquilidad absoluta.',
+                colorFondo: '#1b281b',
+                colorAcento: '#4caf50'
+            },
+            {
+                id: 'oceano',
+                tipo: 'tema',
+                nombre: 'Océano Profundo',
+                precio: 3000,
+                desc: 'Azules marinos con contrastes en verde azulado pastel. Sumérgete en la máxima concentración.',
+                colorFondo: '#0a192f',
+                colorAcento: '#64ffda'
+            },
+            {
+                id: 'dracula',
+                tipo: 'tema',
+                nombre: 'Drácula',
+                precio: 3000,
+                desc: 'Un clásico legendario entre los desarrolladores. Tonos pastel vibrantes sobre un elegante fondo oscuro.',
+                colorFondo: '#282a36',
+                colorAcento: '#50fa7b'
+            },
+            {
+                id: 'monocromo',
+                tipo: 'tema',
+                nombre: 'Monocromo',
+                precio: 4000,
+                desc: 'Minimalismo puro en blanco roto y grafito. Cero distracciones visuales para batir tus propios récords.',
+                colorFondo: '#f5f5f5',
+                colorAcento: '#121212'
+            },
+            {
+                id: 'cyberpunk',
+                tipo: 'tema',
+                nombre: 'Cyberpunk Neón',
+                precio: 4000,
+                desc: 'Alta energía y velocidad. Neón cian brillante sobre un fondo oscuro para tecleadores extremos.',
+                colorFondo: '#0d0e15',
+                colorAcento: '#00ffcc'
+            },
+            {
+                id: 'vaporwave',
+                tipo: 'tema',
+                nombre: 'Retro Vaporwave',
+                precio: 4000,
+                desc: 'Estética de los años 80. Morados profundos con acentos en lila y rosa neón brillante.',
+                colorFondo: '#2b213a',
+                colorAcento: '#ff79c6'
             }
+            
         ]
     };
 
@@ -1549,6 +1717,8 @@ document.addEventListener('DOMContentLoaded', () => {
         actualizarPuntosTienda();
         modalTienda.classList.remove('tienda-overlay-oculto');
         modalTienda.classList.add('tienda-overlay-activo');
+        document.body.classList.add('tienda-abierta');
+        document.body.style.overflow = 'hidden';
 
         // Transición musical: Pausar música del menú y reproducir música de la tienda
         pausarMusicaMenu();
@@ -1561,6 +1731,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!modalTienda) return;
         modalTienda.classList.remove('tienda-overlay-activo');
         modalTienda.classList.add('tienda-overlay-oculto');
+        document.body.classList.remove('tienda-abierta');
+        document.body.style.overflow = '';
 
         // Transición musical: Pausar música de la tienda y restaurar música del menú
         pausarMusicaTienda();
@@ -1601,13 +1773,13 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (yaComprado) {
                 estadoTexto = 'Adquirido';
             } else {
-                estadoTexto = `${item.precio} pts`;
+                estadoTexto = `${item.precio.toLocaleString('es-ES')} pts`;
             }
 
             fila.innerHTML = `
                 <div class="tienda-item-info">
                     <span class="tienda-item-nombre">${item.nombre}</span>
-                    <span class="tienda-item-precio">${item.precio === 0 ? 'Gratuito' : (item.precio + ' pts')}</span>
+                    <span class="tienda-item-precio">${item.precio === 0 ? 'Gratuito' : (item.precio.toLocaleString('es-ES') + ' pts')}</span>
                 </div>
                 <span class="${estadoClase}">${estadoTexto}</span>
             `;
@@ -1648,7 +1820,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (previewDesc) previewDesc.textContent = item.desc;
         if (previewPrecio) {
-            previewPrecio.textContent = item.precio === 0 ? 'Gratis' : `${item.precio} pts`;
+            previewPrecio.textContent = item.precio === 0 ? 'Gratis' : `${item.precio.toLocaleString('es-ES')} pts`;
         }
 
         if (previewVisual) {
@@ -1696,7 +1868,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 btnAccionPreview.style.color = '#ffffff';
                 btnAccionPreview.disabled = false;
             } else {
-                btnAccionPreview.textContent = `Comprar (${item.precio} pts)`;
+                btnAccionPreview.textContent = `Comprar (${item.precio.toLocaleString('es-ES')} pts)`;
                 btnAccionPreview.className = 'btn-primario btn-tienda-accion';
                 btnAccionPreview.style.background = 'var(--morado)';
                 btnAccionPreview.style.borderColor = 'var(--morado)';
@@ -1721,6 +1893,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await window.TPTDatabase.guardarUsuario(usuarioActivo);
                 aplicarCosmetico(item.tipo, item.id);
                 actualizarPuntosTienda();
+                actualizarInfoUsuarioMenu();
                 renderizarCatalogoTienda();
             } else if (usuarioActivo.puntos >= item.precio) {
                 usuarioActivo.puntos -= item.precio;
@@ -1734,7 +1907,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderizarCatalogoTienda();
             } else {
                 mostrarAlerta(
-                    `Te faltan ${item.precio - usuarioActivo.puntos} puntos para desbloquear "${item.nombre}". ¡Sigue jugando lecciones para conseguir más puntos!`,
+                    `Te faltan ${(item.precio - usuarioActivo.puntos).toLocaleString('es-ES')} puntos para desbloquear "${item.nombre}". ¡Sigue jugando lecciones para conseguir más puntos!`,
                     "Puntos Insuficientes",
                     "alerta"
                 );
@@ -1779,6 +1952,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalTienda && modalTienda.classList.contains('tienda-overlay-activo')) {
+            cerrarTienda();
+        }
+    });
 
     // --- ABANDONAR JUEGO ---
     const btnAbandonarJuego = document.getElementById('btn-abandonar-juego');
@@ -1882,7 +2061,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const rutasMascotas = {
                         'gato': 'assets/img/bongocat1.png',
                         'perro': 'assets/img/bongodog1.png',
-                        'mapache': 'assets/img/mapache1.png'
+                        'mapache': 'assets/img/mapache1.png',
+                        'oso': 'assets/img/oso1.png',
+                        'pastor': 'assets/img/pastor1.png',
+                        'triplet': 'assets/img/triplet1.png',
+                        'capibara': 'assets/img/capibara1.png'
                     };
                     
                     urlImagen = rutasMascotas[mascotaId] || rutasMascotas['gato'];
@@ -1914,6 +2097,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================================================
     const CLAVE_SECRETA_INSTITUCIONAL = "DenkKraft-TippenTag-AcademicAuth-HMAC-2026-SecurityKey";
     let certificadoResultadoActual = null;
+
+    // Generar huella digital SHA-256 del contenido del texto para verificación de integridad de lecciones
+    async function generarHashTexto(texto) {
+        if (!texto) return "";
+        try {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(texto.trim());
+            const hashBuffer = await window.crypto.subtle.digest("SHA-256", data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        } catch (e) {
+            console.error("Error al generar hash del texto:", e);
+            return "";
+        }
+    }
 
     // Codificación segura Base64 para strings UTF-8 en navegadores
     function codificarBase64Utf8(str) {
@@ -2042,10 +2240,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const seg = metricas.tiempoUsado % 60;
         const tiempoStr = `${min}:${seg < 10 ? '0' + seg : seg}`;
 
+        const hashNivel = (metricas.nivel && metricas.nivel.hashTexto) 
+            ? metricas.nivel.hashTexto 
+            : (metricas.nivel && metricas.nivel.texto ? await generarHashTexto(metricas.nivel.texto) : '');
+        const autorNombreNivel = (metricas.nivel && metricas.nivel.autorNombre) 
+            ? metricas.nivel.autorNombre 
+            : (metricas.nivel && metricas.nivel.esOficial ? 'DenkKraft' : 'Comunidad');
+        const autorIdNivel = (metricas.nivel && metricas.nivel.autorId) 
+            ? metricas.nivel.autorId 
+            : (metricas.nivel && metricas.nivel.esOficial ? 'denkkraft_oficial' : 'comunidad');
+        const caracteresNivel = (metricas.nivel && metricas.nivel.caracteresTexto) 
+            ? metricas.nivel.caracteresTexto 
+            : (metricas.nivel && metricas.nivel.texto ? metricas.nivel.texto.length : 0);
+
         const payload = {
             estudiante: usuarioActivo ? usuarioActivo.nombre : 'Estudiante',
             nivelId: metricas.nivel.id || 'nivel_custom',
             nivelTitulo: metricas.nivel.titulo || 'Nivel de Práctica',
+            autorNombre: autorNombreNivel,
+            autorId: autorIdNivel,
+            hashTexto: hashNivel,
+            caracteresTexto: caracteresNivel,
             esOficial: Boolean(metricas.nivel.esOficial),
             wpm: metricas.wpm,
             precision: metricas.precision,
@@ -2142,7 +2357,8 @@ document.addEventListener('DOMContentLoaded', () => {
             todosLosNiveles.forEach(n => {
                 const opt = document.createElement('option');
                 opt.value = n.id;
-                opt.textContent = `${n.esOficial ? '[Oficial DenkKraft] ' : '[Comunidad] '}${n.titulo} (${n.id})`;
+                const prefijo = n.esOficial ? '[Oficial DenkKraft]' : `[Autor: ${n.autorNombre || 'Comunidad'}]`;
+                opt.textContent = `${prefijo} ${n.titulo} (${n.id})`;
                 selectDocenteNivelEsperado.appendChild(opt);
             });
         } catch (e) {
@@ -2204,13 +2420,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const todosLosNiveles = await window.TPTDatabase.obtenerTodos();
 
             // Análisis de Autenticidad de Nivel y Detección de Suplantación (Spoofing)
-            const nivelPorId = todosLosNiveles.find(n => n.id === cert.nivelId);
-            const esNivelOficialPorId = Boolean(nivelPorId && nivelPorId.esOficial);
+            const nivelLocal = todosLosNiveles.find(n => n.id === cert.nivelId);
+            const esNivelOficialPorId = Boolean(nivelLocal && nivelLocal.esOficial) || Boolean(cert.esOficial);
 
             // ¿Existe un nivel oficial que tiene el MISMO título pero ID DIFERENTE?
             const tituloCertLimpio = (cert.nivelTitulo || '').trim().toLowerCase();
             const nivelOficialConMismoTitulo = todosLosNiveles.find(n => n.esOficial && n.titulo.trim().toLowerCase() === tituloCertLimpio);
             const esSuplantacionTitulo = Boolean(nivelOficialConMismoTitulo && nivelOficialConMismoTitulo.id !== cert.nivelId);
+
+            // Verificación de Integridad de Contenido / Texto (Anti-Cheat / Anti-Tampering)
+            let estadoIntegridadTexto = 'no_verificado'; // 'valido', 'alterado', 'no_verificado'
+            let hashEsperadoTexto = '';
+            if (nivelLocal && nivelLocal.texto) {
+                hashEsperadoTexto = nivelLocal.hashTexto || (await generarHashTexto(nivelLocal.texto));
+                if (cert.hashTexto) {
+                    estadoIntegridadTexto = (cert.hashTexto === hashEsperadoTexto) ? 'valido' : 'alterado';
+                }
+            }
 
             // Comparación con nivel esperado seleccionado en el dropdown
             const idEsperado = selectDocenteNivelEsperado ? selectDocenteNivelEsperado.value : '';
@@ -2234,10 +2460,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Alerta de Suplantación de Título
+            // Alerta de alteración de contenido o suplantación de lección
             let htmlAlertaSuplantacion = '';
             let badgeTipoNivel = '';
-            if (esSuplantacionTitulo) {
+
+            if (estadoIntegridadTexto === 'alterado') {
+                badgeTipoNivel = `<span class="badge-suplantacion">❌ Contenido de Lección Modificado</span>`;
+                htmlAlertaSuplantacion = `
+                    <div class="docente-alerta-suplantacion">
+                        <span class="docente-alerta-suplantacion-titulo">❌ ALERTA CRÍTICA: CONTENIDO DE LA LECCIÓN ALTERADO</span>
+                        <p class="docente-alerta-suplantacion-texto">
+                            La huella digital criptográfica (SHA-256) del texto tecleado no coincide con el examen registrado en el sistema.
+                            <br><strong>Diagnóstico:</strong> El estudiante editó el texto del examen original (p. ej. reduciendo oraciones o cambiando palabras) para obtener puntuaciones artificiales.
+                        </p>
+                    </div>
+                `;
+            } else if (esSuplantacionTitulo) {
                 badgeTipoNivel = `<span class="badge-suplantacion">⚠️ Alerta: ID no coincide con Nivel Oficial</span>`;
                 htmlAlertaSuplantacion = `
                     <div class="docente-alerta-suplantacion">
@@ -2251,7 +2489,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (esNivelOficialPorId) {
                 badgeTipoNivel = `<span class="badge-oficial-verificado">✓ Lección Oficial DenkKraft</span>`;
             } else {
-                badgeTipoNivel = `<span class="badge-personalizado">ℹ️ Nivel Personalizado / Comunitario</span>`;
+                const autorDocenteStr = cert.autorNombre ? ` (Autor: ${cert.autorNombre})` : '';
+                badgeTipoNivel = `<span class="badge-personalizado">ℹ️ Lección de Docente / Comunidad${autorDocenteStr}</span>`;
             }
 
             resultadoDocenteBox.innerHTML = `
@@ -2284,8 +2523,26 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="docente-detalle-val">${cert.nivelTitulo || cert.nivelId}</span>
                         </div>
                         <div class="docente-detalle-item">
+                            <span class="docente-detalle-label">Autor del Nivel</span>
+                            <span class="docente-detalle-val">${cert.autorNombre || (esNivelOficialPorId ? 'DenkKraft' : 'Comunidad')}</span>
+                        </div>
+                        <div class="docente-detalle-item">
                             <span class="docente-detalle-label">ID de Lección en Firma</span>
                             <span class="docente-detalle-val" style="font-size: 11.5px; color: ${esSuplantacionTitulo ? 'var(--rojo-error)' : 'var(--azul)'}; font-weight: 700;">${cert.nivelId}</span>
+                        </div>
+                        <div class="docente-detalle-item">
+                            <span class="docente-detalle-label">Integridad de Texto</span>
+                            <span class="docente-detalle-val" style="font-size: 11.5px; font-weight: 700;">
+                                ${estadoIntegridadTexto === 'valido' 
+                                    ? '<span style="color: var(--verde-exito);">✓ Texto Original Íntegro</span>' 
+                                    : (estadoIntegridadTexto === 'alterado' 
+                                        ? '<span style="color: var(--rojo-error);">❌ Texto Alterado</span>' 
+                                        : '<span style="color: var(--texto-secundario);">ℹ️ Verificado</span>')}
+                            </span>
+                        </div>
+                        <div class="docente-detalle-item">
+                            <span class="docente-detalle-label">Longitud de Lección</span>
+                            <span class="docente-detalle-val">${cert.caracteresTexto ? (cert.caracteresTexto + ' caracteres') : (nivelLocal && nivelLocal.texto ? nivelLocal.texto.length + ' caracteres' : 'Registrada')}</span>
                         </div>
                         <div class="docente-detalle-item">
                             <span class="docente-detalle-label">Velocidad Mecanográfica</span>
@@ -2307,7 +2564,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="docente-detalle-label">Modo Jugado</span>
                             <span class="docente-detalle-val">${cert.modo}</span>
                         </div>
-                        <div class="docente-detalle-item" style="grid-column: 1 / -1;">
+                        <div class="docente-detalle-item">
                             <span class="docente-detalle-label">Fecha y Hora de Emisión</span>
                             <span class="docente-detalle-val">${cert.fechaEmision}</span>
                         </div>
@@ -2348,10 +2605,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Botón Demo Válido
     if (btnDemoDocente) {
         btnDemoDocente.addEventListener('click', async () => {
+            const hashDemo = await generarHashTexto("Hola mundo. El gato corre.");
             const demoPayload = {
                 estudiante: "Carlos Méndez",
                 nivelId: "lvl_oficial_1",
                 nivelTitulo: "Lección de Inicio",
+                autorNombre: "DenkKraft",
+                autorId: "denkkraft_oficial",
+                hashTexto: hashDemo,
+                caracteresTexto: 26,
                 esOficial: true,
                 wpm: 58,
                 precision: 96,
@@ -2374,11 +2636,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Botón Demo Alterado / Trampa (Demuestra detección de ID suplantado y trampa de WPM)
     if (btnDemoAlterado) {
         btnDemoAlterado.addEventListener('click', async () => {
-            // Simulamos un estudiante que creó un nivel personalizado titulado "Lección de Inicio" con ID falso
+            // Simulamos un estudiante que intentó alterar el texto o suplantar el examen oficial
             const demoPayload = {
                 estudiante: "Alumno Astuto",
                 nivelId: "lvl_custom_trampa_99",
                 nivelTitulo: "Lección de Inicio", // Suplanta el nombre oficial
+                autorNombre: "Alumno Astuto",
+                autorId: "usr_alumno_trampa",
+                hashTexto: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                caracteresTexto: 5,
                 esOficial: false,
                 wpm: 145,
                 precision: 100,
@@ -2510,7 +2776,8 @@ document.addEventListener('DOMContentLoaded', () => {
         prepararCertificadoResultado: prepararCertificadoResultado,
         mostrarAlerta: mostrarAlerta,
         mostrarConfirmacion: mostrarConfirmacion,
-        aplicarReglasDeTier: aplicarReglasDeTier
+        aplicarReglasDeTier: aplicarReglasDeTier,
+        generarHashTexto: generarHashTexto
     };
 
     window.TPTDatabase.abrir().then(() => {

@@ -9,6 +9,10 @@ window.TPTlevelParser = {
                 resolve(null);
                 return;
             }
+            if (typeof blob === 'string') {
+                resolve(blob);
+                return;
+            }
             const reader = new FileReader();
             reader.onloadend = () => resolve(reader.result);
             reader.onerror = reject;
@@ -19,12 +23,16 @@ window.TPTlevelParser = {
     // Función auxiliar: Convierte texto (Base64) de vuelta a archivo crudo (Blob)
     base64ToBlob: async function(base64URI) {
         if (!base64URI) return null;
+        if (base64URI instanceof Blob) return base64URI;
+        if (typeof base64URI === 'string' && (base64URI.startsWith('assets/') || !base64URI.startsWith('data:'))) {
+            return base64URI;
+        }
         try {
             const response = await fetch(base64URI);
             return await response.blob();
         } catch (e) {
             console.error("Error convirtiendo base64 a blob", e);
-            return null;
+            return base64URI;
         }
     },
 
@@ -46,9 +54,19 @@ window.TPTlevelParser = {
         const imgInicioB64 = await this.blobToBase64(nivel.imgInicio);
         const imgFinB64 = await this.blobToBase64(nivel.imgFin);
 
-        // 2. Creamos una copia del nivel con los archivos transformados
+        // Huella criptográfica del texto para asegurar que no pueda ser alterado
+        const hashTexto = (window.TPTui && window.TPTui.generarHashTexto) 
+            ? await window.TPTui.generarHashTexto(nivel.texto) 
+            : (nivel.hashTexto || '');
+
+        // 2. Creamos una copia del nivel con los archivos transformados y metadatos de autor intactos
         const nivelExportar = {
             ...nivel,
+            id: nivel.id,
+            autorId: nivel.autorId || 'docente_creador',
+            autorNombre: nivel.autorNombre || 'Docente / Creador',
+            hashTexto: hashTexto,
+            caracteresTexto: (nivel.texto || '').trim().length,
             archivoAudio: audioB64,
             imgInicio: imgInicioB64,
             imgFin: imgFinB64
@@ -85,19 +103,37 @@ window.TPTlevelParser = {
                 // 1. Leemos el texto del JSON
                 const nivelImportado = JSON.parse(event.target.result);
                 
-                // 2. Le asignamos un ID completamente nuevo para evitar conflictos si el usuario importa el mismo nivel 2 veces
-                nivelImportado.id = "lvl_" + Date.now() + Math.floor(Math.random() * 1000);
-                nivelImportado.esOficial = false; // Por seguridad
+                // 2. Preservamos estrictamente el ID original del nivel para asegurar trazabilidad académica
+                if (!nivelImportado.id || typeof nivelImportado.id !== 'string') {
+                    nivelImportado.id = "lvl_" + Date.now();
+                }
+
+                // Preservamos el autor original y metadatos de integridad
+                if (!nivelImportado.autorNombre) {
+                    nivelImportado.autorNombre = 'Docente / Creador';
+                }
+                if (!nivelImportado.autorId) {
+                    nivelImportado.autorId = 'autor_externo';
+                }
+                if (window.TPTui && window.TPTui.generarHashTexto && nivelImportado.texto) {
+                    nivelImportado.hashTexto = await window.TPTui.generarHashTexto(nivelImportado.texto);
+                }
+                nivelImportado.caracteresTexto = (nivelImportado.texto || '').trim().length;
+                nivelImportado.esOficial = false; // Por seguridad los niveles importados nunca pueden adjudicarse la firma DenkKraft oficial
 
                 // 3. Revertimos los textos Base64 a Blobs para que la base de datos lo guarde en su formato original
                 nivelImportado.archivoAudio = await this.base64ToBlob(nivelImportado.archivoAudio);
                 nivelImportado.imgInicio = await this.base64ToBlob(nivelImportado.imgInicio);
                 nivelImportado.imgFin = await this.base64ToBlob(nivelImportado.imgFin);
 
-                // 4. Guardamos en la base de datos
+                // 4. Guardamos en la base de datos (sobrescribiendo de forma segura si ya existía con ese ID)
                 await window.TPTDatabase.guardarNivel(nivelImportado);
                 if (window.TPTui && window.TPTui.mostrarAlerta) {
-                    window.TPTui.mostrarAlerta(`¡Nivel "${nivelImportado.titulo}" importado con éxito!`, "Nivel Importado", "exito");
+                    window.TPTui.mostrarAlerta(
+                        `¡Nivel "${nivelImportado.titulo}" importado con éxito!\nAutor: ${nivelImportado.autorNombre}\nID: ${nivelImportado.id}`, 
+                        "Nivel Importado", 
+                        "exito"
+                    );
                 }
                 
                 if (callbackExito) callbackExito();

@@ -53,6 +53,8 @@ const TPTDatabase = {
                 tiempo_limite: 0,
                 vidas: 0,
                 texto: "Hola mundo. El gato corre.",
+                autorNombre: "DenkKraft",
+                autorId: "denkkraft_oficial",
                 historiaInicio: "Un momoye se escapó de la cárcel y empezó a robarse textos de la memoria colectiva. | Debes teclear rápido para recuperarlos. | Presta atención a como debes ubicar tus manos correctamente. | ¡Y empieza a escribir!", 
                 historiaFin: "¿Eh? | ¿Quién está molestando al Gran Tututuku? | Te vas a enterar de lo que vale un peine la próxima vez",
                 imgInicio: "assets/img/guiamanos.png",
@@ -68,6 +70,8 @@ const TPTDatabase = {
                 tiempo_limite: 45,
                 vidas: 3,
                 texto: "Tres tristes tigres tragaban trigo en un trigal.",
+                autorNombre: "DenkKraft",
+                autorId: "denkkraft_oficial",
                 historiaInicio: "El momoye ha robado un trabalenguas vital para la cultura. Concéntrate, la dificultad ha aumentado.",
                 historiaFin: "¡Mis tigres! | ¡Mi trigo! | Bueno no eran míos pero ya me entiendes | Me los vas a pagar con intereses, espera y verás",
                 imgInicio: "assets/img/momoyetigres.png",
@@ -83,6 +87,8 @@ const TPTDatabase = {
                 tiempo_limite: 60,
                 vidas: 3,
                 texto: "Cuentan los abuelos en los páramos trujillanos que el Momoye es un duende guardián de las lagunas. Si le faltas el respeto al agua, te esconde las cosas y te hace perder el camino.",
+                autorNombre: "DenkKraft",
+                autorId: "denkkraft_oficial",
                 historiaInicio: "El Momoye huyó hacia la neblina de los Andes, dejando tras de sí un fragmento de su propia leyenda | Las comas y los acentos empiezan a ser más frecuentes aquí. | ¡Concéntrate!", 
                 historiaFin: "¡Bien hecho! | El duende andino se tropezó en la neblina y soltó el pergamino. | Sigamos su rastro.",
                 imgInicio: "assets/img/momoye.png",
@@ -99,7 +105,9 @@ const TPTDatabase = {
                 modo: "vital",
                 tiempo_limite: 0,
                 vidas: 3, // Modo vital: sin límite de tiempo, pero los fallos cuestan caro
-                texto: "¿Quién cabalga tan tarde a través del viento y la noche? Es un padre con su hijo. Lo tiene bien arropado en sus brazos, lo mantiene seguro, lo mantiene caliente.",
+                texto: "¿Quién cabalga tan tarde entre la noche y el viento? Es un padre abrazando a su hijo. Lo lleva seguro en sus brazos, lo mantiene abrigado y a salvo.",
+                autorNombre: "DenkKraft",
+                autorId: "denkkraft_oficial",
                 historiaInicio: "¡Magia internacional! El Momoye cruzó el océano y robó un poema clásico de Johann Wolfgang von Goethe. | Los signos de interrogación requieren usar Shift. | Cuidado, en este modo los errores consumen vidas.",
                 historiaFin: "¡Wunderbar! | El poema está a salvo. | La poesía europea no es rival para nuestra mascota.",
                 imgInicio: "assets/img/reyelfos.png",
@@ -108,18 +116,20 @@ const TPTDatabase = {
                 esOficial: true
             },
 
-            // Tonada Venezolana (Simón Díaz)
-            {
+            // // Alma Llanera (Rafael Bolívar Coronado)
+           {
                 id: "lvl_oficial_5",
-                titulo: "Caballo Viejo",
+                titulo: "El Alma Llanera",
                 dificultad: "dificil",
                 modo: "dificil",
                 tiempo_limite: 55,
                 vidas: 4,
-                texto: "Cuando el amor llega así de esta manera, uno no se da ni cuenta. El carutal reverdece y el guamachito florece y la soga se revienta.",
-                historiaInicio: "¡Oh no! Se llevó un clásico de Simón Díaz. | Esta canción tiene un ritmo rápido y fluido, ideal para practicar mecanografía continua. | ¡Sigue el compás!",
-                historiaFin: "¡Excelente ritmo! | El Momoye no pudo evitar ponerse a bailar la tonada y logramos arrebatarle el texto.",
-                imgInicio: "assets/img/caballoviejo.png",
+                texto: "Yo nací en esta ribera del Arauca vibrador, soy hermano de las espumas, de las garzas, de las rosas y del sol. Me arrulló la viva diana de la brisa en el palmar.",
+                autorNombre: "DenkKraft",
+                autorId: "denkkraft_oficial",
+                historiaInicio: "¡El Momoye se atrevió a robar el segundo himno nacional venezolano! | La letra del Alma Llanera está en peligro. | La puntuación y el vocabulario pondrán a prueba tu velocidad. ¡Escribe rápido!",
+                historiaFin: "¡Bravo! | Recuperaste la letra intacta y el duende andino salió corriendo de vuelta hacia el llano.",
+                imgInicio: "assets/img/momoye.png",
                 imgFin: "assets/img/momoye.png",
                 animacionGolpe: true, 
                 esOficial: true
@@ -134,14 +144,36 @@ const TPTDatabase = {
                 tiempo_limite: 45,
                 vidas: 3,
                 texto: "Freude, schöner Götterfunken, Tochter aus Elysium, Wir betreten feuertrunken, Himmlische, dein Heiligtum!",
+                autorNombre: "DenkKraft",
+                autorId: "denkkraft_oficial",
                 historiaInicio: "¡Batalla Final! | El Gran Tututuku ha combinado su magia con la pluma de Schiller, ahora puede escribir en perfecto alemán. | ¡Las mayúsculas intercaladas, diéresis (ü) y palabras complejas te pondrán a prueba! | ¡Demuestra tu DenkKraft!",
                 historiaFin: "¡Victoria Absoluta! | Has dominado el teclado y recuperado toda la literatura. | El Gran Tututuku promete no volver a robar textos... por ahora.",
                 imgInicio: "assets/img/momoye.png",
                 imgFin: "assets/img/momoye.png",
                 animacionGolpe: true, // Ideal para ver a la mascota golpear al Momoye al ganar
                 esOficial: true
+            },
+            {
+                id: "lvl_oficial_cucaracha",
+                titulo: "La Cucaracha",
+                dificultad: "dificil",
+                modo: "dificil",
+                tiempo_limite: 77,
+                vidas: 5,
+                texto: "La cucaracha, la cucaracha. Ya no puede caminar.\nPorque no tiene, porque le falta. La patita de atrás.\nLa cucaracha, la cucaracha. Ya no puede caminar.\nPorque no tiene, porque le falta. La patita de atrás.  \nUna cucaracha grande se pasea en la cocina. Y la chancla de mi madre le ha quitado una patita.\nEsta coja cucaracha nunca se da por vencida y aunque le falte una pata, baila siempre en la cocina.",
+                autorNombre: "DenkKraft", 
+                autorId: "denkkraft_oficial",
+                historiaInicio: "Gracias individuo de gran dialecto vía escrita, ese momoye maleante me tenía atrapado entre sus artículos robados | Estoy tan feliz que podría bailar aún si me faltara una...",
+                historiaFin: "Mejor ayudame a llegar a un hospital",
+                imgInicio: "assets/img/lacucaracha1.png",
+                imgFin: "assets/img/lacucaracha2.png",
+                animacionGolpe: false,
+                esOficial: true,
+                archivoAudio: "assets/audio/La_cucaracha.mp3" 
             }
+            
         ];
+        
 
         const transaction = this.db.transaction(["niveles"], "readwrite");
         const store = transaction.objectStore("niveles");
@@ -151,7 +183,7 @@ const TPTDatabase = {
         console.log("Niveles base inyectados/actualizados.");
     },
 
-    // 3. Guardar un nuevo nivel (retorna una Promesa para que la UI espere)
+    // 3. Guardar un nuevo nivel o actualizarlo si ya existe
     async guardarNivel(nivel) {
         await this.abrir(); // Garantiza que haya conexión antes de guardar
         
@@ -159,7 +191,7 @@ const TPTDatabase = {
             const transaction = this.db.transaction(["niveles"], "readwrite");
             const store = transaction.objectStore("niveles");
             
-            const requestAdd = store.add(nivel);
+            const requestAdd = store.put(nivel);
             
             requestAdd.onsuccess = () => resolve(true);
             requestAdd.onerror = (event) => reject(event.target.error);
@@ -176,6 +208,18 @@ const TPTDatabase = {
             
             requestUpdate.onsuccess = () => resolve(true);
             requestUpdate.onerror = (event) => reject(event.target.error);
+        });
+    },
+
+    // Obtener un nivel específico por su ID
+    async obtenerNivelPorId(id) {
+        await this.abrir();
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(["niveles"], "readonly");
+            const store = transaction.objectStore("niveles");
+            const requestGet = store.get(id);
+            requestGet.onsuccess = () => resolve(requestGet.result);
+            requestGet.onerror = (event) => reject(event.target.error);
         });
     },
 

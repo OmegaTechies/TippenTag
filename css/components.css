@@ -460,6 +460,7 @@ button {
 .badge-dificil { background-color: #ef4444; }
 .badge-audio { background-color: var(--morado); }
 .badge-oficial { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+.badge-autor { background-color: rgba(30, 74, 154, 0.85); border: 1px solid rgba(255, 255, 255, 0.2); }
 
 /* --- BUSCADOR DE NIVELES --- */
 .buscador-caja {
@@ -866,26 +867,44 @@ button {
 .mascota-mapache { background-image: url('../assets/img/mapache1.png'); }
 .mascota-escribiendo.mascota-mapache { background-image: url('../assets/img/mapache2.png'); }
 
+.mascota-oso { background-image: url('../assets/img/oso1.png'); }
+.mascota-escribiendo.mascota-oso { background-image: url('../assets/img/oso2.png'); }
+
+.mascota-triplet { background-image: url('../assets/img/triplet1.png'); }
+.mascota-escribiendo.mascota-triplet { background-image: url('../assets/img/triplet2.png'); }
+
+.mascota-pastor { background-image: url('../assets/img/pastor1.png'); }
+.mascota-escribiendo.mascota-pastor { background-image: url('../assets/img/pastor2.png'); }
+
+.mascota-capibara { background-image: url('../assets/img/capibara1.png'); }
+.mascota-escribiendo.mascota-capibara { background-image: url('../assets/img/capibara2.png'); }
+
 /* ==========================================================================
    8. TIENDA GAMIFICADA ESTILO RPG (LAYOUT DELTARUNE CON CAÍDA SUPERIOR)
    ========================================================================== */
+/* Bloqueo total de scroll de la página de fondo al abrir la tienda */
+body.tienda-abierta {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
 .tienda-overlay {
     position: fixed;
     inset: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(5, 8, 16, 0.78);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    z-index: 1100;
+    background: rgba(5, 8, 16, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1500;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    padding-top: 3vh;
-    padding-bottom: 3vh;
+    align-items: center;
+    padding: 20px 16px;
     box-sizing: border-box;
     transition: opacity 0.25s ease, visibility 0.25s ease;
     overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .tienda-overlay-oculto {
@@ -901,20 +920,20 @@ button {
 }
 
 .tienda-modal {
-    width: 90vw;
-    max-width: 980px;
-    height: 86vh;
-    max-height: 820px;
-    min-height: 540px;
+    margin: auto;
+    width: min(94vw, 1020px);
+    height: min(90vh, 840px);
+    min-height: 520px;
     background: var(--panel);
     border-radius: var(--radio-lg);
     border: 2px solid var(--panel-borde);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
     box-sizing: border-box;
+    overscroll-behavior: contain;
 }
 
 .tienda-overlay-activo .tienda-modal {
