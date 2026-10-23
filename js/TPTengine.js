@@ -285,15 +285,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function obtenerMultiplicadorCombo(combo) {
+        if (combo >= 300) return 5;
+        if (combo >= 200) return 4;
+        if (combo >= 100) return 3;
+        if (combo >= 50) return 2;
+        if (combo >= 25) return 1.5;
+        return 1;
+    }
+
     function actualizarComboUI() {
         if (!displayCombo) return;
         if (rachaCombo >= 5) {
-            displayCombo.textContent = window.TPTi18n 
+            const mult = obtenerMultiplicadorCombo(rachaCombo);
+            let texto = window.TPTi18n 
                 ? window.TPTi18n.t('juego.combo', { num: rachaCombo })
                 : `Combo x${rachaCombo}`;
+
+            if (mult > 1) {
+                texto += ` (${mult}x)`;
+            }
+
+            displayCombo.textContent = texto;
             displayCombo.classList.add('combo-activo');
+            displayCombo.setAttribute('data-mult', mult.toString());
         } else {
             displayCombo.classList.remove('combo-activo');
+            displayCombo.removeAttribute('data-mult');
         }
     }
 
@@ -450,7 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const segStr = seg < 10 ? `0${seg}` : seg;
             displayReloj.textContent = `0${min}:${segStr}`;
         }
-        displayPuntos.textContent = `${puntosGlobales} pts`;
+        displayPuntos.textContent = `${Math.round(puntosGlobales)} pts`;
     }
 
     function terminarNivel(completado) {
@@ -460,22 +478,42 @@ document.addEventListener('DOMContentLoaded', () => {
         reproductorAudio.pause();
         reproductorAudio.style.display = 'none';
         inputCaptura.blur();
+
+        let motivoFin = 'completado';
+        let caracteresAvanzados = 0;
+        let progreso = 100;
         
         if (completado) {
+            caracteresAvanzados = textoCompleto.length;
+            progreso = 100;
             puntosGlobales += 50;
             actualizarUI();
             SoundFX.victoria();
         } else {
+            if (tiempoRestante <= 0 && modoPartida !== 'viaje') {
+                motivoFin = 'tiempo';
+            } else {
+                motivoFin = 'vidas';
+            }
+
+            for (let b = 0; b < indiceBloqueActual && b < bloquesDeTexto.length; b++) {
+                caracteresAvanzados += bloquesDeTexto[b].length;
+            }
+            caracteresAvanzados += Math.min(indiceActual, (bloquesDeTexto[indiceBloqueActual] ? bloquesDeTexto[indiceBloqueActual].length : 0));
+            caracteresAvanzados = Math.min(caracteresAvanzados, textoCompleto.length);
+            progreso = Math.min(99, Math.max(0, Math.round((caracteresAvanzados / (textoCompleto.length || 1)) * 100)));
             SoundFX.error();
         }
 
+        const puntosFinales = Math.round(puntosGlobales);
         if (window.TPTui && window.TPTui.sumarPuntos) {
-            window.TPTui.sumarPuntos(puntosGlobales);
+            window.TPTui.sumarPuntos(puntosFinales);
         }
 
         const tiempoUsado = Math.max(1, tiempoInicial - tiempoRestante);
-        const palabras = Math.max(1, Math.round(textoCompleto.length / 5));
-        const wpm = Math.round(palabras / (tiempoUsado / 60 || 0.5));
+        const caracteresParaWpm = completado ? textoCompleto.length : caracteresAvanzados;
+        const palabras = Math.max(1, Math.round(caracteresParaWpm / 5));
+        const wpm = tiempoUsado > 0 ? Math.round(palabras / (tiempoUsado / 60 || 0.5)) : 0;
             
         const totalPulsaciones = caracteresCorrectos + erroresCometidos;
         const precision = totalPulsaciones > 0 
@@ -489,7 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 resultadoTitulo.textContent = window.TPTi18n ? window.TPTi18n.t('resultado.completado_titulo') : '¡Nivel Completado!';
                 resultadoTitulo.style.color = 'var(--azul)';
                 resultadoSubtitulo.textContent = window.TPTi18n ? window.TPTi18n.t('resultado.completado_sub') : 'Excelente destreza mecanográfica';
-            } else if (tiempoRestante <= 0 && modoPartida !== 'viaje') {
+            } else if (motivoFin === 'tiempo') {
                 resultadoTitulo.textContent = window.TPTi18n ? window.TPTi18n.t('resultado.tiempo_titulo') : '¡Tiempo Agotado!';
                 resultadoTitulo.style.color = 'var(--rojo-error)';
                 resultadoSubtitulo.textContent = window.TPTi18n ? window.TPTi18n.t('resultado.tiempo_sub') : 'El tiempo se terminó. ¡Sigue practicando para mejorar tu velocidad!';
@@ -499,20 +537,54 @@ document.addEventListener('DOMContentLoaded', () => {
                 resultadoSubtitulo.textContent = window.TPTi18n ? window.TPTi18n.t('resultado.vidas_sub') : 'Agotaste tus oportunidades. ¡Concéntrate en la precisión!';
             }
             
+            // Reflejar la barra de progreso y estado en el modal
+            const resultadoProgresoTexto = document.getElementById('resultado-progreso-texto');
+            const resultadoProgresoBarra = document.getElementById('resultado-progreso-barra');
+            if (resultadoProgresoTexto && resultadoProgresoBarra) {
+                resultadoProgresoBarra.style.width = `${progreso}%`;
+                if (completado) {
+                    resultadoProgresoTexto.textContent = window.TPTi18n 
+                        ? window.TPTi18n.t('resultado.progreso_completado') 
+                        : '100% (Completado con éxito)';
+                    resultadoProgresoTexto.className = 'resultado-progreso-valor completado';
+                    resultadoProgresoBarra.className = 'resultado-progreso-barra-fill completado';
+                } else {
+                    let txtIncompleto = '';
+                    if (window.TPTi18n) {
+                        if (motivoFin === 'vidas') {
+                            txtIncompleto = window.TPTi18n.t('resultado.progreso_incompleto_vidas', { progreso: progreso });
+                        } else if (motivoFin === 'tiempo') {
+                            txtIncompleto = window.TPTi18n.t('resultado.progreso_incompleto_tiempo', { progreso: progreso });
+                        } else {
+                            txtIncompleto = window.TPTi18n.t('resultado.progreso_incompleto', { progreso: progreso });
+                        }
+                    } else {
+                        txtIncompleto = `${progreso}% (Incompleto • ${motivoFin === 'vidas' ? 'Sin vidas' : 'Tiempo agotado'})`;
+                    }
+                    resultadoProgresoTexto.textContent = txtIncompleto;
+                    resultadoProgresoTexto.className = 'resultado-progreso-valor incompleto';
+                    resultadoProgresoBarra.className = 'resultado-progreso-barra-fill incompleto';
+                }
+            }
+
             resultadoWpm.textContent = `${wpm}`;
             resultadoPrecision.textContent = `${precision}%`;
             resultadoErrores.textContent = `${erroresCometidos}`;
-            resultadoPuntos.textContent = `+${puntosGlobales} pts`;
+            resultadoPuntos.textContent = `+${puntosFinales} pts`;
 
             if (window.TPTui && window.TPTui.prepararCertificadoResultado) {
                 window.TPTui.prepararCertificadoResultado({
                     completado: completado,
+                    progreso: progreso,
+                    motivoFin: motivoFin,
+                    caracteresAvanzados: caracteresAvanzados,
+                    caracteresTotales: textoCompleto.length,
                     nivel: nivelActivo,
                     wpm: wpm,
                     precision: precision,
                     errores: erroresCometidos,
                     tiempoUsado: tiempoUsado,
-                    puntos: puntosGlobales,
+                    puntos: puntosFinales,
                     modo: modoPartida
                 });
             }
@@ -570,10 +642,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (letraTecleada === fraseActual[indiceActual]) {
             if (spanActual) spanActual.classList.add('correct');
-            puntosGlobales += 1;
             caracteresCorrectos++;
             rachaCombo++;
             if (rachaCombo > rachaMaxima) rachaMaxima = rachaCombo;
+            const multiplicador = obtenerMultiplicadorCombo(rachaCombo);
+            puntosGlobales += multiplicador;
             SoundFX.tecleo();
             actualizarComboUI();
             actualizarUI();

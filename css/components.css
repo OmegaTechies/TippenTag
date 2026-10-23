@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    css/components.css - Tippen Tag (DenkKraft)
    Componentes visuales: Drag & drop, botones, atajos, HUD y modales
    ========================================================================== */
@@ -685,17 +685,60 @@ button {
     top: 6px;
     right: 25px;
     font-size: calc(13px * var(--escala-texto, 1));
-    font-weight: 600;
+    font-weight: 700;
     color: var(--amarillo-btn);
     background: rgba(245, 158, 11, 0.12);
-    padding: 3px 10px;
+    padding: 3px 12px;
     border-radius: var(--radio-pill);
+    border: 1px solid transparent;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: all 0.2s ease;
+    user-select: none;
 }
 
 .indicador-combo.combo-activo {
     opacity: 1;
+}
+
+.indicador-combo[data-mult="1.5"] {
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.18);
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
+}
+
+.indicador-combo[data-mult="2"] {
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.18);
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+}
+
+.indicador-combo[data-mult="3"] {
+    color: #a855f7;
+    background: rgba(168, 85, 247, 0.2);
+    border-color: rgba(168, 85, 247, 0.45);
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.35);
+}
+
+.indicador-combo[data-mult="4"] {
+    color: #ec4899;
+    background: rgba(236, 72, 153, 0.2);
+    border-color: rgba(236, 72, 153, 0.5);
+    box-shadow: 0 0 18px rgba(236, 72, 153, 0.4);
+}
+
+.indicador-combo[data-mult="5"] {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.22);
+    border-color: rgba(16, 185, 129, 0.6);
+    box-shadow: 0 0 22px rgba(16, 185, 129, 0.5);
+    animation: pulsoComboMult 1.2s infinite ease-in-out;
+}
+
+@keyframes pulsoComboMult {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
 
 /* Área de texto que NUNCA desborda ni se corre */
@@ -1717,19 +1760,44 @@ body.tienda-abierta {
 }
 
 .ajuste-ruta-info {
-    font-size: calc(11.5px * var(--escala-texto, 1));
-    color: var(--texto-secundario);
-    background: rgba(0, 0, 0, 0.2);
-    padding: 6px 10px;
-    border-radius: var(--radio-sm);
-    border-left: 3px solid var(--amarillo-btn);
-    margin-top: 4px;
+    font-size: calc(12px * var(--escala-texto, 1));
+    color: var(--texto);
+    background: var(--panel-hover);
+    padding: 8px 12px;
+    border-radius: var(--radio-md);
+    border: 1px solid var(--panel-borde);
+    border-left: 4px solid var(--azul);
+    margin-top: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    box-shadow: var(--sombra-sm);
 }
 
-.ajuste-ruta-codigo {
-    color: var(--amarillo-hover);
-    font-family: var(--fuente-mecanografia);
+.ajuste-pista-fila {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--azul);
     font-weight: 600;
+}
+
+.ajuste-pista-titulo {
+    color: var(--titulo-color);
+    font-weight: 700;
+    font-size: calc(12.5px * var(--escala-texto, 1));
+}
+
+.ajuste-pista-credito {
+    color: var(--azul);
+    font-size: calc(11.5px * var(--escala-texto, 1));
+    font-weight: 600;
+    background: var(--azul-suave);
+    padding: 3px 10px;
+    border-radius: var(--radio-pill);
+    border: 1px solid rgba(37, 99, 235, 0.25);
 }
 
 /* --- ACCESIBILIDAD Y SELECTOR DE IDIOMA EN AJUSTES --- */
@@ -1811,6 +1879,77 @@ body.tienda-abierta {
 }
 
 /* ==========================================================================
+   10.C RESPALDO Y TRANSFERENCIA DE PERFILES (IMPORTAR / EXPORTAR)
+   ========================================================================== */
+.crear-usuario-importar-bloque {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.separador-crear-usuario {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--texto-secundario);
+    font-size: calc(11.5px * var(--escala-texto, 1));
+    gap: 10px;
+    margin: 4px 0;
+}
+
+.separador-crear-usuario span:first-child,
+.separador-crear-usuario span:last-child {
+    flex: 1;
+    border-bottom: 1px dashed var(--panel-borde);
+}
+
+.btn-importar-perfil {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    padding: 9px 14px;
+    font-size: calc(13px * var(--escala-texto, 1));
+    border-radius: var(--radio-md);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-importar-perfil:hover {
+    border-color: var(--azul);
+    color: var(--azul);
+    background: var(--azul-suave);
+}
+
+.perfil-respaldo-acciones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.btn-perfil-respaldo {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    font-size: calc(12.5px * var(--escala-texto, 1));
+    font-weight: 600;
+    border-radius: var(--radio-md);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-perfil-respaldo:hover {
+    border-color: var(--azul);
+    color: var(--azul);
+    background: var(--azul-suave);
+}
+
+/* ==========================================================================
    11. MODAL DE RESULTADOS
    ========================================================================== */
 .modal-overlay {
@@ -1857,7 +1996,73 @@ body.tienda-abierta {
 .resultado-subtitulo {
     font-size: calc(14px * var(--escala-texto, 1));
     color: var(--texto-secundario);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+}
+
+.resultado-progreso-caja {
+    background: var(--fondo);
+    border: 1px solid var(--panel-borde);
+    border-radius: var(--radio-md);
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    text-align: left;
+}
+
+.resultado-progreso-fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.resultado-progreso-label {
+    font-size: calc(11.5px * var(--escala-texto, 1));
+    font-weight: 700;
+    color: var(--texto-secundario);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.resultado-progreso-valor {
+    font-size: calc(12.5px * var(--escala-texto, 1));
+    font-weight: 700;
+    color: var(--azul);
+}
+
+.resultado-progreso-valor.completado {
+    color: var(--verde-exito);
+}
+
+.resultado-progreso-valor.incompleto {
+    color: var(--rojo-error);
+}
+
+.resultado-progreso-barra-bg {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: var(--radio-pill);
+    overflow: hidden;
+}
+
+.resultado-progreso-barra-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--degradado);
+    border-radius: var(--radio-pill);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.resultado-progreso-barra-fill.completado {
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.resultado-progreso-barra-fill.incompleto {
+    background: linear-gradient(90deg, #f59e0b, #ef4444);
 }
 
 .resultado-stats-grid {

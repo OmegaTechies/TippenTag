@@ -654,6 +654,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCancelarUsuario = document.getElementById('btn-cancelar-usuario');
     if (btnCancelarUsuario) btnCancelarUsuario.addEventListener('click', () => cambiarVista('landing'));
 
+    // --- IMPORTAR PERFIL DESDE CREAR USUARIO ---
+    const btnImportarPerfilCrear = document.getElementById('btn-importar-perfil-crear');
+    const inputArchivoPerfilCrear = document.getElementById('input-archivo-perfil-crear');
+    if (btnImportarPerfilCrear && inputArchivoPerfilCrear) {
+        btnImportarPerfilCrear.addEventListener('click', () => {
+            inputArchivoPerfilCrear.value = '';
+            inputArchivoPerfilCrear.click();
+        });
+        inputArchivoPerfilCrear.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) procesarArchivoPerfil(file, 'crear');
+        });
+    }
+
     // --- CREADOR / EDITOR DE NIVELES ---
     const formCreador = document.getElementById('form-crear-nivel');
     const selectModoCreador = document.getElementById('modo-juego-input');
@@ -1449,6 +1463,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const btnLangDe = document.getElementById('btn-lang-de');
         if (btnLangEs) btnLangEs.classList.toggle('activo', langAct === 'es');
         if (btnLangDe) btnLangDe.classList.toggle('activo', langAct === 'de');
+
+        // Ajuste 8: Estado de Exportación de Perfil Activo
+        const btnExportarPerfilAjustes = document.getElementById('btn-exportar-perfil-ajustes');
+        if (btnExportarPerfilAjustes) {
+            if (usuarioActivo) {
+                btnExportarPerfilAjustes.title = `Exportar respaldo seguro de ${usuarioActivo.nombre}`;
+                btnExportarPerfilAjustes.style.opacity = '1';
+            } else {
+                btnExportarPerfilAjustes.title = window.TPTi18n ? window.TPTi18n.t('perfil.exportar_sin_usuario') : 'Selecciona un perfil primero';
+                btnExportarPerfilAjustes.style.opacity = '0.65';
+            }
+        }
     }
 
     function configurarModalAjustes() {
@@ -1645,6 +1671,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+
+        // --- RESPALDO Y TRANSFERENCIA DE PERFILES EN AJUSTES ---
+        const btnExportarPerfilAjustes = document.getElementById('btn-exportar-perfil-ajustes');
+        const btnImportarPerfilAjustes = document.getElementById('btn-importar-perfil-ajustes');
+        const inputArchivoPerfilAjustes = document.getElementById('input-archivo-perfil-ajustes');
+
+        if (btnExportarPerfilAjustes) {
+            btnExportarPerfilAjustes.addEventListener('click', () => {
+                exportarPerfil(usuarioActivo);
+            });
+        }
+
+        if (btnImportarPerfilAjustes && inputArchivoPerfilAjustes) {
+            btnImportarPerfilAjustes.addEventListener('click', () => {
+                inputArchivoPerfilAjustes.value = '';
+                inputArchivoPerfilAjustes.click();
+            });
+            inputArchivoPerfilAjustes.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) procesarArchivoPerfil(file, 'ajustes');
+            });
+        }
     }
 
     // --- MODAL GUÍA DE ATAJOS Y SIGNOS ---
@@ -1724,7 +1772,7 @@ document.addEventListener('DOMContentLoaded', () => {
             {
                 id: 'oso',
                 tipo: 'mascota',
-                nombre: 'Oso optimista',
+                nombre: 'Oso Entusiasta',
                 precio: 10000,
                 desc: 'Un alegre oso pardo con gorrita, sabe escribir muy rápido, aunque a veces falla, como todos, pero no se rinda en mejorar.',
                 mascotaClase: 'mascota-oso'
@@ -2283,6 +2331,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Criptografía HMAC-SHA256 para validación contra alteraciones (Anti-Cheat)
     // ==========================================================================
     const CLAVE_SECRETA_INSTITUCIONAL = "DenkKraft-TippenTag-AcademicAuth-HMAC-2026-SecurityKey";
+    const CLAVE_SECRETA_PERFILES = "DenkKraft-TippenTag-UserProfile-HMAC-2026-SecureKey";
     let certificadoResultadoActual = null;
 
     // Generar huella digital SHA-256 del contenido del texto para verificación de integridad de lecciones
@@ -2315,9 +2364,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Generar firma criptográfica HMAC-SHA256 con Web Cryptography API nativa del navegador
-    async function generarFirmaHmacSha256(mensajeTexto) {
+    async function generarFirmaHmacSha256(mensajeTexto, clave = CLAVE_SECRETA_INSTITUCIONAL) {
         const encoder = new TextEncoder();
-        const keyData = encoder.encode(CLAVE_SECRETA_INSTITUCIONAL);
+        const keyData = encoder.encode(clave);
         const cryptoKey = await window.crypto.subtle.importKey(
             "raw",
             keyData,
@@ -2328,6 +2377,181 @@ document.addEventListener('DOMContentLoaded', () => {
         const signatureBuffer = await window.crypto.subtle.sign("HMAC", cryptoKey, encoder.encode(mensajeTexto));
         const hashArray = Array.from(new Uint8Array(signatureBuffer));
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // ==========================================================================
+    // RESPALDO, EXPORTACIÓN E IMPORTACIÓN SEGURA DE PERFILES (ANTI-CHEAT)
+    // ==========================================================================
+    async function dataUrlABlob(dataUrl) {
+        if (!dataUrl) return null;
+        try {
+            const arr = dataUrl.split(',');
+            const mimeMatch = arr[0].match(/:(.*?);/);
+            const mime = mimeMatch ? mimeMatch[1] : 'image/png';
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], { type: mime });
+        } catch (e) {
+            try {
+                const resp = await fetch(dataUrl);
+                return await resp.blob();
+            } catch (err) {
+                return null;
+            }
+        }
+    }
+
+    async function exportarPerfil(usuario) {
+        if (!usuario) {
+            mostrarAlerta(
+                window.TPTi18n ? window.TPTi18n.t('perfil.exportar_sin_usuario') : "Debes tener un perfil seleccionado o activo para exportarlo.",
+                "Exportar Perfil",
+                "alerta"
+            );
+            return;
+        }
+
+        let avatarB64 = null;
+        if (usuario.avatarBlob) {
+            if (typeof usuario.avatarBlob === 'string' && usuario.avatarBlob.startsWith('data:')) {
+                avatarB64 = usuario.avatarBlob;
+            } else if (usuario.avatarBlob instanceof Blob) {
+                try {
+                    avatarB64 = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(usuario.avatarBlob);
+                    });
+                } catch (e) {
+                    console.warn("No se pudo codificar avatar a base64:", e);
+                }
+            }
+        }
+
+        const datosPerfil = {
+            id: usuario.id,
+            nombre: usuario.nombre,
+            puntos: typeof usuario.puntos === 'number' ? usuario.puntos : 0,
+            temaEquipado: usuario.temaEquipado || 'claro',
+            mascotaEquipada: usuario.mascotaEquipada || 'gato',
+            inventario: Array.isArray(usuario.inventario) ? usuario.inventario : ['tema_claro', 'mascota_gato'],
+            highscores: usuario.highscores || {},
+            avatarB64: avatarB64,
+            fechaExportacion: new Date().toISOString(),
+            emisor: "DenkKraft Tippen Tag Secure Profile System v1.0"
+        };
+
+        const jsonDatos = JSON.stringify(datosPerfil);
+        const firmaHex = await generarFirmaHmacSha256(jsonDatos, CLAVE_SECRETA_PERFILES);
+
+        const paqueteExportacion = {
+            formato: "TPT-USER-BACKUP",
+            version: "1.0",
+            datos: datosPerfil,
+            firma: firmaHex
+        };
+
+        const blob = new Blob([JSON.stringify(paqueteExportacion, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const nombreLimpio = (usuario.nombre || 'Jugador').replace(/[^a-zA-Z0-9_-]/g, '_');
+        a.href = url;
+        a.download = `TippenTag_Perfil_${nombreLimpio}.tptuser`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        mostrarAlerta(
+            window.TPTi18n ? window.TPTi18n.t('perfil.exportar_exito', { nombre: usuario.nombre }) : `¡Perfil de "${usuario.nombre}" exportado correctamente!`,
+            "Respaldo Creado",
+            "exito"
+        );
+    }
+
+    async function procesarArchivoPerfil(archivo, origen = 'crear') {
+        if (!archivo) return;
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const contenido = e.target.result;
+                const parsed = JSON.parse(contenido);
+
+                if (!parsed || parsed.formato !== 'TPT-USER-BACKUP' || !parsed.datos || !parsed.firma) {
+                    mostrarAlerta(
+                        window.TPTi18n ? window.TPTi18n.t('perfil.importar_error_formato') : "El archivo seleccionado no es un respaldo de perfil válido (.tptuser) de Tippen Tag.",
+                        "Formato Inválido",
+                        "peligro"
+                    );
+                    return;
+                }
+
+                // Verificación Criptográfica HMAC-SHA256 (Anti-Cheat / Anti-Tamper)
+                const jsonReconstruido = JSON.stringify(parsed.datos);
+                const firmaCalculada = await generarFirmaHmacSha256(jsonReconstruido, CLAVE_SECRETA_PERFILES);
+
+                if (firmaCalculada.toLowerCase() !== parsed.firma.toLowerCase()) {
+                    mostrarAlerta(
+                        window.TPTi18n ? window.TPTi18n.t('perfil.importar_error_firma') : "¡Alerta de Seguridad: La firma digital del perfil no coincide! El archivo fue modificado manualmente o está corrupto. Para garantizar juego limpio, no se puede importar.",
+                        "Manipulación Detectada",
+                        "peligro"
+                    );
+                    return;
+                }
+
+                // Restauración del avatar
+                let avatarBlob = null;
+                if (parsed.datos.avatarB64) {
+                    avatarBlob = await dataUrlABlob(parsed.datos.avatarB64);
+                }
+
+                const usuarioRestaurado = {
+                    id: parsed.datos.id || ("usr_" + Date.now()),
+                    nombre: parsed.datos.nombre || "Jugador",
+                    puntos: typeof parsed.datos.puntos === 'number' ? parsed.datos.puntos : 0,
+                    temaEquipado: parsed.datos.temaEquipado || 'claro',
+                    mascotaEquipada: parsed.datos.mascotaEquipada || 'gato',
+                    inventario: Array.isArray(parsed.datos.inventario) ? parsed.datos.inventario : ['tema_claro', 'mascota_gato'],
+                    highscores: parsed.datos.highscores || {},
+                    avatarBlob: avatarBlob
+                };
+
+                await window.TPTDatabase.guardarUsuario(usuarioRestaurado);
+                await cargarPerfiles();
+
+                if (origen === 'crear') {
+                    cambiarVista('landing');
+                } else if (origen === 'ajustes' && usuarioActivo && usuarioActivo.id === usuarioRestaurado.id) {
+                    usuarioActivo = usuarioRestaurado;
+                    actualizarInfoUsuarioMenu();
+                    actualizarPuntosTienda();
+                    aplicarCosmetico('tema', usuarioRestaurado.temaEquipado);
+                    aplicarCosmetico('mascota', usuarioRestaurado.mascotaEquipada);
+                }
+
+                mostrarAlerta(
+                    window.TPTi18n
+                        ? window.TPTi18n.t('perfil.importar_exito', { nombre: usuarioRestaurado.nombre, puntos: usuarioRestaurado.puntos.toLocaleString('es-ES') })
+                        : `¡Perfil de "${usuarioRestaurado.nombre}" importado con éxito con ${usuarioRestaurado.puntos.toLocaleString('es-ES')} puntos!`,
+                    "Perfil Importado",
+                    "exito"
+                );
+
+            } catch (err) {
+                console.error("Error al procesar archivo de perfil:", err);
+                mostrarAlerta(
+                    window.TPTi18n ? window.TPTi18n.t('perfil.importar_error_formato') : "El archivo está dañado o no tiene un formato JSON válido.",
+                    "Error de Importación",
+                    "peligro"
+                );
+            }
+        };
+        reader.readAsText(archivo);
     }
 
     // Empaquetar y firmar el certificado de evaluación del estudiante
@@ -2415,7 +2639,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (!metricas || !metricas.completado) {
+        if (!metricas) {
             if (seccionEstudiante) seccionEstudiante.style.display = 'none';
             certificadoResultadoActual = null;
             return;
@@ -2440,15 +2664,26 @@ document.addEventListener('DOMContentLoaded', () => {
             ? metricas.nivel.caracteresTexto 
             : (metricas.nivel && metricas.nivel.texto ? metricas.nivel.texto.length : 0);
 
+        const completado = Boolean(metricas.completado);
+        const progreso = typeof metricas.progreso === 'number' ? metricas.progreso : (completado ? 100 : 0);
+        const motivoFin = metricas.motivoFin || (completado ? 'completado' : 'incompleto');
+        const caracteresAvanzados = typeof metricas.caracteresAvanzados === 'number'
+            ? metricas.caracteresAvanzados
+            : (completado ? caracteresNivel : 0);
+
         const payload = {
             estudiante: usuarioActivo ? usuarioActivo.nombre : 'Estudiante',
-            nivelId: metricas.nivel.id || 'nivel_custom',
-            nivelTitulo: metricas.nivel.titulo || 'Nivel de Práctica',
+            nivelId: (metricas.nivel && metricas.nivel.id) ? metricas.nivel.id : 'nivel_custom',
+            nivelTitulo: (metricas.nivel && metricas.nivel.titulo) ? metricas.nivel.titulo : 'Nivel de Práctica',
             autorNombre: autorNombreNivel,
             autorId: autorIdNivel,
             hashTexto: hashNivel,
             caracteresTexto: caracteresNivel,
-            esOficial: Boolean(metricas.nivel.esOficial),
+            caracteresAvanzados: caracteresAvanzados,
+            completado: completado,
+            progreso: progreso,
+            motivoFin: motivoFin,
+            esOficial: Boolean(metricas.nivel && metricas.nivel.esOficial),
             wpm: metricas.wpm,
             precision: metricas.precision,
             errores: metricas.errores,
@@ -2680,33 +2915,85 @@ document.addEventListener('DOMContentLoaded', () => {
                 badgeTipoNivel = `<span class="badge-personalizado">ℹ️ Lección de Docente / Comunidad${autorDocenteStr}</span>`;
             }
 
+            const esCompletado = cert.completado !== undefined ? Boolean(cert.completado) : true;
+            const progresoVal = typeof cert.progreso === 'number' ? cert.progreso : (esCompletado ? 100 : 0);
+
+            let motivoFinTexto = '';
+            if (cert.motivoFin === 'vidas') {
+                motivoFinTexto = window.TPTi18n ? window.TPTi18n.t('docente.motivo_vidas') : 'Interrumpido por agotamiento de vidas';
+            } else if (cert.motivoFin === 'tiempo') {
+                motivoFinTexto = window.TPTi18n ? window.TPTi18n.t('docente.motivo_tiempo') : 'Interrumpido por tiempo límite agotado';
+            } else {
+                motivoFinTexto = window.TPTi18n ? window.TPTi18n.t('docente.motivo_incompleto') : 'Nivel no completado en su totalidad';
+            }
+
+            const badgeEstadoEntrega = esCompletado
+                ? `<span class="badge-completado-exito" style="display:inline-flex; align-items:center; gap:4px; padding: 3px 8px; border-radius: 999px; font-size: calc(11px * var(--escala-texto, 1)); font-weight: 700; background: rgba(16, 185, 129, 0.15); color: var(--verde-exito); border: 1px solid rgba(16, 185, 129, 0.3);">${window.TPTi18n ? window.TPTi18n.t('docente.badge_completado') : '✓ Completado (100%)'}</span>`
+                : `<span class="badge-incompleto-alerta" style="display:inline-flex; align-items:center; gap:4px; padding: 3px 8px; border-radius: 999px; font-size: calc(11px * var(--escala-texto, 1)); font-weight: 700; background: rgba(239, 68, 68, 0.15); color: var(--rojo-error); border: 1px solid rgba(239, 68, 68, 0.3);">${window.TPTi18n ? window.TPTi18n.t('docente.badge_incompleto', { progreso: progresoVal }) : `✕ Incompleto (${progresoVal}%)`}</span>`;
+
+            let declaracionTexto = '';
+            if (esCompletado) {
+                declaracionTexto = window.TPTi18n
+                    ? window.TPTi18n.t('docente.declaracion_completado', {
+                        estudiante: cert.estudiante,
+                        nivel: cert.nivelTitulo || cert.nivelId,
+                        wpm: cert.wpm,
+                        precision: cert.precision
+                    })
+                    : `El estudiante <strong>${cert.estudiante}</strong> completó exitosamente el 100% de la lección <strong>"${cert.nivelTitulo || cert.nivelId}"</strong> con <strong>${cert.wpm} WPM</strong> y <strong>${cert.precision}%</strong> de precisión.`;
+            } else {
+                declaracionTexto = window.TPTi18n
+                    ? window.TPTi18n.t('docente.declaracion_incompleto', {
+                        estudiante: cert.estudiante,
+                        progreso: progresoVal,
+                        nivel: cert.nivelTitulo || cert.nivelId,
+                        wpm: cert.wpm,
+                        precision: cert.precision,
+                        motivo: motivoFinTexto
+                    })
+                    : `El estudiante <strong>${cert.estudiante}</strong> completó el <strong>${progresoVal}%</strong> de la lección <strong>"${cert.nivelTitulo || cert.nivelId}"</strong> con <strong>${cert.wpm} WPM</strong> y <strong>${cert.precision}%</strong> de precisión (${motivoFinTexto}).`;
+            }
+
             resultadoDocenteBox.innerHTML = `
                 <div class="docente-reporte-valido">
                     <div class="docente-reporte-header">
-                        <span class="docente-status-icono valido">✓</span>
+                        <span class="docente-status-icono ${esCompletado ? 'valido' : 'parcial'}" style="${!esCompletado ? 'background: rgba(245, 158, 11, 0.15); color: var(--amarillo); border-color: rgba(245, 158, 11, 0.3);' : ''}">${esCompletado ? '✓' : '⚠️'}</span>
                         <div>
-                            <h4 class="docente-reporte-titulo">Certificado Auténtico y Verificado</h4>
-                            <span class="docente-reporte-sub">Sello criptográfico digital válido • Sin alteraciones en métricas</span>
+                            <h4 class="docente-reporte-titulo">${window.TPTi18n ? window.TPTi18n.t('docente.reporte_valido_titulo') : 'Certificado Oficial Verificado'}</h4>
+                            <span class="docente-reporte-sub">${window.TPTi18n ? window.TPTi18n.t('docente.reporte_valido_sub') : 'Firma HMAC-SHA256 íntegra. Las métricas no han sido manipuladas.'}</span>
                         </div>
-                        <div style="margin-left: auto; text-align: right;">
+                        <div style="margin-left: auto; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
                             ${badgeTipoNivel}
+                            ${badgeEstadoEntrega}
                         </div>
                     </div>
 
                     ${htmlComparacion}
                     ${htmlAlertaSuplantacion}
 
-                    <div class="docente-declaracion-oficial">
-                        El estudiante <strong>${cert.estudiante}</strong> completó el nivel <strong>${cert.nivelTitulo || cert.nivelId}</strong> con <strong>${cert.wpm} WPM</strong> y <strong>${cert.precision}%</strong> de precisión.
+                    <div class="docente-declaracion-oficial" style="${!esCompletado ? 'border-left-color: var(--amarillo);' : ''}">
+                        ${declaracionTexto}
                     </div>
 
                     <div class="docente-detalles-grid">
                         <div class="docente-detalle-item">
-                            <span class="docente-detalle-label">Estudiante</span>
+                            <span class="docente-detalle-label">${window.TPTi18n ? window.TPTi18n.t('docente.lbl_estado_entrega') : 'Estado de Finalización'}</span>
+                            <span class="docente-detalle-val">${esCompletado 
+                                ? `<span style="color: var(--verde-exito); font-weight: 700;">✓ ${window.TPTi18n ? window.TPTi18n.t('docente.val_completado') : 'Completado (100%)'}</span>` 
+                                : `<span style="color: var(--rojo-error); font-weight: 700;">✕ ${window.TPTi18n ? window.TPTi18n.t('docente.val_incompleto', { progreso: progresoVal }) : `Incompleto (${progresoVal}%)`}</span>`}</span>
+                        </div>
+                        <div class="docente-detalle-item">
+                            <span class="docente-detalle-label">${window.TPTi18n ? window.TPTi18n.t('docente.lbl_progreso_nivel') : 'Progreso Alcanzado'}</span>
+                            <span class="docente-detalle-val" style="font-weight: 700; color: ${esCompletado ? 'var(--verde-exito)' : 'var(--rojo-error)'};">
+                                ${progresoVal}% ${cert.caracteresAvanzados !== undefined ? `<small style="font-weight:normal; opacity:0.85;">(${cert.caracteresAvanzados} / ${cert.caracteresTexto || cert.caracteresAvanzados} car.)</small>` : ''}
+                            </span>
+                        </div>
+                        <div class="docente-detalle-item">
+                            <span class="docente-detalle-label">${window.TPTi18n ? window.TPTi18n.t('docente.lbl_estudiante') : 'Estudiante'}</span>
                             <span class="docente-detalle-val">${cert.estudiante}</span>
                         </div>
                         <div class="docente-detalle-item">
-                            <span class="docente-detalle-label">Nivel Evaluado</span>
+                            <span class="docente-detalle-label">${window.TPTi18n ? window.TPTi18n.t('docente.lbl_nivel') : 'Lección Evaluada'}</span>
                             <span class="docente-detalle-val">${cert.nivelTitulo || cert.nivelId}</span>
                         </div>
                         <div class="docente-detalle-item">
@@ -2714,7 +3001,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="docente-detalle-val">${cert.autorNombre || (esNivelOficialPorId ? 'DenkKraft' : 'Comunidad')}</span>
                         </div>
                         <div class="docente-detalle-item">
-                            <span class="docente-detalle-label">ID de Lección en Firma</span>
+                            <span class="docente-detalle-label">${window.TPTi18n ? window.TPTi18n.t('docente.lbl_id_nivel') : 'ID de Lección en Firma'}</span>
                             <span class="docente-detalle-val" style="font-size: calc(11.5px * var(--escala-texto, 1)); color: ${esSuplantacionTitulo ? 'var(--rojo-error)' : 'var(--azul)'}; font-weight: 700;">${cert.nivelId}</span>
                         </div>
                         <div class="docente-detalle-item">
@@ -2732,15 +3019,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="docente-detalle-val">${cert.caracteresTexto ? (cert.caracteresTexto + ' caracteres') : (nivelLocal && nivelLocal.texto ? nivelLocal.texto.length + ' caracteres' : 'Registrada')}</span>
                         </div>
                         <div class="docente-detalle-item">
-                            <span class="docente-detalle-label">Velocidad Mecanográfica</span>
+                            <span class="docente-detalle-label">${window.TPTi18n ? window.TPTi18n.t('docente.lbl_velocidad') : 'Velocidad Mecanográfica'}</span>
                             <span class="docente-detalle-val">${cert.wpm} WPM</span>
                         </div>
                         <div class="docente-detalle-item">
-                            <span class="docente-detalle-label">Precisión de Tecleo</span>
+                            <span class="docente-detalle-label">${window.TPTi18n ? window.TPTi18n.t('docente.lbl_precision') : 'Precisión de Tecleo'}</span>
                             <span class="docente-detalle-val">${cert.precision}%</span>
                         </div>
                         <div class="docente-detalle-item">
-                            <span class="docente-detalle-label">Errores Registrados</span>
+                            <span class="docente-detalle-label">${window.TPTi18n ? window.TPTi18n.t('docente.lbl_errores') : 'Errores Registrados'}</span>
                             <span class="docente-detalle-val">${cert.errores} fallos</span>
                         </div>
                         <div class="docente-detalle-item">
@@ -2752,7 +3039,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="docente-detalle-val">${cert.modo}</span>
                         </div>
                         <div class="docente-detalle-item">
-                            <span class="docente-detalle-label">Fecha y Hora de Emisión</span>
+                            <span class="docente-detalle-label">${window.TPTi18n ? window.TPTi18n.t('docente.lbl_fecha') : 'Fecha y Hora de Emisión'}</span>
                             <span class="docente-detalle-val">${cert.fechaEmision}</span>
                         </div>
                     </div>
@@ -2801,6 +3088,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 autorId: "denkkraft_oficial",
                 hashTexto: hashDemo,
                 caracteresTexto: 26,
+                caracteresAvanzados: 26,
+                completado: true,
+                progreso: 100,
+                motivoFin: "completado",
                 esOficial: true,
                 wpm: 58,
                 precision: 96,
@@ -2832,6 +3123,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 autorId: "usr_alumno_trampa",
                 hashTexto: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
                 caracteresTexto: 5,
+                caracteresAvanzados: 5,
+                completado: true,
+                progreso: 100,
+                motivoFin: "completado",
                 esOficial: false,
                 wpm: 145,
                 precision: 100,
@@ -2964,7 +3259,14 @@ document.addEventListener('DOMContentLoaded', () => {
         mostrarAlerta: mostrarAlerta,
         mostrarConfirmacion: mostrarConfirmacion,
         aplicarReglasDeTier: aplicarReglasDeTier,
-        generarHashTexto: generarHashTexto
+        generarHashTexto: generarHashTexto,
+        exportarPerfil: exportarPerfil,
+        procesarArchivoPerfil: procesarArchivoPerfil
+    };
+
+    window.TPTprofileManager = {
+        exportar: exportarPerfil,
+        importar: procesarArchivoPerfil
     };
 
     window.TPTDatabase.abrir().then(() => {

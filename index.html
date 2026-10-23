@@ -96,6 +96,19 @@
                     <button type="button" id="btn-cancelar-usuario" class="btn-secundario" data-i18n="usuario.btn_cancelar">Cancelar</button>
                     <button type="submit" class="btn-primario" data-i18n="usuario.btn_crear">Crear Perfil</button>
                 </div>
+
+                <div class="crear-usuario-importar-bloque">
+                    <div class="separador-crear-usuario">
+                        <span></span>
+                        <span data-i18n="usuario.o_importar">o si ya tienes un perfil guardado</span>
+                        <span></span>
+                    </div>
+                    <button type="button" id="btn-importar-perfil-crear" class="btn-secundario btn-importar-perfil">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <span data-i18n="usuario.btn_importar">Importar Perfil (.tptuser)</span>
+                    </button>
+                    <input type="file" id="input-archivo-perfil-crear" class="input-archivo-oculto" accept=".tptuser,.json">
+                </div>
             </form>
         </div>
     </section>  
@@ -436,6 +449,17 @@
                 <h2 id="resultado-titulo" class="resultado-titulo" data-i18n="resultado.completado_titulo">¡Nivel Completado!</h2>
                 <p id="resultado-subtitulo" class="resultado-subtitulo" data-i18n="resultado.completado_sub">Excelente destreza mecanográfica</p>
                 
+                <!-- Barra y Estado de Progreso del Nivel -->
+                <div class="resultado-progreso-caja">
+                    <div class="resultado-progreso-fila">
+                        <span class="resultado-progreso-label" data-i18n="resultado.progreso_etiqueta">Progreso de la Lección</span>
+                        <span id="resultado-progreso-texto" class="resultado-progreso-valor completado">100% (Completado)</span>
+                    </div>
+                    <div class="resultado-progreso-barra-bg">
+                        <div id="resultado-progreso-barra" class="resultado-progreso-barra-fill completado" style="width: 100%;"></div>
+                    </div>
+                </div>
+
                 <div class="resultado-stats-grid">
                     <div class="stat-card">
                         <span class="stat-valor" id="resultado-wpm">0</span>
@@ -633,8 +657,12 @@
                         <input type="range" id="slider-vol-bgm" class="rango-estandar" min="0" max="100" value="50" aria-label="Volumen música del menú">
                         <span id="badge-vol-bgm" class="valor-rango-badge">50%</span>
                     </div>
-                    <div class="ajuste-ruta-info">
-                        <span data-i18n="ajustes.pista_config">Pista de audio configurada:</span> <code id="ruta-musica-menu-texto" class="ajuste-ruta-codigo">Sin pista asignada</code>
+                    <div class="ajuste-ruta-info" id="caja-musica-menu-info">
+                        <div class="ajuste-pista-fila">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                            <span class="ajuste-pista-titulo" data-i18n="ajustes.musica_nombre">Música: TPT Main Theme</span>
+                        </div>
+                        <span class="ajuste-pista-credito" data-i18n="ajustes.musica_credito">Aportada por: Zhailox</span>
                     </div>
                 </div>
 
@@ -743,6 +771,30 @@
                     <div class="idioma-botones-grupo">
                         <button type="button" id="btn-lang-es" class="btn-lang-pill activo">🇪🇸 Español</button>
                         <button type="button" id="btn-lang-de" class="btn-lang-pill">🇩🇪 Deutsch</button>
+                    </div>
+                </div>
+
+                <!-- Ajuste 8: Respaldo y Transferencia de Perfil -->
+                <div class="ajuste-card">
+                    <div class="ajuste-card-header">
+                        <div class="ajuste-info">
+                            <span class="ajuste-titulo">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                <span data-i18n="ajustes.perfil_respaldo_titulo">Respaldo y Transferencia de Perfil</span>
+                            </span>
+                            <span class="ajuste-desc" data-i18n="ajustes.perfil_respaldo_desc">Exporta tu perfil de forma segura con firma criptográfica o restaura un perfil guardado</span>
+                        </div>
+                    </div>
+                    <div class="perfil-respaldo-acciones">
+                        <button type="button" id="btn-exportar-perfil-ajustes" class="btn-secundario btn-perfil-respaldo">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            <span data-i18n="ajustes.btn_exportar_perfil">Exportar Perfil (.tptuser)</span>
+                        </button>
+                        <button type="button" id="btn-importar-perfil-ajustes" class="btn-secundario btn-perfil-respaldo">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            <span data-i18n="ajustes.btn_importar_perfil">Importar Perfil (.tptuser)</span>
+                        </button>
+                        <input type="file" id="input-archivo-perfil-ajustes" class="input-archivo-oculto" accept=".tptuser,.json">
                     </div>
                 </div>
             </div>
